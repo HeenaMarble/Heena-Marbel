@@ -11,7 +11,7 @@
   --text-light: #666666;
   --border-color: #e5e0d8;
   
-  --font-serif: 'Playfair Display', serif;
+  --font-serif: 'Inter', sans-serif;
   --font-sans: 'Inter', sans-serif;
   --font-script: 'Great Vibes', cursive;
   
@@ -80,9 +80,21 @@ img {
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 5%;
+  padding: 0 100px;
+}
+
+@media (max-width: 992px) {
+  .container {
+    padding: 0 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
 }
 
 .section {
@@ -148,4 +160,28 @@ img {
 
 .text-center {
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  h1, .heading {
+    font-size: 2rem !important;
+  }
+  h2 {
+    font-size: 1.75rem !important;
+  }
+  .section {
+    padding: var(--spacing-lg) 0;
+  }
+}
+
+@media (max-width: 576px) {
+  h1, .heading {
+    font-size: 1.75rem !important;
+  }
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  .section {
+    padding: var(--spacing-md) 0;
+  }
 }

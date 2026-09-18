@@ -1,10 +1,25 @@
 .footer {
   background-color: var(--bg-white);
-  border-top: 1px solid var(--border-color);
-  padding-top: 60px;
+  border-top: 1px solid var(--primary-color);
+}
+
+.preFooterBanner {
+  background-color: var(--bg-section);
+  text-align: center;
+  padding: 35px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.preFooterBanner p {
+  color: var(--primary-color);
+  font-weight: 600;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  margin: 0;
 }
 
 .footerGrid {
+  padding-top: 60px;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr;
   gap: 30px;
@@ -59,16 +74,27 @@
   margin-bottom: 15px;
 }
 
+.socialLink {
+  text-decoration: none;
+}
+
 .socialIcon {
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 0.7rem;
-  font-weight: bold;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+  background-color: var(--primary-color);
+  color: var(--bg-white);
+  transform: translateY(-2px);
 }
 
 .socialText {
@@ -98,7 +124,8 @@
 }
 
 .separator {
-  color: var(--border-color);
+  color: var(--primary-color);
+  font-weight: bold;
 }
 
 .scrollTop {

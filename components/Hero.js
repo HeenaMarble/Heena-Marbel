@@ -20,7 +20,7 @@ export default function Hero() {
       <div className={`container ${styles.heroContainer}`}>
         <div className={styles.content}>
           <span className="subheading">CRAFTING TIMELESS BEAUTY IN MARBLE</span>
-          <h1 className={styles.title}>TILAK STONE ARTS</h1>
+          <h1 className={styles.title}>HEENA MARBLE</h1>
           <div className={styles.subtitleWrapper}>
             <span className={styles.line}></span>
             <span className={styles.subtitle}>MAKRANA RAJASTHAN</span>
@@ -31,10 +31,10 @@ export default function Hero() {
           </p>
           
           <div className={styles.actions}>
-            <Link href="#contact" className="btn-primary">
+            <Link href="/contact" className="btn-primary">
               Get a Free Quote
             </Link>
-            <Link href="#projects" className="btn-outline">
+            <Link href="/projects" className="btn-outline">
               View Our Work
             </Link>
           </div>

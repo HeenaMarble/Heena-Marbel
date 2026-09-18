@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import styles from './CartDrawer.module.css';
 
@@ -66,9 +67,9 @@ export default function CartDrawer() {
               <strong>₹{cartTotal.toLocaleString()}</strong>
             </div>
             <p className={styles.taxNote}>Taxes and shipping calculated at checkout.</p>
-            <button className={`btn-primary ${styles.checkoutBtn}`}>
-              Proceed to Checkout
-            </button>
+            <Link href="/cart" className={`btn-primary ${styles.checkoutBtn}`} onClick={toggleCart}>
+              View Cart & Checkout
+            </Link>
           </div>
         )}
 

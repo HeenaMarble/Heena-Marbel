@@ -6,6 +6,11 @@ import styles from './Footer.module.css';
 export default function Footer() {
   return (
     <footer className={styles.footer}>
+      <div className={styles.preFooterBanner}>
+        <div className="container">
+          <p>AUTHENTIC MAKRANA MARBLE &nbsp; • &nbsp; MASTER CRAFTSMANSHIP &nbsp; • &nbsp; GLOBAL SHIPPING</p>
+        </div>
+      </div>
       <div className={`container ${styles.footerGrid}`}>
         
         {/* Brand */}
@@ -24,7 +29,6 @@ export default function Footer() {
             <li><Link href="#about">About Us</Link></li>
             <li><Link href="#services">Services</Link></li>
             <li><Link href="#projects">Our Work</Link></li>
-            <li><Link href="#gallery">Gallery</Link></li>
             <li><Link href="#contact">Contact</Link></li>
           </ul>
         </div>
@@ -57,7 +61,7 @@ export default function Footer() {
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
-              info@tilakstonearts.com
+              shahid@heenamarble.com
             </li>
             <li>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -65,14 +69,14 @@ export default function Footer() {
                 <line x1="2" y1="12" x2="22" y2="12"></line>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
               </svg>
-              www.tilakstonearts.com
+              www.heenamarble.com
             </li>
             <li>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              Kishangarh, Ajmer,<br/>Makrana Rajasthan 341505
+              9th Street, Palada Road,<br/>Makrana Rajasthan 341505
             </li>
           </ul>
         </div>
@@ -81,10 +85,22 @@ export default function Footer() {
         <div className={styles.linkGroup}>
           <h4>Follow Us</h4>
           <div className={styles.socialIcons}>
-            <div className={styles.socialIcon} style={{background: '#ff0000'}}>YT</div>
-            <div className={styles.socialIcon} style={{background: '#25D366'}}>WA</div>
-            <div className={styles.socialIcon} style={{background: '#E1306C'}}>IN</div>
-            <div className={styles.socialIcon} style={{background: '#1DA1F2'}}>TW</div>
+            <a href="https://www.instagram.com/heena_marble/reels/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+              <div className={styles.socialIcon}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </div>
+            </a>
+            <a href="https://www.facebook.com/HeenaMarble" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+              <div className={styles.socialIcon}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+              </div>
+            </a>
           </div>
           <p className={styles.socialText}>Stay connected for latest updates and new projects.</p>
         </div>
@@ -92,7 +108,7 @@ export default function Footer() {
       
       <div className={styles.bottomBar}>
         <div className={`container ${styles.bottomFlex}`}>
-          <p>&copy; {new Date().getFullYear()} Tilak Stone Arts. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Heena Marble. All Rights Reserved.</p>
           <div className={styles.bottomLinks}>
             <span>Tradition</span>
             <span className={styles.separator}>|</span>

@@ -38,7 +38,7 @@
 
 .card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .imageWrapper {
@@ -90,23 +90,48 @@
 }
 
 .details {
-  padding: 20px;
+  padding: 10px;
 }
 
 .details h3 {
   font-family: var(--font-sans);
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  line-height: 1.1;
   color: var(--text-dark);
 }
 
-.desc {
-  font-size: 0.85rem;
+.cardRating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.starFilled {
+  color: #f5b041;
+  font-size: 0.75rem;
+}
+
+.starHalf {
+  color: #f5b041;
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+.reviewCount {
+  font-size: 0.7rem;
   color: var(--text-light);
-  margin-bottom: 15px;
+  margin-left: 4px;
+}
+
+.desc {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 8px;
   line-height: 1.4;
-  height: 40px;
+  height: 32px;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -120,7 +145,7 @@
 }
 
 .price {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--primary-dark);
 }
@@ -137,12 +162,40 @@
     align-items: flex-start;
     gap: 15px;
   }
+
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
+
   .quickAdd {
     bottom: 0;
     opacity: 1;
     background-color: var(--bg-white);
+    padding: 8px 0;
+    font-size: 0.8rem;
+  }
+
+  .details {
+    padding: 12px;
+  }
+
+  .details h3 {
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+
+  .desc {
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+    height: 32px;
+  }
+
+  .price {
+    font-size: 0.95rem;
+  }
+
+  .cardRating {
+    margin-bottom: 6px;
   }
 }

@@ -36,10 +36,10 @@ export default function AboutSection() {
         
         {/* Right Side: Content */}
         <div className={styles.content}>
-          <span className="subheading">ABOUT TILAK STONE ARTS</span>
+          <span className="subheading">ABOUT HEENA MARBLE</span>
           <h2 className="heading">A Legacy Carved in Marble</h2>
           <p className={styles.description}>
-            Tilak Stone Arts is renowned for its marble carving, inlay work, handicrafts and custom designs. Based in Makrana, Rajasthan, we combine traditional artistry with modern precision to create timeless pieces for temples, mosques, gurudwaras, churches, homes and more.
+            Heena Marble is renowned for its marble carving, inlay work, handicrafts and custom designs. Based in Makrana, Rajasthan, we combine traditional artistry with modern precision to create timeless pieces for temples, mosques, gurudwaras, churches, homes and more.
           </p>
           
           <div className={styles.iconsRow}>
@@ -58,7 +58,7 @@ export default function AboutSection() {
           </div>
           
           <div className={styles.actionRow}>
-            <Link href="#contact" className="btn-primary">
+            <Link href="/about" className="btn-primary">
               Know More About Us
             </Link>
           </div>

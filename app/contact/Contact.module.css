@@ -177,6 +177,12 @@
   line-height: 1.8;
 }
 
+/* Map Section */
+.mapSection {
+  background-color: var(--bg-white);
+  padding: 80px 0 0 0;
+}
+
 /* FAQ Section */
 .faqSection {
   background-color: var(--bg-white);

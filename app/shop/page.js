@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
@@ -28,10 +29,15 @@ export default function ShopPage() {
               {PRODUCTS.map((product) => (
                 <div key={product.id} className={styles.card}>
                   <div className={styles.imageWrapper}>
-                    <img src={product.img} alt={product.title} />
+                    <Link href={`/shop/${product.id}`}>
+                      <img src={product.img} alt={product.title} />
+                    </Link>
                     <button 
                       className={styles.quickAdd}
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addToCart(product);
+                      }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}>
                         <circle cx="9" cy="21" r="1"></circle>
@@ -42,7 +48,17 @@ export default function ShopPage() {
                     </button>
                   </div>
                   <div className={styles.details}>
-                    <h3>{product.title}</h3>
+                    <Link href={`/shop/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <h3>{product.title}</h3>
+                    </Link>
+                    <div className={styles.cardRating}>
+                      <span className={styles.starFilled}>★</span>
+                      <span className={styles.starFilled}>★</span>
+                      <span className={styles.starFilled}>★</span>
+                      <span className={styles.starFilled}>★</span>
+                      <span className={styles.starHalf}>★</span>
+                      <span className={styles.reviewCount}>(24)</span>
+                    </div>
                     <p className={styles.desc}>{product.desc}</p>
                     <div className={styles.priceRow}>
                       <span className={styles.price}>₹{product.price.toLocaleString()}</span>

@@ -3,6 +3,7 @@
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 import styles from './Services.module.css';
 
 export default function ServicesPage() {
@@ -39,7 +40,7 @@ export default function ServicesPage() {
           <div className="container">
             <span className="subheading">OUR EXPERTISE</span>
             <h1 className="heading" style={{ fontSize: '3rem', margin: '10px 0', color: 'white' }}>Masterful Marble Services</h1>
-            <p style={{ color: 'var(--primary-color)', maxWidth: '600px', margin: '0 auto', fontWeight: '500' }}>
+            <p style={{ color: 'white', maxWidth: '600px', margin: '0 auto', fontWeight: '500' }}>
               From sacred temples to luxurious interiors, our comprehensive marble services cover every aspect of stone craftsmanship.
             </p>
           </div>
@@ -115,9 +116,9 @@ export default function ServicesPage() {
             <p style={{ color: 'rgba(255,255,255,0.9)', maxWidth: '600px', margin: '0 auto 30px auto', fontSize: '1.1rem' }}>
               Whether you need a custom home temple or a massive commercial flooring project, our experts are here to guide you.
             </p>
-            <button className="btn-primary" style={{ backgroundColor: 'white', color: 'var(--primary-dark)', border: 'none' }}>
+            <Link href="/contact" className="btn-primary" style={{ backgroundColor: 'white', color: 'var(--primary-dark)', border: 'none' }}>
               Book a Consultation
-            </button>
+            </Link>
           </div>
         </section>
 

@@ -18,9 +18,9 @@ export default function ContactPage() {
           </video>
           <div className={styles.heroOverlay}>
             <div className="container">
-              <span className="subheading">GET IN TOUCH</span>
-              <h1 className="heading" style={{ fontSize: '3rem', margin: '10px 0' }}>Contact Heena Marble</h1>
-              <p style={{ color: 'rgba(255, 255, 255, 0.9)', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
+              <span className="subheading" style={{ color: 'var(--primary-color)' }}>GET IN TOUCH</span>
+              <h1 className="heading" style={{ fontSize: '3rem', margin: '10px 0', color: 'white' }}>Contact Heena Marble</h1>
+              <p style={{ color: 'white', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
                 Have a custom project in mind? We are ready to bring your architectural visions to life.
               </p>
             </div>
@@ -40,7 +40,7 @@ export default function ContactPage() {
                   </div>
                   <div className={styles.infoText}>
                     <h4>Location</h4>
-                    <p>Makrana Marble Association Area,<br />Makrana, Rajasthan 341505, India</p>
+                    <p>9th Street, Palada Road,<br />Makrana, Rajasthan 341505, India</p>
                   </div>
                 </div>
 
@@ -102,6 +102,21 @@ export default function ContactPage() {
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Map Section */}
+        <section className={`section ${styles.mapSection}`}>
+          <div className="container">
+            <iframe 
+              src="https://maps.google.com/maps?q=Palada%20Road,%20Makrana,%20Rajasthan%20341505&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+              width="100%" 
+              height="450" 
+              style={{ border: 0, borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-medium)' }} 
+              allowFullScreen="" 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade">
+            </iframe>
           </div>
         </section>
 

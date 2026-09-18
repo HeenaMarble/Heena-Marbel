@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
@@ -32,7 +33,7 @@ export default function ProjectsPage() {
         <section className={styles.hero}>
           <div className="container">
             <span className="subheading">OUR PORTFOLIO</span>
-            <h1 className="heading" style={{ fontSize: '3rem', margin: '10px 0' }}>Showcase of Masterpieces</h1>
+            <h1 className="heading" style={{ fontSize: '3rem', margin: '10px 0', color: 'white' }}>Showcase of Masterpieces</h1>
             <p style={{ color: 'rgba(255,255,255,0.9)', maxWidth: '600px', margin: '0 auto' }}>
               Explore our proudest architectural achievements and custom installations across the globe.
             </p>
@@ -60,7 +61,7 @@ export default function ProjectsPage() {
         </section>
 
         {/* Featured Video Project 1 */}
-        <section className={styles.splitVideoSection}>
+        <section className={styles.splitVideoSection} style={{ backgroundColor: '#ffffff' }}>
           <div className={styles.splitLayout}>
             <div className={styles.splitVideo}>
               <video ref={videoRef1} autoPlay loop muted playsInline>
@@ -73,7 +74,7 @@ export default function ProjectsPage() {
               <p>
                 A monumental architectural achievement carved entirely from pure Makrana marble. This project required over two years of master craftsmanship to complete the intricate pillars and domed ceilings.
               </p>
-              <button className="btn-primary" style={{ marginTop: '30px' }}>View Case Study</button>
+              <Link href="/projects/the-grand-mandir" className="btn-primary" style={{ marginTop: '30px', position: 'relative', zIndex: 10 }}>View Case Study</Link>
             </div>
           </div>
         </section>
@@ -92,7 +93,7 @@ export default function ProjectsPage() {
               <p>
                 An exquisite outdoor pavilion designed for a private royal estate. Featuring seamless inlay work and ornate jali screens that play beautifully with natural light.
               </p>
-              <button className="btn-primary" style={{ marginTop: '30px' }}>View Case Study</button>
+              <Link href="/projects/royal-pavilion" className="btn-primary" style={{ marginTop: '30px', position: 'relative', zIndex: 10 }}>View Case Study</Link>
             </div>
           </div>
         </section>

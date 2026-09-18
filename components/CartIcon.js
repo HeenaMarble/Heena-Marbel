@@ -1,13 +1,14 @@
 "use client";
 
+import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import styles from './CartIcon.module.css';
 
 export default function CartIcon() {
-  const { cartCount, toggleCart } = useCart();
+  const { cartCount } = useCart();
 
   return (
-    <button className={styles.cartBtn} onClick={toggleCart} aria-label="Open Shopping Cart">
+    <Link href="/cart" className={styles.cartBtn} aria-label="Go to Shopping Cart">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="9" cy="21" r="1"></circle>
         <circle cx="20" cy="21" r="1"></circle>
@@ -16,6 +17,6 @@ export default function CartIcon() {
       {cartCount > 0 && (
         <span className={styles.badge}>{cartCount}</span>
       )}
-    </button>
+    </Link>
   );
 }

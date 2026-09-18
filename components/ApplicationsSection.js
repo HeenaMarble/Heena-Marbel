@@ -2,12 +2,12 @@ import styles from './ApplicationsSection.module.css';
 
 export default function ApplicationsSection() {
   const apps = [
-    { title: "Temples", img: "/temple3.jpg" },
-    { title: "Mosques", img: "/temple1.jpg" },
-    { title: "Gurudwaras", img: "/temple2.jpg" },
-    { title: "Churches", img: "/temple3.jpg" },
-    { title: "Home Temples", img: "/temple1.jpg" },
-    { title: "And More", img: "/temple2.jpg" }
+    { title: "Temples", img: "/temples.jpg" },
+    { title: "Mosques", img: "/mosques.jpg" },
+    { title: "Gurudwaras", img: "/gurudwaras.jpg" },
+    { title: "Churches", img: "/churches.jpg" },
+    { title: "Home Temples", img: "/home-temples.jpg" },
+    { title: "And More", img: "/and-more.jpg" }
   ];
 
   return (

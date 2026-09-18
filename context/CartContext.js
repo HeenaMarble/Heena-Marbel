@@ -11,7 +11,7 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     setMounted(true);
-    const savedCart = localStorage.getItem('tilak-cart');
+    const savedCart = localStorage.getItem('heenamarble-cart');
     if (savedCart) {
       try {
         setCartItems(JSON.parse(savedCart));
@@ -23,7 +23,7 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem('tilak-cart', JSON.stringify(cartItems));
+      localStorage.setItem('heenamarble-cart', JSON.stringify(cartItems));
     }
   }, [cartItems, mounted]);
 
