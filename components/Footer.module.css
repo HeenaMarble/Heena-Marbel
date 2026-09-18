@@ -1,0 +1,136 @@
+.footer {
+  background-color: var(--bg-white);
+  border-top: 1px solid var(--border-color);
+  padding-top: 60px;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.logoImage {
+  height: 60px; /* Slightly larger in the footer */
+  width: auto;
+  object-fit: contain;
+}
+
+.tagline {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.linkGroup h4 {
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+}
+
+.linkGroup ul {
+  list-style: none;
+}
+
+.linkGroup li {
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.linkGroup a:hover {
+  color: var(--primary-color);
+}
+
+.contactList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.contactList svg {
+  margin-top: 2px;
+  color: var(--primary-color);
+}
+
+.socialIcons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.socialIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.socialText {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.bottomBar {
+  background-color: var(--bg-section);
+  padding: 15px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.bottomFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  position: relative;
+}
+
+.bottomLinks {
+  display: flex;
+  gap: 15px;
+}
+
+.separator {
+  color: var(--border-color);
+}
+
+.scrollTop {
+  position: absolute;
+  right: 20px;
+  top: -35px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 992px) {
+  .footerGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bottomFlex {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  .scrollTop {
+    top: -20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .footerGrid {
+    grid-template-columns: 1fr;
+  }
+}

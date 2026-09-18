@@ -1,0 +1,164 @@
+.aboutSection {
+  background-color: var(--bg-main);
+}
+
+.aboutContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  align-items: center;
+}
+
+/* Image Collage */
+.imageCollage {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+
+.mainImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 70%;
+  z-index: 1;
+}
+
+.mainImage img, .topRightImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.topRightImage {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  width: 40%;
+  height: 40%;
+  z-index: 2;
+  border: 10px solid var(--bg-main);
+}
+
+.bottomLeftBox {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 60%;
+  z-index: 3;
+}
+
+.darkBox {
+  background-color: #2c2c2c;
+  color: #fff;
+  padding: 30px;
+}
+
+.darkBox h3 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.darkBox span {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  color: var(--primary-color);
+}
+
+.bottomRightText {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+  background-color: var(--bg-section);
+  padding: 30px 40px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  line-height: 1.8;
+  z-index: 2;
+}
+
+/* Right Content */
+.content {
+  padding-right: var(--spacing-md);
+}
+
+.description {
+  color: var(--text-light);
+  font-size: 1.05rem;
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.8;
+}
+
+.iconsRow {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.iconItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+
+.iconItem img {
+  width: 35px;
+  height: 35px;
+}
+
+.iconItem span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.4;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+.scriptQuote {
+  font-family: var(--font-script);
+  font-size: 2rem;
+  color: var(--primary-color);
+  line-height: 1.2;
+}
+
+@media (max-width: 992px) {
+  .aboutContainer {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xxl);
+  }
+  .imageCollage {
+    height: 500px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .iconsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .iconItem {
+    flex-direction: row;
+    text-align: left;
+  }
+  .actionRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .imageCollage {
+    height: 400px;
+  }
+}

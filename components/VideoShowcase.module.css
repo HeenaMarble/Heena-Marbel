@@ -1,0 +1,135 @@
+.videoSection {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.videoSection .section-title {
+  color: var(--text-dark);
+}
+
+.description {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto var(--spacing-xl);
+  color: #a0a0a0;
+  font-size: 1.1rem;
+}
+
+.videoGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.featuredVideo {
+  background: #1a1a1a;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-subtle);
+}
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.videoTitle {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--primary-color);
+}
+
+.videoDesc {
+  color: #cccccc;
+  line-height: 1.6;
+}
+
+.secondaryVideos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.videoCard {
+  background: #1a1a1a;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.videoCard:hover {
+  transform: translateY(-3px);
+  background: #222;
+}
+
+.thumbnailWrapper {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.thumbnailWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  opacity: 0.8;
+}
+
+.videoCard:hover .thumbnailWrapper img {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(212, 175, 55, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: var(--transition-smooth);
+}
+
+.playButton svg {
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+}
+
+.videoCard:hover .playButton {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.videoCard h4 {
+  padding: var(--spacing-md);
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+@media (max-width: 992px) {
+  .videoGrid {
+    grid-template-columns: 1fr;
+  }
+}

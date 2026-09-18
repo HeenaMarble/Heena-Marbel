@@ -1,0 +1,198 @@
+.heroSection {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  padding: 100px 0 150px;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  /* Mask removed to eliminate 'white shadow' fade effect */
+}
+
+.bgVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  animation: slowZoom 20s linear infinite alternate;
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  max-width: 600px;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+}
+
+.subtitleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: var(--spacing-md);
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--primary-color);
+  max-width: 40px;
+}
+
+.subtitle {
+  color: var(--primary-color);
+  letter-spacing: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: var(--text-main);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-lg);
+  max-width: 90%;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.scriptText {
+  position: absolute;
+  right: 10%;
+  top: 10%;
+  font-family: var(--font-script);
+  font-size: 4rem;
+  color: var(--primary-color);
+  transform: rotate(-10deg);
+  line-height: 1;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  opacity: 0.8;
+}
+
+/* Bottom Badges */
+.bottomBadges {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(50%);
+  z-index: 10;
+}
+
+.badgesWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-white);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-medium);
+}
+
+.badgeGroup {
+  display: flex;
+  gap: 30px;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 20px;
+  border-right: 1px solid var(--border-color);
+}
+
+.badge:last-child {
+  border-right: none;
+}
+
+.badgeIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.badge span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.locationBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+@media (max-width: 992px) {
+  .heroBackground {
+    width: 100%;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .overlay {
+    background: rgba(252, 251, 249, 0.85);
+  }
+  .scriptText {
+    display: none;
+  }
+  .badgesWrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .badgeGroup {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .badge {
+    border-right: none;
+  }
+  .bottomBadges {
+    position: relative;
+    transform: none;
+    margin-top: 40px;
+  }
+  .heroSection {
+    padding-bottom: 50px;
+  }
+}

@@ -1,0 +1,243 @@
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 60px 0;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  color: white;
+}
+
+.content {
+  padding: 60px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.text h3 {
+  font-size: 2rem;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  font-family: var(--font-sans);
+}
+
+.text p {
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 15px;
+  font-size: 1.05rem;
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.timeline {
+  margin-top: 80px;
+}
+
+.timeline h3 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: var(--text-main);
+}
+
+.timelineGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.timelineCard {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.year {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .timelineGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* NEW SECTIONS CSS */
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.valuesSection {
+  background-color: var(--bg-white);
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.valueCard {
+  background: var(--bg-main);
+  padding: 40px 30px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.valueCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
+}
+
+.valueIcon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.valueCard h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: var(--text-dark);
+}
+
+.valueCard p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.processSection {
+  background-color: var(--bg-section);
+}
+
+.processList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.processItem {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.stepNum {
+  width: 45px;
+  height: 45px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.processItem h4 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  color: var(--text-dark);
+}
+
+.processItem p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.artisansSection {
+  background-color: var(--bg-white);
+}
+
+.artisansGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.artisanCard {
+  text-align: center;
+}
+
+.artisanImg {
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.artisanImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.artisanCard:hover .artisanImg img {
+  transform: scale(1.08);
+}
+
+.artisanCard h4 {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.artisanCard p {
+  color: var(--primary-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+@media (max-width: 992px) {
+  .valuesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .artisansGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .valuesGrid, .artisansGrid {
+    grid-template-columns: 1fr;
+  }
+}

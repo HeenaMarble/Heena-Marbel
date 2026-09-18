@@ -1,0 +1,158 @@
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('/temple1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 60px 0;
+  text-align: center;
+  color: white;
+}
+
+.servicesShowcase {
+  background-color: var(--bg-cream);
+  padding: 80px 0;
+}
+
+.stickyLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.stickySidebar {
+  flex: 0 0 35%;
+  position: sticky;
+  top: 120px;
+  height: max-content;
+}
+
+.stickyContent {
+  padding-right: 20px;
+}
+
+.scrollColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.scrollCard {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--border-color);
+}
+
+.scrollImageWrapper {
+  width: 100%;
+  height: 450px;
+  overflow: hidden;
+}
+
+.scrollImageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrollCardBody {
+  padding: 40px;
+  position: relative;
+}
+
+.serviceNumber {
+  position: absolute;
+  top: -40px;
+  right: 30px;
+  font-size: 5rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.4);
+  -webkit-text-stroke: 1px rgba(0,0,0,0.1);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.scrollCardBody h3 {
+  font-size: 2rem;
+  color: var(--text-main);
+  margin-bottom: 15px;
+}
+
+.scrollCardBody p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Guarantee Section */
+.guaranteeSection {
+  background-color: var(--bg-section);
+}
+
+.guaranteeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.guaranteeText p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+
+.guaranteeList {
+  list-style: none;
+}
+
+.guaranteeList li {
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+.guaranteeList strong {
+  color: var(--primary-color);
+}
+
+.guaranteeImage {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.guaranteeImage img {
+  width: 100%;
+  display: block;
+}
+
+/* CTA Section */
+.ctaSection {
+  background: linear-gradient(rgba(179, 139, 77, 0.9), rgba(179, 139, 77, 0.9)), url('/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 100px 0;
+}
+
+@media (max-width: 992px) {
+  .stickyLayout {
+    flex-direction: column;
+  }
+  .stickySidebar {
+    position: relative;
+    top: 0;
+    margin-bottom: 40px;
+  }
+  .scrollImageWrapper {
+    height: 300px;
+  }
+  .guaranteeGrid {
+    grid-template-columns: 1fr;
+  }
+}

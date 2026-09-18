@@ -1,0 +1,145 @@
+.galleryPromo {
+  background-color: var(--bg-main);
+  padding: 60px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+  align-items: center;
+}
+
+.videoBox {
+  position: relative;
+  height: 250px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.videoPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.videoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.playBtn {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255,255,255,0.3);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: var(--transition-smooth);
+}
+
+.playBtn:hover {
+  background-color: #fff;
+  color: var(--primary-color);
+}
+
+.playBtn svg {
+  width: 20px;
+  height: 20px;
+  margin-left: 3px;
+}
+
+.videoText {
+  text-align: center;
+  color: #fff;
+}
+
+.videoText h4 {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 3px;
+}
+
+.videoText span {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.centerText {
+  text-align: center;
+  padding: 0 20px;
+}
+
+.centerText p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.quoteBox {
+  position: relative;
+  height: 250px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.quoteBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quoteOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, var(--bg-main) 30%, transparent);
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 20px;
+}
+
+.quoteOverlay blockquote {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: 1.6;
+  max-width: 80%;
+  position: relative;
+}
+
+.quoteOverlay blockquote::before {
+  content: '"';
+  position: absolute;
+  left: -20px;
+  top: -10px;
+  font-size: 3rem;
+  color: var(--primary-color);
+  opacity: 0.5;
+  font-family: serif;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}

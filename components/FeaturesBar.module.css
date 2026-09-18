@@ -1,0 +1,68 @@
+.featuresBar {
+  background-color: var(--bg-section);
+  padding: 80px 0 40px; /* Increased top padding to accommodate overlapping hero badges */
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.featureCard {
+  text-align: center;
+  padding: 20px;
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+}
+
+.text h4 {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 3px;
+}
+
+.text p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin: 0;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  .featureItem {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
