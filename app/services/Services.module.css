@@ -141,18 +141,78 @@
 }
 
 @media (max-width: 992px) {
+  .hero {
+    padding: 50px 0;
+    background-attachment: scroll;
+  }
+  .servicesShowcase {
+    padding: 50px 0;
+  }
   .stickyLayout {
     flex-direction: column;
+    gap: 40px;
   }
   .stickySidebar {
     position: relative;
     top: 0;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+  }
+  .scrollColumn {
+    gap: 50px;
   }
   .scrollImageWrapper {
     height: 300px;
   }
   .guaranteeGrid {
     grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .ctaSection {
+    padding: 60px 0;
+    background-attachment: scroll;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    padding: 40px 0;
+  }
+  .servicesShowcase {
+    padding: 35px 0;
+  }
+  .stickyContent {
+    padding-right: 0;
+  }
+  .scrollColumn {
+    gap: 30px;
+  }
+  .scrollImageWrapper {
+    height: 200px;
+  }
+  .scrollCardBody {
+    padding: 24px 16px;
+  }
+  .serviceNumber {
+    font-size: 3.5rem;
+    top: -25px;
+    right: 15px;
+  }
+  .scrollCardBody h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  .scrollCardBody p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .guaranteeGrid {
+    gap: 30px;
+  }
+  .guaranteeText p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+  .ctaSection {
+    padding: 50px 0;
   }
 }

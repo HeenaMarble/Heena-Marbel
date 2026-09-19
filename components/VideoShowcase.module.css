@@ -131,5 +131,37 @@
 @media (max-width: 992px) {
   .videoGrid {
     grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .secondaryVideos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .secondaryVideos {
+    grid-template-columns: 1fr;
+  }
+  .featuredVideo {
+    padding: 15px;
+  }
+  .videoTitle {
+    font-size: 1.25rem;
+  }
+  .videoDesc {
+    font-size: 0.9rem;
+  }
+  .videoCard h4 {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+  }
+  .thumbnailWrapper {
+    height: 160px;
+  }
+  .description {
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-md);
   }
 }

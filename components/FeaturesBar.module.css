@@ -1,7 +1,7 @@
 .featuresBar {
   background-color: var(--bg-section);
-  padding: 80px 0 40px; /* Increased top padding to accommodate overlapping hero badges */
-  border-top: 1px solid var(--border-color);
+  padding: 40px 0;
+  border-top: none;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -52,9 +52,12 @@
 }
 
 @media (max-width: 992px) {
+  .featuresBar {
+    padding: 40px 0;
+  }
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    gap: 25px;
   }
   .featureItem {
     justify-content: flex-start;
@@ -62,7 +65,11 @@
 }
 
 @media (max-width: 576px) {
+  .featuresBar {
+    padding: 30px 0;
+  }
   .grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 }

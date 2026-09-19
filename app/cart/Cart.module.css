@@ -419,3 +419,31 @@
     margin: 0;
   }
 }
+
+@media (max-width: 576px) {
+  .heroSection {
+    padding: 40px 0 30px;
+  }
+  .emptyCart {
+    padding: 40px 15px;
+  }
+  .emptyCart h2 {
+    font-size: 1.75rem;
+  }
+  .cartRow {
+    padding: 15px;
+  }
+  .productDetails {
+    gap: 12px;
+  }
+  .imageWrapper {
+    width: 65px;
+    height: 65px;
+  }
+  .productTitle {
+    font-size: 0.95rem;
+  }
+  .cartSection {
+    padding: var(--spacing-sm) 0 var(--spacing-lg);
+  }
+}

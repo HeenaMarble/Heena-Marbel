@@ -18,29 +18,112 @@
   margin: 0;
 }
 
-.footerGrid {
-  padding-top: 60px;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr;
-  gap: 30px;
-  margin-bottom: 40px;
+.brandHeader {
+  padding-top: 55px;
+  text-align: center;
+}
+
+.brandCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .logoImage {
-  height: 60px; /* Slightly larger in the footer */
+  height: 120px;
   width: auto;
   object-fit: contain;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.logoImage:hover {
+  transform: scale(1.02);
 }
 
 .tagline {
-  color: var(--text-light);
-  font-size: 0.9rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.22rem;
+  font-weight: 500;
+  color: var(--primary-dark, #8c6b36);
+  line-height: 1.4;
+  letter-spacing: 0.6px;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
-.linkGroup h4 {
+.brandDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+}
+
+.dividerDiamond {
+  font-size: 0.65rem;
+  color: var(--primary-color);
+  opacity: 0.85;
+}
+
+.footerGrid {
+  padding-top: 45px;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1.45fr 1.1fr;
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto 45px;
+}
+
+.linkGroup {
+  padding: 0 32px;
+  border-right: 1px solid rgba(179, 139, 77, 0.22);
+}
+
+.linkGroup:first-child {
+  padding-left: 0;
+}
+
+.linkGroup:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.accordionHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: default;
+}
+
+.accordionHeader h4, .linkGroup h4 {
   font-size: 0.95rem;
   margin-bottom: 20px;
   color: var(--text-dark);
+}
+
+.accordionIcon {
+  display: none;
+}
+
+.accordionContent {
+  display: block;
 }
 
 .linkGroup ul {
@@ -142,9 +225,43 @@
   justify-content: center;
 }
 
+@media (max-width: 1024px) {
+  .logoImage {
+    height: 105px;
+  }
+  .tagline {
+    font-size: 1.9rem;
+  }
+  .footerGrid {
+    grid-template-columns: 1fr 1.25fr 1.45fr 1.1fr;
+    gap: 0;
+  }
+  .linkGroup {
+    padding: 0 20px;
+  }
+  .linkGroup:first-child {
+    padding-left: 0;
+  }
+  .linkGroup:last-child {
+    padding-right: 0;
+  }
+}
+
 @media (max-width: 992px) {
+  .logoImage {
+    height: 95px;
+  }
+  .tagline {
+    font-size: 1.75rem;
+  }
   .footerGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding-top: 35px;
+  }
+  .linkGroup {
+    border-right: none;
+    padding: 0;
   }
   .bottomFlex {
     flex-direction: column;
@@ -156,8 +273,170 @@
   }
 }
 
-@media (max-width: 576px) {
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .preFooterBanner {
+    padding: 18px 15px;
+  }
+  .preFooterBanner p {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+  .brandHeader {
+    padding-top: 35px;
+  }
   .footerGrid {
-    grid-template-columns: 1fr;
+    padding-top: 30px;
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .preFooterBanner {
+    padding: 12px 10px;
+  }
+  .preFooterBanner p {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+  .brandHeader {
+    padding-top: 26px;
+    padding-bottom: 6px;
+  }
+  .logoImage {
+    height: 90px;
+    margin: 0 auto 6px;
+  }
+  .tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.02rem;
+    color: var(--primary-dark, #8c6b36);
+    line-height: 1.4;
+    letter-spacing: 0.4px;
+    margin-top: 4px;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .brandDivider {
+    max-width: 220px;
+  }
+  .footerGrid {
+    display: flex;
+    flex-direction: column;
+    padding-top: 18px;
+    gap: 0;
+    margin-bottom: 18px;
+  }
+  .linkGroup {
+    border-bottom: 1px solid var(--border-color);
+    border-right: none;
+    padding: 0;
+    width: 100%;
+  }
+  .accordionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 14px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+  .accordionHeader h4 {
+    margin-bottom: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+  .accordionIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(179, 139, 77, 0.1);
+    color: var(--primary-color);
+    transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  }
+  .iconRotated {
+    transform: rotate(45deg);
+    background: var(--primary-color);
+    color: #fff;
+  }
+  .accordionContent {
+    display: none;
+    padding: 6px 0 16px;
+  }
+  .accordionContent.isOpen {
+    display: block;
+    animation: slideDown 0.25s ease-out;
+  }
+  .linkGroup ul {
+    padding-left: 2px;
+  }
+  .linkGroup li {
+    font-size: 0.82rem;
+    margin-bottom: 9px;
+  }
+  .contactList li {
+    font-size: 0.8rem;
+    word-break: break-word;
+    gap: 8px;
+  }
+  .contactList svg {
+    flex-shrink: 0;
+  }
+  .socialIcons {
+    gap: 12px;
+    margin-bottom: 10px;
+    padding-top: 4px;
+  }
+  .socialIcon {
+    width: 34px;
+    height: 34px;
+  }
+  .socialText {
+    font-size: 0.78rem;
+  }
+  .bottomBar {
+    padding: 16px 0 14px;
+  }
+  .bottomFlex {
+    gap: 12px;
+  }
+  .bottomFlex p {
+    font-size: 0.78rem;
+    margin: 0;
+  }
+  .bottomLinks {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .bottomLinks span {
+    font-size: 0.78rem;
+  }
+  .scrollTop {
+    top: -15px;
+    right: 15px;
+    width: 34px;
+    height: 34px;
   }
 }

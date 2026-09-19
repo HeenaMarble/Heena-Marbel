@@ -192,3 +192,25 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+@media (max-width: 480px) {
+  .drawer {
+    max-width: 100%;
+  }
+  .header {
+    padding: 15px 20px;
+  }
+  .content {
+    padding: 20px 16px;
+  }
+  .footer {
+    padding: 20px 16px;
+  }
+  .itemImage {
+    width: 65px;
+    height: 65px;
+  }
+  .itemDetails h4 {
+    font-size: 0.88rem;
+  }
+}

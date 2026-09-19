@@ -38,7 +38,7 @@ export default function TestimonialsContact() {
         <div className={styles.testimonialsFull}>
           <div className={styles.headerCentered}>
             <span className="subheading">TESTIMONIALS</span>
-            <h2 className="heading">What Our Clients Say</h2>
+            <h2 className={`heading ${styles.testimonialsHeading}`}>What Our Clients Say</h2>
           </div>
           
           <div className={styles.carouselWrapper}>
@@ -80,7 +80,7 @@ export default function TestimonialsContact() {
         <div className={styles.videoSection}>
           <div className={styles.videoText}>
             <span className="subheading">OUR CRAFT</span>
-            <h2 className="heading">Unveiling the Beauty of Makrana</h2>
+            <h2 className={`heading ${styles.craftHeading}`}>Unveiling the Beauty of Makrana</h2>
             <p>
               Watch as our master artisans shape raw, premium Makrana marble into divine structures. 
               Our commitment to quality ensures every cut, polish, and carving meets the highest standards of heritage architecture.
@@ -96,7 +96,7 @@ export default function TestimonialsContact() {
         {/* Contact Section */}
         <div className={styles.contactFull}>
           <span className="subheading">Let's Build Something Beautiful</span>
-          <h2 className="heading">Get in Touch Today</h2>
+          <h2 className={`heading ${styles.contactHeading}`}>Get in Touch Today</h2>
           <p className={styles.desc}>
             Whether it's a temple, home or a custom design, we are here to help you.
           </p>

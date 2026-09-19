@@ -122,6 +122,7 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-family: inherit;
+  box-sizing: border-box;
   transition: border-color 0.3s ease;
 }
 
@@ -218,12 +219,69 @@
 @media (max-width: 992px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .infoBlock, .formBlock {
+    padding: 35px 25px;
   }
   .logisticsCard {
     flex-direction: column;
     text-align: center;
+    padding: 40px 25px;
   }
   .faqGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .heroSection {
+    min-height: 260px;
+    height: auto;
+    padding: 50px 0;
+  }
+  .content {
+    padding: 40px 0;
+  }
+  .infoBlock, .formBlock {
+    padding: 25px 16px;
+  }
+  .infoBlock h3, .formBlock h3 {
+    font-size: 1.4rem;
+    margin-bottom: 18px;
+  }
+  .infoItem {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .logisticsSection {
+    padding: 40px 0;
+  }
+  .logisticsCard {
+    padding: 25px 16px;
+    gap: 20px;
+  }
+  .logisticsText h2 {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+  .logisticsText p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .mapSection {
+    padding: 40px 0 0 0;
+  }
+  .faqSection {
+    padding: 40px 0;
+  }
+  .faqItem {
+    padding: 20px 16px;
+  }
+  .faqItem h4 {
+    font-size: 1.05rem;
+  }
+  .faqItem p {
+    font-size: 0.9rem;
   }
 }

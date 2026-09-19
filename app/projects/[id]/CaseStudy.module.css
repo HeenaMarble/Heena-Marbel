@@ -248,3 +248,49 @@
     font-size: 2.5rem;
   }
 }
+
+@media (max-width: 576px) {
+  .heroSection {
+    min-height: 320px;
+    height: auto;
+    padding: 60px 15px;
+  }
+  .title {
+    font-size: 1.75rem;
+  }
+  .subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+  }
+  .storySection {
+    padding: 40px 0;
+  }
+  .storyHeading {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  .storyText {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .gallerySection {
+    padding: 40px 0;
+  }
+  .galleryGrid {
+    gap: 15px;
+  }
+  .ctaSection {
+    padding: 50px 0;
+  }
+  .ctaHeading {
+    font-size: 1.75rem;
+  }
+  .ctaText {
+    font-size: 0.95rem;
+  }
+  .ctaBtn {
+    padding: 14px 28px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

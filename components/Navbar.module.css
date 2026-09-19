@@ -4,12 +4,17 @@
   background-color: var(--bg-white);
   border-bottom: 1px solid var(--border-color);
   z-index: 1000;
-  padding: 5px 0;
+  padding: 8px 0;
 }
 
 .navContainer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
   align-items: center;
 }
 
@@ -19,7 +24,7 @@
 }
 
 .logoImage {
-  height: 80px; /* Adjusted to make it a little bigger */
+  height: 72px; /* Visual content is now ~44% larger due to cropped padding */
   width: auto;
   object-fit: contain;
   filter: grayscale(100%) brightness(0); /* Black color */
@@ -272,7 +277,9 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
+  box-sizing: border-box;
   overflow-y: auto;
+  overflow-x: hidden;
   animation: slideInRight 0.3s ease-out forwards;
 }
 
@@ -348,6 +355,24 @@
   color: var(--text-light);
 }
 
+@media (max-width: 1200px) {
+  .navContainer {
+    padding: 0 24px;
+  }
+  .navLinks {
+    gap: 16px;
+  }
+  .navLinks a {
+    font-size: 0.8rem;
+  }
+  .searchBar {
+    width: 200px;
+  }
+  .logoImage {
+    height: 62px;
+  }
+}
+
 @media (max-width: 992px) {
   .navAction {
     gap: 2px;
@@ -381,11 +406,49 @@
     display: flex;
     align-items: center;
   }
+  .logoImage {
+    height: 54px;
+  }
   .profileDropdown {
     right: -10px;
     width: 280px;
+    max-width: calc(100vw - 30px);
   }
   .profileDropdown::before {
     right: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navContainer {
+    padding: 0 16px;
+  }
+  .logoImage {
+    height: 48px;
+  }
+  .hamburgerBtn {
+    margin-right: 10px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navContainer {
+    padding: 0 12px;
+  }
+  .logoImage {
+    height: 44px;
+  }
+  .hamburgerBtn {
+    margin-right: 6px;
+    padding: 4px;
+  }
+  .profileDropdown {
+    right: -15px;
+    width: 260px;
+    padding: 20px 15px;
+  }
+  .profileDropdown::before {
+    right: 25px;
   }
 }

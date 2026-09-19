@@ -2,6 +2,16 @@
   background-color: var(--bg-main);
 }
 
+.appHeading {
+  font-family: var(--font-serif) !important;
+  font-size: 2.85rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-dark, #1a1a1a);
+  letter-spacing: -0.2px;
+  margin-bottom: var(--spacing-md);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -34,28 +44,52 @@
   transform: scale(1.1);
 }
 
-
-
 .titleBar {
   text-align: center;
 }
 
 .titleBar h4 {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--text-dark);
+  letter-spacing: 0.2px;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
+  .appHeading {
+    font-size: 2.3rem;
+  }
   .grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
 }
 
+@media (max-width: 768px) {
+  .appHeading {
+    font-size: 2rem;
+  }
+}
+
 @media (max-width: 576px) {
+  .appHeading {
+    font-size: 1.75rem;
+    line-height: 1.25;
+    margin-bottom: var(--spacing-sm);
+  }
+  .titleBar h4 {
+    font-size: 0.85rem;
+  }
   .grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: var(--spacing-md);
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    gap: 8px;
   }
 }

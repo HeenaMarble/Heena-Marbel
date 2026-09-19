@@ -14,7 +14,7 @@ export default function ApplicationsSection() {
     <section className={`section ${styles.appSection}`}>
       <div className="container">
         <span className="subheading">OUR APPLICATIONS</span>
-        <h2 className="heading">For Every Sacred & Special Space</h2>
+        <h2 className={`heading ${styles.appHeading}`}>For Every Sacred & Special Space</h2>
         
         <div className={styles.grid}>
           {apps.map((app, index) => (

@@ -5,22 +5,22 @@ export default function ServicesSection() {
     {
       title: "Marble Carving",
       desc: "Detailed and elegant designs",
-      img: "/temple2.jpg"
+      img: "/marblecarving.jpeg"
     },
     {
       title: "Inlay Work",
       desc: "Intricate craftsmanship",
-      img: "/temple3.jpg"
+      img: "/inlaywork.jpeg"
     },
     {
       title: "Handicrafts",
       desc: "Unique marble art pieces",
-      img: "/temple1.jpg"
+      img: "/handicrafts.jpeg"
     },
     {
       title: "Custom Designs",
       desc: "Tailored to your vision",
-      img: "/temple2.jpg"
+      img: "/customdesign.jpeg"
     }
   ];
 
@@ -28,7 +28,7 @@ export default function ServicesSection() {
     <section id="services" className={`section ${styles.servicesSection}`}>
       <div className="container">
         <span className="subheading">OUR SERVICES</span>
-        <h2 className="heading">What We Create</h2>
+        <h2 className={`heading ${styles.servicesHeading}`}>What We Create</h2>
         
         <div className={styles.grid}>
           {services.map((service, index) => (

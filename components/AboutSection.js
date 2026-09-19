@@ -6,38 +6,27 @@ export default function AboutSection() {
     <section id="about" className={`section ${styles.aboutSection}`}>
       <div className={`container ${styles.aboutContainer}`}>
         
-        {/* Left Side: Image Collage */}
+        {/* Left Side: Image Showcase */}
         <div className={styles.imageCollage}>
           <div className={styles.mainImage}>
             <img 
               src="/temple1.jpg" 
-              alt="Marble Carving Tool" 
+              alt="Heena Marble Grand Temple" 
             />
           </div>
           
           <div className={styles.topRightImage}>
             <img 
               src="/temple2.jpg" 
-              alt="Inlay Close Up" 
+              alt="Intricate Marble Carving Work" 
             />
-          </div>
-          
-          <div className={styles.bottomLeftBox}>
-            <div className={styles.darkBox}>
-              <h3>Excellence in Marble</h3>
-              <span>ART & ARCHITECTURE</span>
-            </div>
-          </div>
-          
-          <div className={styles.bottomRightText}>
-            Tradition<br/>Craftsmanship<br/>Trust
           </div>
         </div>
         
         {/* Right Side: Content */}
         <div className={styles.content}>
           <span className="subheading">ABOUT HEENA MARBLE</span>
-          <h2 className="heading">A Legacy Carved in Marble</h2>
+          <h2 className={`heading ${styles.aboutHeading}`}>A Legacy Carved in Marble</h2>
           <p className={styles.description}>
             Heena Marble is renowned for its marble carving, inlay work, handicrafts and custom designs. Based in Makrana, Rajasthan, we combine traditional artistry with modern precision to create timeless pieces for temples, mosques, gurudwaras, churches, homes and more.
           </p>
@@ -61,6 +50,16 @@ export default function AboutSection() {
             <Link href="/about" className="btn-primary">
               Know More About Us
             </Link>
+            
+            <div className={styles.trustDivider}></div>
+            
+            <div className={styles.trustCounter}>
+              <span className={styles.counterNumber}>35+</span>
+              <div className={styles.counterDetails}>
+                <span className={styles.counterLabel}>Years of Heritage</span>
+                <span className={styles.counterSub}>Generations of Mastery</span>
+              </div>
+            </div>
           </div>
         </div>
         

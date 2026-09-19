@@ -15,7 +15,7 @@ export default function ShopSection() {
         <div className={`${styles.header} ${styles.headerWithBg}`}>
           <div>
             <span className="subheading">ONLINE STORE</span>
-            <h2 className="heading">Featured Masterpieces</h2>
+            <h2 className={`heading ${styles.shopHeading}`}>Featured Masterpieces</h2>
           </div>
           <Link href="/shop" className="btn-outline">View All Products</Link>
         </div>

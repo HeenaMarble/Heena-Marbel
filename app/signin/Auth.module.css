@@ -137,6 +137,7 @@
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 1rem;
+  box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
@@ -157,6 +158,7 @@
   font-weight: 600;
   font-size: 1.05rem;
   margin-top: 15px;
+  box-sizing: border-box;
   transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 10px 20px rgba(26, 37, 30, 0.15);
 }
@@ -186,4 +188,38 @@
 
 .authFooter a:hover {
   color: var(--primary-color);
+}
+
+@media (max-width: 576px) {
+  .topBanner {
+    padding: 10px 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+  .formSection {
+    padding: 25px 15px;
+  }
+  .authContainer {
+    padding: 0;
+  }
+  .authHeader {
+    margin-bottom: 25px;
+  }
+  .authHeader h2 {
+    font-size: 1.6rem;
+  }
+  .authHeader p {
+    font-size: 0.9rem;
+  }
+  .formGroup {
+    margin-bottom: 16px;
+  }
+  .formGroup input {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+  .submitBtn {
+    padding: 13px;
+    font-size: 0.95rem;
+  }
 }
