@@ -75,7 +75,7 @@
 }
 
 .aboutHeading {
-  font-family: var(--font-serif) !important;
+  font-family: var(--font-sans) !important;
   font-size: 2.85rem;
   font-weight: 600;
   line-height: 1.2;

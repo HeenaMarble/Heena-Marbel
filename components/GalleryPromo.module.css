@@ -117,7 +117,7 @@
 }
 
 .quoteOverlay blockquote {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 1.2rem;
   font-style: italic;
   color: var(--text-dark);
@@ -134,7 +134,7 @@
   font-size: 3rem;
   color: var(--primary-color);
   opacity: 0.5;
-  font-family: serif;
+  font-family: var(--font-sans);
 }
 
 @media (max-width: 1024px) {

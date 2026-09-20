@@ -3,7 +3,7 @@
 }
 
 .appHeading {
-  font-family: var(--font-serif) !important;
+  font-family: var(--font-sans) !important;
   font-size: 2.85rem;
   font-weight: 600;
   line-height: 1.2;
@@ -49,7 +49,7 @@
 }
 
 .titleBar h4 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-dark);

@@ -11,8 +11,8 @@
   --text-light: #666666;
   --border-color: #e5e0d8;
   
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-script: 'Great Vibes', cursive;
   
   --spacing-xs: 0.5rem;

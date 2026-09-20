@@ -62,7 +62,7 @@
 }
 
 .title {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 3.8rem;
   font-weight: 700;
   letter-spacing: 2.5px;
@@ -175,7 +175,7 @@
 }
 
 .badgeTitle {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -329,7 +329,7 @@
     height: 22px;
   }
   .badgeTitle {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: 0.76rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -486,7 +486,7 @@
     height: 20px;
   }
   .badgeTitle {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: 0.72rem;
     font-weight: 600;
     text-transform: uppercase;

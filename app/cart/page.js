@@ -17,7 +17,7 @@ export default function CartPage() {
         <section className={styles.heroSection}>
           <div className={`container text-center ${styles.heroContent}`}>
             <span className="subheading" style={{ color: 'var(--primary-color)', letterSpacing: '3px' }}>YOUR SHOPPING BAG</span>
-            <h1 className="heading" style={{ fontSize: '3.5rem', margin: '15px 0', fontFamily: 'var(--font-serif)', fontWeight: '500' }}>Review Your Masterpieces</h1>
+            <h1 className="heading" style={{ fontSize: '3.5rem', margin: '15px 0', fontFamily: 'var(--font-sans)', fontWeight: '500' }}>Review Your Masterpieces</h1>
           </div>
         </section>
 
