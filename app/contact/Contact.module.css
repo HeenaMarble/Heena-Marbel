@@ -6,9 +6,20 @@
   overflow: hidden;
   display: flex;
   align-items: center;
+  justify-content: center;
   color: white;
   text-align: center;
   border-bottom: 1px solid var(--border-color);
+}
+
+.heroMediaWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .videoBg {
@@ -21,7 +32,6 @@
   height: auto;
   transform: translateX(-50%) translateY(-50%);
   object-fit: cover;
-  z-index: 1;
 }
 
 .heroOverlay {
@@ -30,11 +40,28 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7); /* Dark overlay */
+  background: rgba(0, 0, 0, 0.65);
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  margin: 10px 0;
+  color: white;
+  font-weight: 600;
+}
+
+.heroDesc {
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.1rem;
 }
 
 .content {
@@ -234,14 +261,73 @@
   }
 }
 
+@media (max-width: 768px) {
+  .heroSection {
+    height: auto;
+    min-height: unset;
+    flex-direction: column;
+    background: var(--bg-main);
+    padding: 36px 0 10px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .heroContent {
+    position: static;
+    padding: 0 20px;
+  }
+
+  .heroTitle {
+    font-size: 1.85rem;
+    color: var(--text-dark);
+    margin: 8px 0 10px 0;
+  }
+
+  .heroDesc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .heroMediaWrapper {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: calc(100% - 40px);
+    height: 190px;
+    margin: 20px auto 10px auto;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+  }
+
+  .videoBg {
+    position: static;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .heroOverlay {
+    display: none;
+  }
+}
+
 @media (max-width: 576px) {
   .heroSection {
-    min-height: 260px;
-    height: auto;
-    padding: 50px 0;
+    padding: 30px 0 8px 0;
+  }
+  .heroTitle {
+    font-size: 1.65rem;
+  }
+  .heroMediaWrapper {
+    width: calc(100% - 32px);
+    height: 170px;
+    margin: 16px auto 8px auto;
   }
   .content {
-    padding: 40px 0;
+    padding: 30px 0;
   }
   .infoBlock, .formBlock {
     padding: 25px 16px;

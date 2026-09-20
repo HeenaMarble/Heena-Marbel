@@ -87,28 +87,28 @@ export default function CartPage() {
                 </div>
                 
                 <div className={styles.orderSummary}>
-                  <h3>Order Summary</h3>
+                  <h3 className={styles.summaryTitle}>Order Summary</h3>
                   
                   <div className={styles.summaryBody}>
                     <div className={styles.summaryRow}>
-                      <span>Subtotal</span>
-                      <span>₹{cartTotal.toLocaleString()}</span>
+                      <span className={styles.summaryLabel}>Subtotal</span>
+                      <span className={styles.summaryValue}>₹{cartTotal.toLocaleString()}</span>
                     </div>
                     <div className={styles.summaryRow}>
-                      <span>Shipping Estimate</span>
-                      <span>Calculated at checkout</span>
+                      <span className={styles.summaryLabel}>Shipping</span>
+                      <span className={styles.summaryValueMuted}>Calculated at checkout</span>
                     </div>
                     <div className={styles.summaryRow}>
-                      <span>Tax Estimate</span>
-                      <span>Calculated at checkout</span>
+                      <span className={styles.summaryLabel}>Estimated Tax</span>
+                      <span className={styles.summaryValueMuted}>Calculated at checkout</span>
                     </div>
                   </div>
                   
-                  <hr className={styles.summaryDivider} />
+                  <div className={styles.summaryDivider}></div>
                   
                   <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
-                    <span>Estimated Total</span>
-                    <span>₹{cartTotal.toLocaleString()}</span>
+                    <span className={styles.totalLabel}>Estimated Total</span>
+                    <span className={styles.totalAmount}>₹{cartTotal.toLocaleString()}</span>
                   </div>
                   
                   <button className={`btn-primary ${styles.checkoutBtn}`}>
@@ -117,20 +117,22 @@ export default function CartPage() {
                   
                   <div className={styles.secureCheckout}>
                     <div className={styles.secureIcon}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                       </svg>
                     </div>
-                    <span>SSL Secured & Encrypted Checkout</span>
+                    <span>Guaranteed Safe & Secure Checkout</span>
                   </div>
                   
                   <div className={styles.paymentMethods}>
-                    <span>We Accept</span>
-                    <div className={styles.paymentIcons}>
-                      <div className={styles.payIcon}>VISA</div>
-                      <div className={styles.payIcon}>MC</div>
-                      <div className={styles.payIcon}>AMEX</div>
+                    <span>Accepted Payment Methods</span>
+                    <div className={styles.paymentBadges}>
+                      <span className={styles.payBadge}>UPI</span>
+                      <span className={styles.payBadge}>Visa</span>
+                      <span className={styles.payBadge}>Mastercard</span>
+                      <span className={styles.payBadge}>RuPay</span>
+                      <span className={styles.payBadge}>NetBanking</span>
                     </div>
                   </div>
                 </div>

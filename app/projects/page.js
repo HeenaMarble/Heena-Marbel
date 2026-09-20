@@ -49,10 +49,12 @@ export default function ProjectsPage() {
             <div className={styles.grid}>
               {projects.map((proj, idx) => (
                 <div key={idx} className={styles.projectCard}>
-                  <img src={proj.img} alt={proj.title} />
-                  <div className={styles.overlay}>
-                    <h3>{proj.title}</h3>
-                    <p>{proj.desc}</p>
+                  <div className={styles.imageWrapper}>
+                    <img src={proj.img} alt={proj.title} />
+                  </div>
+                  <div className={styles.cardInfo}>
+                    <h3 className={styles.cardTitle}>{proj.title}</h3>
+                    <p className={styles.cardDesc}>{proj.desc}</p>
                   </div>
                 </div>
               ))}

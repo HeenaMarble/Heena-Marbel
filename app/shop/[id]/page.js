@@ -33,22 +33,88 @@ export default function ProductDetailPage({ params }) {
       <CartDrawer />
       <main style={{ minHeight: '80vh', backgroundColor: 'var(--bg-section)' }}>
         
-        <div className="container" style={{ padding: '40px 0' }}>
+        <div className={styles.pageContainer}>
           <Link href="/shop" className={styles.backLink}>
             Back to Shop
           </Link>
           
-          <div className={styles.productLayout}>
+          <div className={styles.productMainCard}>
+            <div className={styles.productLayout}>
             <div className={styles.imageColumn}>
               <div className={styles.imageWrapper}>
                 <img src={product.img} alt={product.title} className={styles.mainImage} />
+              </div>
+              <div className={`${styles.guaranteeBox} ${styles.desktopOnly}`}>
+                <div className={styles.guaranteeHeader}>
+                  <span className={styles.guaranteeShield}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="8" r="6" />
+                      <path d="m9 11 2 2 4-4" />
+                      <path d="m8.5 13-2 8 5.5-2.5 5.5 2.5-2-8" />
+                    </svg>
+                  </span>
+                  <strong>100% Authenticity Guarantee</strong>
+                </div>
+                <p>All our products are carved from authentic, certified Makrana marble.</p>
               </div>
             </div>
             
             <div className={styles.detailsColumn}>
               <span className={styles.category}>AUTHENTIC MAKRANA MARBLE</span>
               <h1 className={styles.title}>{product.title}</h1>
-              <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+              
+              <div className={styles.priceRatingRow}>
+                <p className={styles.price}>₹{product.price.toLocaleString()}</p>
+                <div className={styles.ratingBadge}>
+                  <span className={styles.starFilled}>★</span>
+                  <span>4.8</span>
+                  <span className={styles.ratingReviews}>(24 reviews)</span>
+                </div>
+              </div>
+
+              <button 
+                className={`btn-primary ${styles.addToCartBtn}`}
+                onClick={() => addToCart(product)}
+              >
+                Add to Cart
+              </button>
+              
+              <div className={styles.trustStrip}>
+                <div className={styles.trustItem}>
+                  <span className={styles.trustIcon}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="1" y="3" width="15" height="13" rx="1"></rect>
+                      <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                      <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                      <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                  </span>
+                  <span>Insured Transit</span>
+                </div>
+                <div className={styles.trustItem}>
+                  <span className={styles.trustIcon}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 3h12l4 6-10 13L2 9Z" />
+                      <path d="M11 3 8 9l4 13" />
+                      <path d="M13 3l3 6-4 13" />
+                    </svg>
+                  </span>
+                  <span>Pure Makrana</span>
+                </div>
+                <div className={styles.trustItem}>
+                  <span className={styles.trustIcon}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                  </span>
+                  <span>Damage-Proof Box</span>
+                </div>
+              </div>
+
+              <p className={styles.shippingNotice}>Shipping & taxes calculated at checkout.</p>
               
               <div className={styles.description}>
                 <h3>Product Details</h3>
@@ -70,20 +136,19 @@ export default function ProductDetailPage({ params }) {
                   <span>Durable and weather-resistant</span>
                 </div>
               </div>
-              
-              <button 
-                className={`btn-primary ${styles.addToCartBtn}`}
-                onClick={() => addToCart(product)}
-              >
-                Add to Cart
-              </button>
-              
-              <div className={styles.secureInfo}>
-                <p>Shipping & taxes calculated at checkout.</p>
-                <div className={styles.guaranteeBox}>
+
+              <div className={`${styles.guaranteeBox} ${styles.mobileOnly}`}>
+                <div className={styles.guaranteeHeader}>
+                  <span className={styles.guaranteeShield}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="8" r="6" />
+                      <path d="m9 11 2 2 4-4" />
+                      <path d="m8.5 13-2 8 5.5-2.5 5.5 2.5-2-8" />
+                    </svg>
+                  </span>
                   <strong>100% Authenticity Guarantee</strong>
-                  <p>All our products are carved from authentic, certified Makrana marble.</p>
                 </div>
+                <p>All our products are carved from authentic, certified Makrana marble.</p>
               </div>
             </div>
           </div>
@@ -152,6 +217,7 @@ export default function ProductDetailPage({ params }) {
               </form>
             </div>
           </div>
+          </div>
           
           <div className={styles.relatedSection}>
             <h2 className={styles.relatedTitle}>You May Also Like</h2>
@@ -180,7 +246,6 @@ export default function ProductDetailPage({ params }) {
             </Link>
           </div>
         </div>
-
       </main>
       <Footer />
     </>

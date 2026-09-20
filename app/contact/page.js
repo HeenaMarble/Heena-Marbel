@@ -13,17 +13,21 @@ export default function ContactPage() {
       <main style={{ minHeight: '80vh' }}>
         
         <section className={styles.heroSection}>
-          <video autoPlay loop muted playsInline className={styles.videoBg}>
-            <source src="/construction.mp4" type="video/mp4" />
-          </video>
-          <div className={styles.heroOverlay}>
+          <div className={styles.heroContent}>
             <div className="container">
-              <span className="subheading" style={{ color: 'var(--primary-color)' }}>GET IN TOUCH</span>
-              <h1 className="heading" style={{ fontSize: '3rem', margin: '10px 0', color: 'white' }}>Contact Heena Marble</h1>
-              <p style={{ color: 'white', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
+              <span className="subheading">GET IN TOUCH</span>
+              <h1 className={styles.heroTitle}>Contact Heena Marble</h1>
+              <p className={styles.heroDesc}>
                 Have a custom project in mind? We are ready to bring your architectural visions to life.
               </p>
             </div>
+          </div>
+
+          <div className={styles.heroMediaWrapper}>
+            <video autoPlay loop muted playsInline className={styles.videoBg}>
+              <source src="/construction.mp4" type="video/mp4" />
+            </video>
+            <div className={styles.heroOverlay}></div>
           </div>
         </section>
 

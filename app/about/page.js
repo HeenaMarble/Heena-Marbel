@@ -36,22 +36,57 @@ export default function AboutPage() {
                 <p>
                   Our artisans are masters of their trade, creating intricate temples, elegant statues, and premium flooring that stand as testaments to architectural beauty and devotion.
                 </p>
+                
+                <div className={styles.statsRow}>
+                  <div className={styles.statItem}>
+                    <span className={styles.statNumber}>35+</span>
+                    <span className={styles.statLabel}>Years of Legacy</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span className={styles.statNumber}>500+</span>
+                    <span className={styles.statLabel}>Temples Built</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span className={styles.statNumber}>100%</span>
+                    <span className={styles.statLabel}>Pure Makrana</span>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className={styles.timeline}>
-              <h3>Our Journey</h3>
-              <div className={styles.timelineGrid}>
+              <div className={styles.timelineHeader}>
+                <span className="subheading">OUR STORY</span>
+                <h3 className="heading text-center">Our Journey</h3>
+              </div>
+
+              <div className={styles.timelineRow}>
                 <div className={styles.timelineCard}>
                   <span className={styles.year}>1985</span>
                   <h4>Foundation</h4>
                   <p>Started as a small workshop in Makrana, hand-carving custom idols.</p>
                 </div>
+
+                <div className={styles.connector} aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <polyline points="13 5 20 12 13 19" />
+                  </svg>
+                </div>
+
                 <div className={styles.timelineCard}>
                   <span className={styles.year}>2005</span>
                   <h4>Expansion</h4>
                   <p>Opened our first major showroom and began taking large-scale temple architecture projects.</p>
                 </div>
+
+                <div className={styles.connector} aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <polyline points="13 5 20 12 13 19" />
+                  </svg>
+                </div>
+
                 <div className={styles.timelineCard}>
                   <span className={styles.year}>2024</span>
                   <h4>Global Reach</h4>
