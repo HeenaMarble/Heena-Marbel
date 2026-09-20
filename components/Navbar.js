@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './Navbar.module.css';
 
@@ -10,7 +10,11 @@ import CartIcon from './CartIcon';
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const profileRef = useRef(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -23,7 +27,12 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const pathname = usePathname();
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -38,7 +47,9 @@ export default function Navbar() {
   return (
     <header className={styles.header}>
       <div className={`container ${styles.navContainer}`}>
-        <div className={styles.logo}>
+        
+        {/* Left Section: Brand Logo */}
+        <div className={styles.logoGroup}>
           {/* Mobile Hamburger Button */}
           <button 
             className={styles.hamburgerBtn}
@@ -56,10 +67,10 @@ export default function Navbar() {
             <img src="/logo.png" alt="Heena Marble Logo" className={styles.logoImage} />
           </Link>
         </div>
-        
+
+        {/* Center Section: Mathematical Space-Evenly Navigation Links */}
         <nav className={styles.navLinks}>
           {navItems.map((item) => {
-            // Treat the current route as active if the pathname starts with the item's path (for nested routes like /projects/the-grand-mandir), except for Home '/'
             const isActive = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
             return (
               <Link key={item.name} href={item.path} className={isActive ? styles.active : ''}>
@@ -69,34 +80,37 @@ export default function Navbar() {
           })}
         </nav>
 
-        <div className={styles.navAction}>
-          <div className={styles.searchBar}>
+        {/* Right Section: Search Bar + User + Cart + Enquire CTA */}
+        <div className={styles.navRightGroup}>
+          {/* Integrated Search Bar */}
+          <form onSubmit={handleSearchSubmit} className={styles.searchBar}>
             <button 
+              type="submit"
               className={styles.searchButton} 
               aria-label="Search"
-              onClick={() => {
-                if (window.innerWidth <= 992) {
-                  setIsMobileMenuOpen(true);
-                } else {
-                  document.querySelector(`.${styles.searchInput}`)?.focus();
-                }
-              }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
-            <input type="text" placeholder="Search..." className={styles.searchInput} />
-          </div>
+            <input 
+              type="text" 
+              placeholder="Search marble, mandirs, inlay..." 
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
           
+          {/* User Profile Menu */}
           <div className={styles.userMenuContainer} ref={profileRef}>
             <button 
               className={styles.userButton} 
               aria-label="User Profile"
               onClick={() => setIsProfileOpen(!isProfileOpen)}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
@@ -117,7 +131,13 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Shopping Cart */}
           <CartIcon />
+
+          {/* Enquire CTA Button */}
+          <Link href="/contact" className={styles.quoteBtn}>
+            Enquire
+          </Link>
         </div>
       </div>
 
@@ -140,7 +160,19 @@ export default function Navbar() {
           </div>
           
           <div className={styles.mobileSearch}>
-            <input type="text" placeholder="Search..." className={styles.mobileSearchInput} />
+            <input 
+              type="text" 
+              placeholder="Search marble, mandirs..." 
+              className={styles.mobileSearchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+                  setIsMobileMenuOpen(false);
+                }
+              }}
+            />
           </div>
 
           <nav className={styles.mobileNavLinks}>
@@ -158,7 +190,12 @@ export default function Navbar() {
               );
             })}
             <div className={styles.mobileDivider}></div>
-            <Link href="/signin" className={styles.mobileAuthLink} onClick={() => setIsMobileMenuOpen(false)}>Sign In / Register</Link>
+            <Link href="/contact" className={styles.mobileQuoteLink} onClick={() => setIsMobileMenuOpen(false)}>
+              Request a Free Quote
+            </Link>
+            <Link href="/signin" className={styles.mobileAuthLink} onClick={() => setIsMobileMenuOpen(false)}>
+              Sign In / Register
+            </Link>
           </nav>
         </div>
       )}
