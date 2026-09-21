@@ -1,54 +1,130 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import Link from "next/link";
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowLeft, Loader2 } from "lucide-react";
 import { adminLogin } from "@/actions/auth";
+import styles from "./AdminLogin.module.css";
 
 export default function AdminLoginPage() {
   const [state, formAction, pending] = useActionState(adminLogin, null);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fcfbf9] px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-[#b38b4d]/20 bg-white p-8 shadow-lg">
-        <h1 className="text-2xl font-semibold text-[#1a1a1a] mb-1">Heena Marble</h1>
-        <p className="text-sm uppercase tracking-widest text-[#b38b4d] font-semibold mb-6">
-          Admin Panel
-        </p>
+    <div className={styles.loginWrapper}>
+      <div className={styles.topAccentBar} />
+      <div className={styles.ambientGlow} />
 
-        <form action={formAction} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-[#333] mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              className="w-full rounded-lg border border-[#e5e0d8] px-3 py-2 outline-none focus:border-[#b38b4d]"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#333] mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              required
-              className="w-full rounded-lg border border-[#e5e0d8] px-3 py-2 outline-none focus:border-[#b38b4d]"
-            />
-          </div>
+      <div className={styles.cardContainer}>
+        <div className={styles.loginCard}>
+          {/* Logo & Portal Header */}
+          <div className={styles.headerSection}>
+            <Link href="/" className={styles.logoLink} title="Heena Marble Home">
+              <img
+                src="/logo.png"
+                alt="Heena Marble"
+                className={styles.logoImage}
+              />
+            </Link>
 
-          {state?.error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-              {state.error}
+            <div>
+              <span className={styles.portalBadge}>
+                <ShieldCheck size={13} />
+                <span>Admin Console</span>
+              </span>
+            </div>
+
+            <p className={styles.subtitle}>
+              Secure sign-in for studio & catalog operations
             </p>
-          )}
+          </div>
 
-          <button
-            type="submit"
-            disabled={pending}
-            className="w-full rounded-lg bg-[#b38b4d] hover:bg-[#967440] text-white font-semibold py-2.5 transition-colors disabled:opacity-60"
-          >
-            {pending ? "Logging in..." : "Log In"}
-          </button>
-        </form>
+          {/* Form */}
+          <form action={formAction} className={styles.loginForm}>
+            {/* Email */}
+            <div className={styles.formField}>
+              <label className={styles.fieldLabel}>Admin Email</label>
+              <div className={styles.inputWrapper}>
+                <div className={styles.inputIcon}>
+                  <Mail size={16} />
+                </div>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  autoComplete="email"
+                  placeholder="admin@heenamarble.com"
+                  className={styles.formInput}
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className={styles.formField}>
+              <label className={styles.fieldLabel}>Password</label>
+              <div className={styles.inputWrapper}>
+                <div className={styles.inputIcon}>
+                  <Lock size={16} />
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  required
+                  autoComplete="current-password"
+                  placeholder="••••••••••••"
+                  className={styles.formInput}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={styles.togglePasswordBtn}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Error Display */}
+            {state?.error && (
+              <div className={styles.errorMessage}>
+                <span className={styles.errorDot} />
+                <span>{state.error}</span>
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={pending}
+              className={styles.submitButton}
+            >
+              {pending ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <span>Log In to Dashboard</span>
+              )}
+            </button>
+          </form>
+
+          {/* Footer Navigation */}
+          <div className={styles.cardFooter}>
+            <Link href="/" className={styles.storeLink}>
+              <ArrowLeft size={14} />
+              <span>Return to Heena Marble Storefront</span>
+            </Link>
+          </div>
+        </div>
+
+        <p className={styles.securityNote}>
+          Encrypted Admin Session • Heena Marble Studio, Makrana
+        </p>
       </div>
     </div>
   );
 }
+
+

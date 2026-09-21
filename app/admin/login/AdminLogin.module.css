@@ -1,0 +1,274 @@
+.loginWrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fcfbf9;
+  padding: 32px 16px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.topAccentBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #b38b4d, #dfc581, #967440);
+  z-index: 20;
+}
+
+.ambientGlow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(179, 139, 77, 0.08) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cardContainer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 440px;
+}
+
+.loginCard {
+  background: #ffffff;
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: 0 16px 40px -10px rgba(179, 139, 77, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logoLink {
+  display: inline-block;
+  margin-bottom: 12px;
+  text-decoration: none;
+}
+
+.logoImage {
+  max-width: 170px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.logoLink:hover .logoImage {
+  transform: scale(1.03);
+}
+
+.portalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(179, 139, 77, 0.1);
+  border: 1px solid rgba(179, 139, 77, 0.3);
+  color: #967440;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-top: 6px;
+}
+
+.subtitle {
+  color: #666666;
+  font-size: 13px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #333333;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 14px;
+  color: #967440;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formInput {
+  width: 100%;
+  height: 46px;
+  padding: 0 42px 0 42px;
+  background-color: #faf9f6;
+  border: 1px solid #e5e0d8;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1a1a1a;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.formInput:focus {
+  border-color: #b38b4d;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(179, 139, 77, 0.15);
+}
+
+.formInput::placeholder {
+  color: #999999;
+}
+
+.togglePasswordBtn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #888888;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.togglePasswordBtn:hover {
+  color: #1a1a1a;
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.errorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  flex-shrink: 0;
+}
+
+.submitButton {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(135deg, #b38b4d 0%, #967440 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(179, 139, 77, 0.25);
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a37c3f 0%, #846333 100%) !important;
+  box-shadow: 0 8px 24px rgba(179, 139, 77, 0.35);
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cardFooter {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #f0ece5;
+  text-align: center;
+}
+
+.storeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.storeLink:hover {
+  color: #967440;
+}
+
+.securityNote {
+  text-align: center;
+  font-size: 11px;
+  color: #999999;
+  margin-top: 20px;
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 480px) {
+  .loginCard {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+  
+  .logoImage {
+    max-width: 140px;
+  }
+}

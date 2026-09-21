@@ -11,17 +11,27 @@ function hashPassword(password) {
 }
 
 export async function adminLogin(prevState, formData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
+  const email = (formData.get("email") || "").trim().toLowerCase();
+  const password = formData.get("password") || "";
+
+  if (!email || !password) {
+    return { error: "Please provide both email and password." };
+  }
 
   const supabase = createAdminClient();
   const { data: admin, error } = await supabase
     .from("admin_users")
-    .select("id, password_hash")
-    .eq("email", email)
+    .select("id, email, password_hash")
+    .ilike("email", email)
     .single();
 
-  if (error || !admin || admin.password_hash !== hashPassword(password)) {
+  if (error) {
+    console.error("[adminLogin] Supabase query error:", error);
+  }
+
+  const storedHash = admin?.password_hash ? admin.password_hash.replace(/\s+/g, "") : "";
+
+  if (error || !admin || storedHash !== hashPassword(password)) {
     return { error: "Invalid email or password" };
   }
 
