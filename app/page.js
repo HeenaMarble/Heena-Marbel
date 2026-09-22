@@ -3,7 +3,7 @@ import CartDrawer from '@/components/CartDrawer';
 import Hero from '@/components/Hero';
 import FeaturesBar from '@/components/FeaturesBar';
 import AboutSection from '@/components/AboutSection';
-import ShopSection from '@/components/ShopSection';
+import FeaturedProjectsSection from '@/components/FeaturedProjectsSection';
 import ConstructionPromo from '@/components/ConstructionPromo';
 import ServicesSection from '@/components/ServicesSection';
 import ApplicationsSection from '@/components/ApplicationsSection';
@@ -20,7 +20,7 @@ export default function Home() {
         <Hero />
         <FeaturesBar />
         <AboutSection />
-        <ShopSection />
+        <FeaturedProjectsSection />
         <ConstructionPromo />
         <ServicesSection />
         <ApplicationsSection />

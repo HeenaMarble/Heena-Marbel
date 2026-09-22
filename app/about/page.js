@@ -26,7 +26,7 @@ export default function AboutPage() {
           <div className="container">
             <div className={styles.grid}>
               <div className={styles.imageWrapper}>
-                <img src="/temple1.jpg" alt="Marble Crafting" />
+                <img src="/aboutus.jpeg" alt="Heritage & Craftsmanship" />
               </div>
               <div className={styles.text}>
                 <h3>Heritage & Craftsmanship</h3>
@@ -176,7 +176,7 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className={styles.imageWrapper}>
-                <img src="/temple2.jpg" alt="Marble Carving Process" style={{ height: '100%' }} />
+                <img src="/aboutus2.jpeg" alt="The Makrana Process" />
               </div>
             </div>
           </div>

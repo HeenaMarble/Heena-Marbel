@@ -16,12 +16,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
-  align-items: flex-start;
+  align-items: center;
   margin-top: 40px;
 }
 
 .content .grid {
-  align-items: flex-start;
+  align-items: center;
 }
 
 .text h3 {
@@ -43,28 +43,28 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  max-height: 440px;
+  width: 100%;
 }
 
 .imageWrapper img {
   width: 100%;
-  height: 440px;
-  max-height: 440px;
+  height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
   display: block;
 }
 
 .content .imageWrapper {
-  max-height: 440px;
+  max-width: 560px;
+  aspect-ratio: 1298 / 1212;
+  justify-self: start;
 }
 
 .content .imageWrapper img {
   width: 100%;
-  height: 440px;
-  max-height: 440px;
+  height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
   display: block;
 }
 
@@ -192,12 +192,31 @@
   }
 
   .imageWrapper,
-  .imageWrapper img,
   .content .imageWrapper,
-  .content .imageWrapper img {
-    height: 320px;
-    max-height: 320px;
-    object-position: center top;
+  .processSection .imageWrapper {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    justify-self: center;
+    height: auto;
+    max-height: none;
+  }
+
+  .content .imageWrapper {
+    aspect-ratio: 1298 / 1212;
+  }
+
+  .processSection .imageWrapper {
+    aspect-ratio: 1 / 1;
+  }
+
+  .imageWrapper img,
+  .content .imageWrapper img,
+  .processSection .imageWrapper img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-position: center;
   }
 
   .timelineRow {
@@ -276,10 +295,23 @@
   background-color: var(--bg-section);
 }
 
-.processSection .imageWrapper,
+.processSection .grid {
+  align-items: center;
+}
+
+.processSection .imageWrapper {
+  width: 100%;
+  max-width: 540px;
+  aspect-ratio: 1 / 1;
+  justify-self: end;
+}
+
 .processSection .imageWrapper img {
+  width: 100%;
   height: 100%;
-  max-height: none;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .processList {
@@ -413,12 +445,31 @@
     gap: 15px;
   }
   .imageWrapper,
-  .imageWrapper img,
   .content .imageWrapper,
-  .content .imageWrapper img {
-    height: 260px;
-    max-height: 260px;
-    object-position: center top;
+  .processSection .imageWrapper {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-self: center;
+    height: auto;
+    max-height: none;
+  }
+
+  .content .imageWrapper {
+    aspect-ratio: 1298 / 1212;
+  }
+
+  .processSection .imageWrapper {
+    aspect-ratio: 1 / 1;
+  }
+
+  .imageWrapper img,
+  .content .imageWrapper img,
+  .processSection .imageWrapper img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-position: center;
   }
 
   .statsRow {

@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   ZoomIn,
   X,
@@ -23,7 +24,8 @@ import {
   getProjectsByCategory,
 } from "@/lib/actions/project-actions";
 
-export default function ProjectsPage() {
+function ProjectsContent() {
+  const searchParams = useSearchParams();
   const videoRef1 = useRef(null);
   const videoRef2 = useRef(null);
   const galleryRef = useRef(null);
@@ -40,24 +42,8 @@ export default function ProjectsPage() {
     if (videoRef2.current) videoRef2.current.playbackRate = 0.7;
   }, []);
 
-  // Load all categories with their first project cover image
-  useEffect(() => {
-    async function loadCategories() {
-      setLoadingCategories(true);
-      try {
-        const data = await getProjectCategoriesWithCover();
-        setCategories(data || []);
-      } catch (err) {
-        console.error("Failed to load project categories:", err);
-      } finally {
-        setLoadingCategories(false);
-      }
-    }
-    loadCategories();
-  }, []);
-
   // When active category is clicked
-  const handleSelectCategory = async (cat) => {
+  const handleSelectCategory = useCallback(async (cat) => {
     setActiveCategory(cat);
     setLoadingImages(true);
     setImages([]);
@@ -75,7 +61,38 @@ export default function ProjectsPage() {
     } finally {
       setLoadingImages(false);
     }
-  };
+  }, []);
+
+  // Load all categories with their first project cover image
+  useEffect(() => {
+    async function loadCategories() {
+      setLoadingCategories(true);
+      try {
+        const data = await getProjectCategoriesWithCover();
+        const cats = data || [];
+        setCategories(cats);
+
+        // Auto-select category if passed in query param (?cat=... or ?category=...)
+        const catQuery = searchParams.get("cat") || searchParams.get("category");
+        if (catQuery && cats.length > 0) {
+          const matched = cats.find(
+            (c) =>
+              String(c.id) === String(catQuery) ||
+              (c.slug && c.slug.toLowerCase() === catQuery.toLowerCase()) ||
+              (c.name && c.name.toLowerCase().includes(catQuery.toLowerCase()))
+          );
+          if (matched) {
+            handleSelectCategory(matched);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load project categories:", err);
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+    loadCategories();
+  }, [searchParams, handleSelectCategory]);
 
   const handleBackToFolders = () => {
     setActiveCategory(null);
@@ -489,3 +506,32 @@ export default function ProjectsPage() {
     </>
   );
 }
+
+export default function ProjectsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          style={{
+            minHeight: "80vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#967440",
+          }}
+        >
+          <Loader2
+            style={{
+              width: "36px",
+              height: "36px",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+        </div>
+      }
+    >
+      <ProjectsContent />
+    </Suspense>
+  );
+}
+
