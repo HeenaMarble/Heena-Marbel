@@ -18,6 +18,7 @@ import {
   Layers,
   BarChart3,
   Film,
+  FolderKanban,
   X,
   LogOut,
 } from "lucide-react";
@@ -48,6 +49,7 @@ const NAV_GROUPS = [
     items: [
       { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
       { label: "Services", href: "/admin/content/services", icon: Layers },
+      { label: "Projects", href: "/admin/projects", icon: FolderKanban },
       { label: "Stats", href: "/admin/content/stats", icon: BarChart3 },
       { label: "Testimonials", href: "/admin/content/testimonials", icon: Quote },
       { label: "Reels", href: "/admin/content/reels", icon: Film },
