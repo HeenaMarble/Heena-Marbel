@@ -12,9 +12,12 @@ import {
   Star,
   MessageSquare,
   Mail,
-  LayoutTemplate,
   Quote,
   Settings,
+  Megaphone,
+  Layers,
+  BarChart3,
+  Film,
   X,
   LogOut,
 } from "lucide-react";
@@ -37,15 +40,18 @@ const NAV_GROUPS = [
       { label: "Inquiries", href: "/admin/inquiries", icon: MessageSquare },
       { label: "Reviews", href: "/admin/reviews", icon: Star },
       { label: "Users", href: "/admin/users", icon: Users },
+      { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
     ],
   },
   {
     title: "Studio & Content",
     items: [
-      { label: "Home Showcase", href: "/admin/hero-slides", icon: LayoutTemplate },
-      { label: "Testimonials", href: "/admin/testimonials", icon: Quote },
-      { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
-      { label: "Site Settings", href: "/admin/settings", icon: Settings },
+      { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
+      { label: "Services", href: "/admin/content/services", icon: Layers },
+      { label: "Stats", href: "/admin/content/stats", icon: BarChart3 },
+      { label: "Testimonials", href: "/admin/content/testimonials", icon: Quote },
+      { label: "Reels", href: "/admin/content/reels", icon: Film },
+      { label: "Site Settings", href: "/admin/content/settings", icon: Settings },
     ],
   },
 ];
@@ -124,7 +130,7 @@ export default function AdminSidebar({ adminName = "Admin" }) {
               <div className={styles.navItems}>
                 {group.items.map((item) => {
                   const active =
-                    item.href === "/admin" || item.href === "/admin/settings"
+                    item.href === "/admin" || item.href === "/admin/content/settings"
                       ? pathname === item.href
                       : pathname.startsWith(item.href);
                   const badgeCount = badges[item.href];

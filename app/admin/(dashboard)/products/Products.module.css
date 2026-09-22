@@ -1,0 +1,208 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.headerSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid rgba(179, 139, 77, 0.22);
+  padding-bottom: 24px;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.4px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #777777;
+  margin-top: 6px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.addProductBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #b38b4d 0%, #967440 100%);
+  color: #ffffff !important;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(179, 139, 77, 0.28);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.addProductBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(179, 139, 77, 0.38);
+  background: linear-gradient(135deg, #a37c3f 0%, #846333 100%);
+  color: #ffffff !important;
+}
+
+.addProductBtn:active {
+  transform: translateY(0);
+}
+
+.contentWrapper {
+  margin-top: 32px;
+  border-radius: 16px;
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Empty State */
+.emptyStateContainer {
+  padding: 56px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.emptyStateIconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(179, 139, 77, 0.1);
+  border: 1px solid rgba(179, 139, 77, 0.25);
+  color: #967440;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.emptyStateTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+}
+
+.emptyStateText {
+  font-size: 14px;
+  color: #777777;
+  max-width: 440px;
+  margin: 0 auto 24px auto;
+  line-height: 1.5;
+}
+
+/* Table View */
+.tableContainer {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.productsTable {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.productsTable th {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(179, 139, 77, 0.18);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #967440;
+  background: #fcfbf9;
+}
+
+.productsTable td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f2ede5;
+  color: #1a1a1a;
+  vertical-align: middle;
+}
+
+.productsTable tbody tr:hover {
+  background-color: rgba(26, 26, 26, 0.015);
+}
+
+.productCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.productImageThumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(26, 26, 26, 0.05);
+  flex-shrink: 0;
+  border: 1px solid rgba(179, 139, 77, 0.2);
+}
+
+.productImageThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.productName {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #967440 !important;
+  border: 1px solid rgba(179, 139, 77, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.editBtn:hover {
+  background: rgba(179, 139, 77, 0.1);
+  border-color: #b38b4d;
+  color: #725225 !important;
+}
+
+@media (max-width: 640px) {
+  .headerSection {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .addProductBtn {
+    justify-content: center;
+  }
+}

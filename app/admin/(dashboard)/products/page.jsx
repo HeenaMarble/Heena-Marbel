@@ -1,77 +1,91 @@
 import Link from "next/link";
-import { PlusCircle, Pencil } from "lucide-react";
+import { PlusCircle, Pencil, Package } from "lucide-react";
 import { getProducts } from "@/actions/products";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
+import styles from "./Products.module.css";
 
 export default async function ProductsPage() {
   const products = await getProducts();
 
   return (
-    <div>
-      <div className="flex items-center justify-between border-b border-[#b38b4d]/20 pb-6">
-        <div>
-          <h1 className="text-3xl font-semibold text-[#1a1a1a]">Products</h1>
-          <p className="text-base text-[#1a1a1a]/50 mt-1">Manage your marble products and inventory.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.headerSection}>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.pageTitle}>Products</h1>
+          <p className={styles.pageSubtitle}>Manage your marble products, pricing, and inventory.</p>
         </div>
-        <Link
-          href="/admin/products/new"
-          className="flex items-center gap-2 rounded-full bg-[#b38b4d] hover:bg-[#967440] text-white font-semibold px-5 py-2.5 transition-colors"
-        >
-          <PlusCircle className="h-4 w-4" /> Add Product
+        <Link href="/admin/products/new" className={styles.addProductBtn}>
+          <PlusCircle size={18} />
+          <span>Add Product</span>
         </Link>
       </div>
 
-      <div className="mt-8 rounded-[2rem] border border-[#b38b4d]/20 bg-white/85 overflow-hidden shadow-sm">
+      <div className={styles.contentWrapper}>
         {products.length === 0 ? (
-          <p className="text-center py-12 text-[#1a1a1a]/50 font-semibold">No products yet.</p>
+          <div className={styles.emptyStateContainer}>
+            <div className={styles.emptyStateIconWrap}>
+              <Package size={28} />
+            </div>
+            <h3 className={styles.emptyStateTitle}>No products yet.</h3>
+            <p className={styles.emptyStateText}>
+              Your marble catalog is empty. Add your first handcrafted marble statue, mandir, or artifact to showcase in the storefront.
+            </p>
+            <Link href="/admin/products/new" className={styles.addProductBtn}>
+              <PlusCircle size={18} />
+              <span>Add First Product</span>
+            </Link>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className={styles.tableContainer}>
+            <table className={styles.productsTable}>
               <thead>
-                <tr className="border-b border-[#b38b4d]/15 text-left text-xs uppercase tracking-wider text-[#1a1a1a]/50">
-                  <th className="px-5 py-3 font-semibold">Product</th>
-                  <th className="px-5 py-3 font-semibold">Category</th>
-                  <th className="px-5 py-3 font-semibold">Price</th>
-                  <th className="px-5 py-3 font-semibold">Stock</th>
-                  <th className="px-5 py-3 font-semibold">Status</th>
-                  <th className="px-5 py-3 font-semibold text-right">Actions</th>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: "right" }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#b38b4d]/10">
+              <tbody>
                 {products.map((p) => (
-                  <tr key={p.id} className="hover:bg-[#1a1a1a]/[0.02]">
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg overflow-hidden bg-[#1a1a1a]/5 shrink-0">
-                          {p.image_url && <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />}
+                  <tr key={p.id}>
+                    <td>
+                      <div className={styles.productCell}>
+                        <div className={styles.productImageThumb}>
+                          {p.image_url ? (
+                            <img src={p.image_url} alt={p.name} />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[#1a1a1a]/30 text-xs">
+                              No pic
+                            </div>
+                          )}
                         </div>
-                        <span className="font-semibold text-[#1a1a1a]">{p.name}</span>
+                        <span className={styles.productName}>{p.name}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-3 text-[#1a1a1a]/70">{p.categories?.name || "—"}</td>
-                    <td className="px-5 py-3 text-[#1a1a1a]/70">₹{Number(p.price).toLocaleString("en-IN")}</td>
-                    <td className="px-5 py-3 text-[#1a1a1a]/70">
+                    <td className="text-[#1a1a1a]/70">{p.categories?.name || "—"}</td>
+                    <td className="text-[#1a1a1a]/70 font-semibold">₹{Number(p.price).toLocaleString("en-IN")}</td>
+                    <td>
                       {p.stock_quantity <= 5 ? (
-                        <span className="text-red-600 font-semibold">{p.stock_quantity}</span>
+                        <span className="text-red-600 font-bold">{p.stock_quantity} left</span>
                       ) : (
-                        p.stock_quantity
+                        <span className="text-[#1a1a1a]/70">{p.stock_quantity}</span>
                       )}
                     </td>
-                    <td className="px-5 py-3">
+                    <td>
                       <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          p.is_active ? "bg-green-400/15 text-green-700" : "bg-[#1a1a1a]/10 text-[#1a1a1a]/50"
+                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                          p.is_active ? "bg-emerald-500/15 text-emerald-700" : "bg-[#1a1a1a]/10 text-[#1a1a1a]/50"
                         }`}
                       >
                         {p.is_active ? "Active" : "Hidden"}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
+                    <td>
                       <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/admin/products/${p.id}/edit`}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#967440] border border-[#b38b4d]/30 rounded-full px-3 py-1.5 hover:bg-[#b38b4d]/10"
-                        >
+                        <Link href={`/admin/products/${p.id}/edit`} className={styles.editBtn}>
                           <Pencil className="h-3.5 w-3.5" /> Edit
                         </Link>
                         <DeleteProductButton id={p.id} />
