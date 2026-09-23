@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ImageUploader from "@/components/admin/ImageUploader";
 
@@ -9,9 +9,11 @@ export default function CategoryForm({ action, initialData = {} }) {
   const [imageUrl, setImageUrl] = useState(initialData.image_url || "");
   const router = useRouter();
 
-  if (state?.success) {
-    router.push("/admin/categories");
-  }
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/admin/categories");
+    }
+  }, [state?.success, router]);
 
   return (
     <form action={formAction} className="max-w-lg space-y-5">

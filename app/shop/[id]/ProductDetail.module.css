@@ -32,7 +32,6 @@
   background-color: var(--bg-white);
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 40px rgba(0,0,0,0.03);
-  overflow: hidden;
 }
 
 .productLayout {
@@ -69,6 +68,54 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.thumbnailStrip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scrollbar-width: thin;
+}
+
+.thumbnailStrip::-webkit-scrollbar {
+  height: 4px;
+}
+
+.thumbnailStrip::-webkit-scrollbar-thumb {
+  background-color: #efe8d8;
+  border-radius: 4px;
+}
+
+.thumbnailBtn {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid #efe8d8;
+  background-color: #fbf9f4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.thumbnailBtn:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.thumbnailActive {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(179, 139, 77, 0.25);
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .detailsColumn {
@@ -129,21 +176,155 @@
   font-size: 0.82rem;
 }
 
-.description {
-  margin-top: 24px;
-  margin-bottom: 24px;
+.addToCartBtn {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.productSnippet {
   color: var(--text-light);
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-top: 10px;
+  margin-bottom: 18px;
 }
 
-.description h3 {
+.tabsSection {
+  border-top: 1px solid var(--border-color);
+  padding: 35px 40px;
+}
+
+.tabsHeader {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #efe8d8;
+  margin-bottom: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabsHeader::-webkit-scrollbar {
+  display: none;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  padding: 12px 22px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: var(--primary-color);
+}
+
+.tabBtnActive {
+  color: var(--primary-color) !important;
+  font-weight: 600;
+}
+
+.tabBtnActive::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  border-radius: 2px 2px 0 0;
+}
+
+.tabContent {
+  color: var(--text-main);
+  line-height: 1.8;
+}
+
+.tabParagraph {
+  max-width: 900px;
+  color: var(--text-light);
+  font-size: 0.98rem;
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+
+.careGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.careCard {
+  background-color: #fbf9f4;
+  border: 1px solid #efe8d8;
+  border-radius: var(--radius-sm);
+  padding: 22px 20px;
+}
+
+.careCard h4 {
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text-dark);
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
-.description p {
-  margin-bottom: 15px;
+.careCard p {
+  font-size: 0.88rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.specifications {
+  margin: 0;
+}
+
+.specsTable {
+  width: 100%;
+  max-width: 850px;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+  background-color: #fbf9f4;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid #efe8d8;
+}
+
+.specsTable tbody tr {
+  border-bottom: 1px solid #efe8d8;
+}
+
+.specsTable tbody tr:last-child {
+  border-bottom: none;
+}
+
+.specsTable td {
+  padding: 13px 20px;
+  vertical-align: middle;
+}
+
+.specsTable td:first-child {
+  width: 32%;
+  color: var(--text-light);
+  font-weight: 500;
+  border-right: 1px solid #efe8d8;
+  background-color: rgba(251, 249, 244, 0.7);
+}
+
+.specsTable td:last-child {
+  color: var(--text-dark);
+  font-weight: 500;
 }
 
 .featuresList {
@@ -559,6 +740,15 @@
   
   .relatedGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tabsSection {
+    padding: 24px 20px;
+  }
+
+  .careGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 }
 

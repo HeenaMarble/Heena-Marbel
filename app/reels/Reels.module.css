@@ -4,6 +4,7 @@
   padding-bottom: var(--spacing-xl, 5rem);
 }
 
+/* Header Section */
 .headerSection {
   padding-top: var(--spacing-lg, 3rem);
   padding-bottom: var(--spacing-md, 2rem);
@@ -70,58 +71,221 @@
   flex-shrink: 0;
 }
 
-/* Grid Layout Specifications */
-.gridSection {
-  padding-top: 1rem;
+/* Content Section & Toolbar */
+.contentSection {
+  padding-top: 0.5rem;
   padding-bottom: var(--spacing-lg, 3rem);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color, #e5e0d8);
+}
+
+.viewToggleGroup {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f2eee7;
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+  border: 1px solid rgba(179, 139, 77, 0.15);
+}
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--text-light, #666666);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewBtn:hover {
+  color: var(--text-dark, #1a1a1a);
+}
+
+.viewBtnActive {
+  background-color: #ffffff;
+  color: var(--primary-dark, #967440);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================================
+   Carousel / Slider View (Option 2)
+   ============================================================ */
+.carouselContainer {
+  position: relative;
+  width: 100%;
+}
+
+.carouselTrack {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 12px 6px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.carouselTrack::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.carouselTrack .reelCard {
+  flex: 0 0 310px;
+  scroll-snap-align: start;
+}
+
+/* Carousel Navigation Arrows */
+.navArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid rgba(179, 139, 77, 0.3);
+  color: var(--primary-dark, #967440);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.22s ease;
+}
+
+.prevArrow {
+  left: -22px;
+}
+
+.nextArrow {
+  right: -22px;
+}
+
+.navArrow:hover:not(:disabled) {
+  background-color: var(--primary-color, #b38b4d);
+  border-color: var(--primary-color, #b38b4d);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.06);
+  box-shadow: 0 8px 24px rgba(179, 139, 77, 0.3);
+}
+
+.navArrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Pagination Dots */
+.dotIndicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  background-color: #dfd9ce;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s ease;
+}
+
+.dotActive {
+  width: 24px;
+  background-color: var(--primary-color, #b38b4d);
+  border-radius: 999px;
+}
+
+/* ============================================================
+   Grid View (Option 1)
+   ============================================================ */
+.gridContainer {
+  width: 100%;
 }
 
 .reelsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 24px;
+  justify-content: center;
   width: 100%;
 }
 
 @media (min-width: 640px) {
   .reelsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 315px));
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .reelsGrid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(3, minmax(0, 315px));
   }
 }
 
-/* Card Cell Wrapper (aspect-ratio: 9/16) */
+@media (min-width: 1320px) {
+  .reelsGrid {
+    grid-template-columns: repeat(4, minmax(0, 310px));
+  }
+}
+
+/* ============================================================
+   Unified Card Styling (No clipping, Perfect Dimensions)
+   ============================================================ */
 .reelCard {
   position: relative;
   width: 100%;
-  aspect-ratio: 9 / 16;
-  min-height: 670px;
-  border-radius: var(--radius-md, 8px);
+  max-width: 320px;
+  min-height: 560px;
+  height: 560px;
+  margin: 0 auto;
+  border-radius: 16px;
   overflow: hidden;
   background-color: #ffffff;
-  border: 1px solid var(--border-color, #e5e0d8);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+  box-sizing: border-box;
 }
 
 @media (hover: hover) {
   .reelCard:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(179, 139, 77, 0.14);
+    border-color: rgba(179, 139, 77, 0.45);
   }
 }
 
-/* Loading Skeleton / Placeholder */
+/* Loading State Skeleton */
 .skeleton {
   position: absolute;
   inset: 0;
@@ -154,8 +318,8 @@
 }
 
 .skeletonIconWrapper {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
   background-color: rgba(179, 139, 77, 0.12);
   display: flex;
@@ -181,24 +345,20 @@
   line-height: 1.4;
 }
 
-/* Instagram oEmbed blockquote container */
+/* Instagram Embed Container & Iframe Integration */
 .embedContainer {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: calc(100% + 48px);
+  height: 100%;
+  min-height: 560px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   z-index: 2;
-  overflow: hidden;
   background-color: #ffffff;
   box-sizing: border-box;
 }
 
-/* Keep Instagram embed filled and centered */
 .instagramMedia {
   width: 100% !important;
   max-width: 100% !important;
@@ -210,21 +370,16 @@
   background: transparent !important;
 }
 
-/* Ensure any iframe generated by Instagram fits cleanly */
+/* Override Instagram embed iframe to fill without horizontal or vertical clipping */
 .embedContainer :global(iframe) {
+  min-width: 0 !important;
   width: 100% !important;
-  min-width: 100% !important;
   max-width: 100% !important;
+  height: 560px !important;
   border: none !important;
-  border-radius: inherit !important;
+  border-radius: 15px !important;
   margin: 0 auto !important;
   display: block !important;
-}
-
-@media (min-width: 769px) {
-  .embedContainer :global(iframe) {
-    height: 100% !important;
-  }
 }
 
 /* Bottom CTA Section */
@@ -241,62 +396,61 @@
   font-size: 1rem;
 }
 
-/* Responsive adjustments */
+/* ============================================================
+   Mobile & Tablet Responsive Adjustments
+   ============================================================ */
 @media (max-width: 768px) {
-  /* On mobile: remove fixed 9:16 aspect ratio and huge min-height so cards fit embed tightly */
-  .reelCard {
-    aspect-ratio: auto;
-    min-height: auto;
-    height: auto;
-    display: block;
-  }
-
-  .reelCard:not(:has(iframe)) {
-    min-height: 480px;
-  }
-
-  .reelCard:has(iframe) {
-    min-height: unset;
-  }
-
-  .reelCard:has(iframe) .skeleton {
-    display: none;
-  }
-
-  .embedContainer {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .instagramMedia {
-    height: auto !important;
-  }
-
   .headerSection {
     padding-top: var(--spacing-md, 2rem);
     padding-bottom: 1.5rem;
   }
-  
+
   .mainHeading {
     font-size: 2.1rem;
   }
-  
+
   .subtext {
     font-size: 1rem;
     margin-bottom: 1.25rem;
   }
-  
-  .ctaContainer {
-    margin-top: 2rem;
+
+  .prevArrow {
+    left: -10px;
+  }
+
+  .nextArrow {
+    right: -10px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
+  .navArrow {
+    display: none; /* Rely on natural smooth touch swipe on small devices */
+  }
+
+  .carouselTrack {
+    gap: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Peek effect on phone: card occupies 82% width so next card is visible */
+  .carouselTrack .reelCard {
+    flex: 0 0 82vw;
+    max-width: 320px;
+    scroll-snap-align: center;
+  }
+
   .mainHeading {
     font-size: 1.85rem;
+  }
+
+  .toolbar {
+    justify-content: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .ctaContainer {
+    margin-top: 2rem;
   }
 }
