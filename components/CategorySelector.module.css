@@ -1,0 +1,271 @@
+.container {
+  position: relative;
+  width: 100%;
+  margin: 12px 0 32px 0;
+}
+
+/* Subtle edge fades on scrollable container for mobile UX */
+.container::before,
+.container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.container::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-main, #fcfbf9), transparent);
+}
+
+.container::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-main, #fcfbf9), transparent);
+}
+
+/* Scroll track */
+.scrollTrack {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 8px 4px 16px 4px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scrollTrack::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Individual Category Item */
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-dark, #1a1a1a);
+  flex-shrink: 0;
+  width: 76px;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.item:hover {
+  transform: translateY(-3px);
+}
+
+.item:focus-visible .iconCircle {
+  outline: 2px solid var(--primary-color, #b38b4d);
+  outline-offset: 3px;
+}
+
+/* Icon Circle */
+.iconCircle {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  overflow: visible;
+  background-color: #faf7f2;
+  border: 1.5px solid var(--border-color, #e5e0d8);
+  box-shadow: 0 2px 8px rgba(40, 30, 20, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+.item:hover .iconCircle {
+  border-color: var(--primary-color, #b38b4d);
+  box-shadow: 0 6px 16px rgba(179, 139, 77, 0.16);
+}
+
+/* Category Image */
+.iconImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.item:hover .iconImg {
+  transform: scale(1.05);
+}
+
+/* Fallback letter when category has no image */
+.fallbackLetter {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-dark, #967440);
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+/* Distinct "All Products" icon circle */
+.allIconCircle {
+  background: linear-gradient(135deg, #f7f1e7 0%, #ede3d1 100%);
+  border-color: #d8caa7;
+  color: var(--primary-dark, #967440);
+  box-shadow: 0 2px 10px rgba(179, 139, 77, 0.1);
+}
+
+.allIconSvg {
+  color: var(--primary-dark, #967440);
+  transition: transform 0.25s ease;
+}
+
+.item:hover .allIconSvg {
+  transform: scale(1.1);
+}
+
+/* Active Category State */
+.item.active .iconCircle {
+  border-color: var(--primary-color, #b38b4d);
+  box-shadow: 0 0 0 2px var(--bg-white, #ffffff), 0 0 0 4.5px var(--primary-color, #b38b4d), 0 6px 16px rgba(179, 139, 77, 0.2);
+  background-color: #fdfaf5;
+}
+
+.item.active.allItem .allIconCircle {
+  background: linear-gradient(135deg, #f9f4ec 0%, #f1e7d6 100%);
+}
+
+/* Active Checkmark Badge */
+.activeBadge {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color, #b38b4d), var(--primary-dark, #967440));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  animation: badgePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Label styling */
+.label {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.25;
+  color: var(--text-dark, #2b2b2b);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s ease, font-weight 0.2s ease;
+  user-select: none;
+}
+
+.item:hover .label {
+  color: var(--primary-color, #b38b4d);
+}
+
+.item.active .label {
+  color: var(--primary-dark, #967440);
+  font-weight: 600;
+}
+
+/* Mobile & Tablet responsiveness */
+@media (max-width: 768px) {
+  .container {
+    margin: 8px 0 24px 0;
+  }
+
+  .container::before,
+  .container::after {
+    opacity: 1;
+  }
+
+  .scrollTrack {
+    gap: 14px;
+    padding: 6px 12px 14px 12px;
+  }
+
+  .item {
+    width: 68px;
+    gap: 6px;
+  }
+
+  .iconCircle {
+    width: 58px;
+    height: 58px;
+  }
+
+  .fallbackLetter {
+    font-size: 1.1rem;
+  }
+
+  .allIconSvg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .label {
+    font-size: 0.73rem;
+    line-height: 1.2;
+  }
+
+  .activeBadge {
+    width: 17px;
+    height: 17px;
+  }
+
+  .item.active .iconCircle {
+    box-shadow: 0 0 0 2px var(--bg-white, #ffffff), 0 0 0 3.5px var(--primary-color, #b38b4d), 0 4px 12px rgba(179, 139, 77, 0.18);
+  }
+}
+
+@media (max-width: 480px) {
+  .scrollTrack {
+    gap: 12px;
+    padding: 6px 8px 12px 8px;
+  }
+
+  .item {
+    width: 62px;
+  }
+
+  .iconCircle {
+    width: 54px;
+    height: 54px;
+  }
+
+  .allIconSvg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .label {
+    font-size: 0.7rem;
+  }
+}

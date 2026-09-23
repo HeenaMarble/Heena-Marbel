@@ -2,11 +2,18 @@ import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import ShopGrid from '@/components/ShopGrid';
-import { getShopProducts } from '@/actions/shop';
+import CategorySelector from '@/components/CategorySelector';
+import { getShopProducts, getVisibleCategories } from '@/actions/shop';
 import styles from '@/components/ShopSection.module.css';
 
-export default async function ShopPage() {
-  const products = await getShopProducts();
+export default async function ShopPage({ searchParams }) {
+  const params = await searchParams;
+  const categorySlug = params?.category || null;
+
+  const [products, categories] = await Promise.all([
+    getShopProducts(categorySlug),
+    getVisibleCategories(),
+  ]);
 
   return (
     <>
@@ -21,6 +28,8 @@ export default async function ShopPage() {
                 <h2 className="heading">Shop All Products</h2>
               </div>
             </div>
+
+            <CategorySelector categories={categories} activeSlug={categorySlug} />
 
             <ShopGrid products={products} />
           </div>

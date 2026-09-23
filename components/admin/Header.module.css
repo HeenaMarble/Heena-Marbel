@@ -132,6 +132,10 @@
   box-shadow: 0 4px 14px rgba(179, 139, 77, 0.2);
 }
 
+.mobileBrandWrap {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .mobileMenuBtn {
     display: flex;
@@ -140,29 +144,99 @@
 
 @media (max-width: 768px) {
   .header {
-    height: 72px;
+    height: 56px;
     padding: 0 16px;
+    gap: 12px;
   }
   
-  .headerTitle {
-    font-size: 17px;
-  }
-  
-  .liveBadge {
+  .desktopTitleWrapper {
     display: none;
   }
   
-  .headerSubtitle {
-    display: none;
+  .mobileBrandWrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mobileBrandTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+  }
+  
+  .mobileBrandBadge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #fbf9f4;
+    color: #967440;
+    border: 1px solid rgba(179, 139, 77, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  .leftGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .mobileMenuBtn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  
+  .rightGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
   }
   
   .addPieceBtn {
-    padding: 9px 14px;
-    font-size: 13px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .addPieceBtnTextDesktop {
+    display: none;
   }
   
   .storefrontBtn {
-    padding: 9px 12px;
-    font-size: 13px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .storefrontBtnText {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .header {
+    padding: 0 12px;
+  }
+
+  .mobileBrandTitle {
+    font-size: 14px;
   }
 }

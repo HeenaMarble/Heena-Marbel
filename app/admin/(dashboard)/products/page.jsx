@@ -65,8 +65,14 @@ export default async function ProductsPage() {
                         <span className={styles.productName}>{p.name}</span>
                       </div>
                     </td>
-                    <td className="text-[#1a1a1a]/70">{p.categories?.name || "—"}</td>
-                    <td className="text-[#1a1a1a]/70 font-semibold">₹{Number(p.price).toLocaleString("en-IN")}</td>
+                    <td className="text-[#1a1a1a]/70 font-semibold whitespace-nowrap">
+                      ₹{Number(p.price).toLocaleString("en-IN")}
+                      {p.compare_at_price && Number(p.compare_at_price) > Number(p.price) && (
+                        <span className="text-xs text-[#1a1a1a]/40 line-through ml-1.5 font-normal">
+                          ₹{Number(p.compare_at_price).toLocaleString("en-IN")}
+                        </span>
+                      )}
+                    </td>
                     <td>
                       {p.stock_quantity <= 5 ? (
                         <span className="text-red-600 font-bold">{p.stock_quantity} left</span>

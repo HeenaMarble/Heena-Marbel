@@ -8,15 +8,208 @@ import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import styles from "@/app/shop/[id]/ProductDetail.module.css";
 
+function formatDimensionSummary(dimValues) {
+  if (!dimValues || typeof dimValues !== "object") return "";
+  const entries = Object.entries(dimValues);
+  if (entries.length === 0) return "";
+
+  const priority = ["length", "width", "breadth", "depth", "height", "thickness", "diameter"];
+  const sorted = [...entries].sort((a, b) => {
+    const idxA = priority.indexOf(a[0].toLowerCase());
+    const idxB = priority.indexOf(b[0].toLowerCase());
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return a[0].localeCompare(b[0]);
+  });
+
+  return sorted
+    .map(([k, val]) => {
+      const cleanVal = String(val).trim();
+      const valWithUnit = /^[0-9]+(\.[0-9]+)?$/.test(cleanVal) ? `${cleanVal}"` : cleanVal;
+      if (sorted.length === 1) return `${k}: ${valWithUnit}`;
+      const shortKey = k.charAt(0).toUpperCase();
+      if (["L", "W", "H", "D"].includes(shortKey)) {
+        return `${valWithUnit} ${shortKey}`;
+      }
+      return `${k}: ${valWithUnit}`;
+    })
+    .join(" × ");
+}
+
+function getSizeTitle(variant, index, total) {
+  if (variant.name) return variant.name;
+  if (variant.title) return variant.title;
+  if (variant.size_name) return variant.size_name;
+  if (total === 1) return "Standard Size";
+  if (total === 2) return index === 0 ? "Standard Size" : "Grand / Large Size";
+  if (total === 3) {
+    if (index === 0) return "Compact Size";
+    if (index === 1) return "Standard Size";
+    return "Grand / Large Size";
+  }
+  return `Size Option ${index + 1}`;
+}
+
 export default function ProductDetailClient({ product, relatedProducts = [] }) {
   const { addToCart } = useCart();
+
+  const hasVariants = Boolean(product?.has_variants && product?.variants?.length > 0);
+  const hasColors = Boolean(hasVariants && product?.has_colors);
+  const dimensionLabels = Array.isArray(product?.variant_dimension_labels)
+    ? product.variant_dimension_labels
+    : [];
+
+  const initialVariant = React.useMemo(() => {
+    if (!hasVariants) return null;
+    return product.variants.find((v) => v.is_default) || product.variants[0];
+  }, [hasVariants, product?.variants]);
+
+  const [selectedColor, setSelectedColor] = useState(
+    initialVariant?.color_name || ""
+  );
+  const [selectedDimensions, setSelectedDimensions] = useState(
+    initialVariant?.dimension_values || {}
+  );
+  const [activeVariant, setActiveVariant] = useState(initialVariant);
+
+  // Distinct colors extracted from product.variants
+  const distinctColors = React.useMemo(() => {
+    if (!hasColors || !product?.variants) return [];
+    const map = new Map();
+    for (const v of product.variants) {
+      if (v.color_name && !map.has(v.color_name)) {
+        map.set(v.color_name, {
+          color_name: v.color_name,
+          color_hex: v.color_hex || "#d1d5db",
+        });
+      }
+    }
+    return Array.from(map.values());
+  }, [product?.variants, hasColors]);
+
+  // Variants filtered to the currently selected color
+  const variantsForSelectedColor = React.useMemo(() => {
+    if (!product?.variants) return [];
+    if (hasColors && selectedColor) {
+      return product.variants.filter((v) => v.color_name === selectedColor);
+    }
+    return product.variants;
+  }, [product?.variants, hasColors, selectedColor]);
+
+  // Handle direct click on a combined size card
+  const handleSelectVariantCard = (variant) => {
+    setActiveVariant(variant);
+    setSelectedDimensions(variant.dimension_values || {});
+    if (variant.color_name && variant.color_name !== selectedColor) {
+      setSelectedColor(variant.color_name);
+    }
+  };
+
+  // Image filtering based on color
+  const filteredImages = React.useMemo(() => {
+    if (!hasVariants || !product?.imageObjects || product.imageObjects.length === 0) {
+      return (product?.images && product.images.length > 0)
+        ? product.images
+        : (product?.img ? [product.img] : []);
+    }
+
+    if (hasColors && selectedColor) {
+      const colorImages = product.imageObjects
+        .filter(
+          (img) =>
+            img.color_name &&
+            img.color_name.toLowerCase() === selectedColor.toLowerCase()
+        )
+        .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+        .map((img) => img.image_url);
+
+      if (colorImages.length > 0) {
+        return colorImages;
+      }
+    }
+
+    // Fallback to common/no-color images (color_name is null/empty)
+    const commonImages = product.imageObjects
+      .filter((img) => !img.color_name)
+      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+      .map((img) => img.image_url);
+
+    if (commonImages.length > 0) {
+      return commonImages;
+    }
+
+    return (product?.images && product.images.length > 0)
+      ? product.images
+      : (product?.img ? [product.img] : []);
+  }, [hasVariants, hasColors, selectedColor, product?.imageObjects, product?.images, product?.img]);
+
   const [selectedImage, setSelectedImage] = useState(
-    (product?.images && product.images[0]) || product?.img || ""
+    filteredImages[0] || product?.img || ""
   );
 
-  const hasMultipleImages = Boolean(product?.images && product.images.length > 1);
+  // When filtered images change (e.g. color switched), default to first image
+  useEffect(() => {
+    if (filteredImages && filteredImages.length > 0) {
+      setSelectedImage(filteredImages[0]);
+    }
+  }, [filteredImages]);
+
+  // Re-sync variant selection if product prop changes
+  useEffect(() => {
+    if (hasVariants && product?.variants?.length > 0) {
+      const defaultVar =
+        product.variants.find((v) => v.is_default) || product.variants[0];
+      if (defaultVar) {
+        setSelectedColor(defaultVar.color_name || "");
+        setSelectedDimensions(defaultVar.dimension_values || {});
+        setActiveVariant(defaultVar);
+      }
+    } else {
+      setSelectedColor("");
+      setSelectedDimensions({});
+      setActiveVariant(null);
+    }
+  }, [product?.id, hasVariants, product?.variants]);
+
+  // Dynamic specifications that update when switching variants (e.g. Standard vs Grand Size)
+  const effectiveSpecifications = React.useMemo(() => {
+    const baseSpecs = Array.isArray(product?.dimensions) ? [...product.dimensions] : [];
+
+    if (hasVariants && activeVariant) {
+      const specMap = new Map();
+
+      // If variant has dimension_values (e.g. Height, Width, Length)
+      if (activeVariant.dimension_values && typeof activeVariant.dimension_values === "object") {
+        Object.entries(activeVariant.dimension_values).forEach(([k, v]) => {
+          const cleanVal = String(v).trim();
+          const valWithUnit = /^[0-9]+(\.[0-9]+)?$/.test(cleanVal) ? `${cleanVal} inches` : cleanVal;
+          specMap.set(k, valWithUnit);
+        });
+      }
+
+      // If color is active, include Color in specifications
+      if (hasColors && activeVariant.color_name) {
+        specMap.set("Color", activeVariant.color_name);
+      }
+
+      // Add baseSpecs from product level that are not already overridden
+      const existingKeysLower = new Set(Array.from(specMap.keys()).map((k) => k.toLowerCase()));
+      baseSpecs.forEach((item) => {
+        if (item?.label && !existingKeysLower.has(item.label.toLowerCase())) {
+          specMap.set(item.label, item.value);
+        }
+      });
+
+      return Array.from(specMap.entries()).map(([label, value]) => ({ label, value }));
+    }
+
+    return baseSpecs;
+  }, [product?.dimensions, hasVariants, activeVariant, hasColors]);
+
+  const hasMultipleImages = Boolean(filteredImages.length > 1);
   const hasDimensions = Boolean(
-    product?.dimensions && product.dimensions.length > 0
+    effectiveSpecifications.length > 0 || (product?.dimensions && product.dimensions.length > 0)
   );
 
   const [activeTab, setActiveTab] = useState(
@@ -24,15 +217,145 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
   );
 
   useEffect(() => {
-    setSelectedImage(
-      (product?.images && product.images[0]) || product?.img || ""
+    setActiveTab(hasDimensions ? "specs" : "details");
+  }, [product?.id, hasDimensions]);
+
+  // Color change handler with auto-clamping of dimension selections
+  const handleColorChange = (newColor) => {
+    setSelectedColor(newColor);
+    if (!product?.variants) return;
+
+    const matchingColorVariants = product.variants.filter(
+      (v) => v.color_name === newColor
     );
-    setActiveTab(
-      product?.dimensions && product.dimensions.length > 0
-        ? "specs"
-        : "details"
-    );
-  }, [product?.id, product?.images, product?.img, product?.dimensions]);
+    if (matchingColorVariants.length === 0) return;
+
+    // Check if currently selected dimensions are valid for this color
+    const exactMatch = matchingColorVariants.find((v) => {
+      if (dimensionLabels.length === 0) return true;
+      return dimensionLabels.every(
+        (lbl) => v.dimension_values?.[lbl] === selectedDimensions[lbl]
+      );
+    });
+
+    if (exactMatch) {
+      setActiveVariant(exactMatch);
+    } else {
+      // Auto-clamp to default variant for this color or the first valid one
+      const defaultForColor =
+        matchingColorVariants.find((v) => v.is_default) ||
+        matchingColorVariants[0];
+      if (defaultForColor) {
+        setSelectedDimensions(defaultForColor.dimension_values || {});
+        setActiveVariant(defaultForColor);
+      }
+    }
+  };
+
+  // Dimension change handler with auto-clamping dependent selectors
+  const handleDimensionChange = (label, value) => {
+    const nextDims = { ...selectedDimensions, [label]: value };
+    setSelectedDimensions(nextDims);
+    if (!product?.variants) return;
+
+    const candidateVariants = product.variants.filter((v) => {
+      if (hasColors && v.color_name !== selectedColor) return false;
+      return v.dimension_values?.[label] === value;
+    });
+
+    if (candidateVariants.length === 0) return;
+
+    const exactMatch = candidateVariants.find((v) => {
+      return dimensionLabels.every(
+        (lbl) => v.dimension_values?.[lbl] === nextDims[lbl]
+      );
+    });
+
+    if (exactMatch) {
+      setActiveVariant(exactMatch);
+    } else {
+      const fallback = candidateVariants[0];
+      setSelectedDimensions(fallback.dimension_values || {});
+      setActiveVariant(fallback);
+    }
+  };
+
+  // Get distinct values that exist for a dimension label, filtered to current color
+  const getAvailableValuesForLabel = (label) => {
+    if (!product?.variants) return [];
+    const pool = hasColors
+      ? product.variants.filter((v) => v.color_name === selectedColor)
+      : product.variants;
+    const values = [];
+    for (const v of pool) {
+      const val = v.dimension_values?.[label];
+      if (val && !values.includes(val)) {
+        values.push(val);
+      }
+    }
+    return values;
+  };
+
+  // Effective price & compare-at price
+  const effectivePrice =
+    hasVariants && activeVariant
+      ? Number(activeVariant.price) || 0
+      : Number(product?.price) || 0;
+
+  const compareAtPrice =
+    hasVariants && activeVariant
+      ? (activeVariant.compare_at_price ? Number(activeVariant.compare_at_price) : null)
+      : (product?.compare_at_price ? Number(product.compare_at_price) : null);
+
+  const discountPercent =
+    compareAtPrice && compareAtPrice > effectivePrice
+      ? Math.round(((compareAtPrice - effectivePrice) / compareAtPrice) * 100)
+      : 0;
+
+  // Effective stock
+  const effectiveStock =
+    hasVariants && activeVariant
+      ? (activeVariant.stock ?? 0)
+      : (product?.stock_quantity ?? 0);
+
+  const isOutOfStock = effectiveStock <= 0;
+
+  // Add to cart handler
+  const handleAddToCart = () => {
+    if (isOutOfStock) return;
+
+    if (hasVariants && activeVariant) {
+      const variantSummaryParts = [];
+      if (hasColors && activeVariant.color_name) {
+        variantSummaryParts.push(activeVariant.color_name);
+      }
+      if (activeVariant.dimension_values) {
+        Object.entries(activeVariant.dimension_values).forEach(([k, v]) => {
+          variantSummaryParts.push(`${k}: ${v}`);
+        });
+      }
+      const variantSummary = variantSummaryParts.join(" • ");
+
+      addToCart({
+        ...product,
+        cartKey: `${product.id}-${activeVariant.id}`,
+        variantId: activeVariant.id,
+        variantSummary,
+        selectedVariant: activeVariant,
+        price: effectivePrice,
+        stock_quantity: effectiveStock,
+        img: selectedImage || filteredImages[0] || product.img,
+      });
+    } else {
+      addToCart({
+        ...product,
+        price: effectivePrice,
+        compare_at_price: compareAtPrice,
+        stock_quantity: effectiveStock,
+        img: selectedImage || product.img,
+      });
+    }
+  };
 
   if (!product) {
     return (
@@ -86,7 +409,7 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
                 {/* Thumbnail Strip */}
                 {hasMultipleImages && (
                   <div className={styles.thumbnailStrip}>
-                    {product.images.map((imgUrl, idx) => (
+                    {filteredImages.map((imgUrl, idx) => (
                       <button
                         key={idx}
                         type="button"
@@ -143,9 +466,21 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
                 <h1 className={styles.title}>{product.title}</h1>
 
                 <div className={styles.priceRatingRow}>
-                  <p className={styles.price}>
-                    ₹{product.price.toLocaleString()}
-                  </p>
+                  <div className={styles.priceGroup}>
+                    <p className={styles.price}>
+                      ₹{effectivePrice.toLocaleString()}
+                    </p>
+                    {compareAtPrice && compareAtPrice > effectivePrice && (
+                      <span className={styles.compareAtPrice}>
+                        ₹{compareAtPrice.toLocaleString()}
+                      </span>
+                    )}
+                    {discountPercent > 0 && (
+                      <span className={styles.discountBadge}>
+                        {discountPercent}% OFF
+                      </span>
+                    )}
+                  </div>
                   <div className={styles.ratingBadge}>
                     <span className={styles.starFilled}>★</span>
                     <span>4.8</span>
@@ -153,11 +488,157 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
                   </div>
                 </div>
 
+                {/* Variant Selectors Section (only if has_variants is true) */}
+                {hasVariants && (
+                  <div className={styles.variantSection}>
+                    {/* Color Swatches (only if has_colors is true) */}
+                    {hasColors && distinctColors.length > 0 && (
+                      <div className={styles.variantGroup}>
+                        <div className={styles.variantLabel}>
+                          <span>Color:</span>
+                          <span className={styles.variantSelectedValue}>
+                            {selectedColor || "Select"}
+                          </span>
+                        </div>
+                        <div
+                          className={styles.colorSwatches}
+                          role="radiogroup"
+                          aria-label="Select Color"
+                        >
+                          {distinctColors.map((c) => {
+                            const isSelected = selectedColor === c.color_name;
+                            return (
+                              <div
+                                key={c.color_name}
+                                className={styles.colorSwatchWrapper}
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => handleColorChange(c.color_name)}
+                                  className={`${styles.colorSwatch} ${
+                                    isSelected ? styles.colorSwatchActive : ""
+                                  }`}
+                                  style={{ backgroundColor: c.color_hex }}
+                                  title={c.color_name}
+                                  aria-label={c.color_name}
+                                  aria-checked={isSelected}
+                                  role="radio"
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Combined Size Cards (Idea 1) */}
+                    {variantsForSelectedColor.length > 0 && dimensionLabels.length > 0 && (
+                      <div className={styles.variantGroup}>
+                        <div className={styles.variantLabel}>
+                          <span>Select Size & Configuration:</span>
+                        </div>
+                        <div
+                          className={styles.sizeCardsGrid}
+                          role="radiogroup"
+                          aria-label="Select Size & Configuration"
+                        >
+                          {variantsForSelectedColor.map((v, idx) => {
+                            const isSelected = activeVariant?.id === v.id;
+                            const sizeTitle = getSizeTitle(v, idx, variantsForSelectedColor.length);
+                            const dimSummary = formatDimensionSummary(v.dimension_values);
+                            const cardPrice = Number(v.price) || 0;
+                            const cardCompare = v.compare_at_price ? Number(v.compare_at_price) : null;
+                            const isCardOut = (v.stock ?? 0) <= 0;
+
+                            return (
+                              <button
+                                key={v.id || idx}
+                                type="button"
+                                onClick={() => handleSelectVariantCard(v)}
+                                className={`${styles.sizeCard} ${
+                                  isSelected ? styles.sizeCardActive : ""
+                                }`}
+                                aria-checked={isSelected}
+                                role="radio"
+                              >
+                                <div className={styles.sizeCardHeader}>
+                                  <span className={styles.sizeCardTitle}>{sizeTitle}</span>
+                                  <div
+                                    className={`${styles.sizeRadioCircle} ${
+                                      isSelected ? styles.sizeRadioCircleActive : ""
+                                    }`}
+                                  >
+                                    {isSelected && <div className={styles.sizeRadioInner} />}
+                                  </div>
+                                </div>
+
+                                <div className={styles.sizeCardPriceRow}>
+                                  <span className={styles.sizeCardPrice}>
+                                    ₹{cardPrice.toLocaleString()}
+                                  </span>
+                                  {cardCompare && cardCompare > cardPrice && (
+                                    <span className={styles.sizeCardComparePrice}>
+                                      ₹{cardCompare.toLocaleString()}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div
+                                  className={styles.sizeCardStock}
+                                  style={{
+                                    color: isCardOut
+                                      ? "#b91c1c"
+                                      : v.stock <= 5
+                                      ? "#b45309"
+                                      : "#15803d",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      width: 6,
+                                      height: 6,
+                                      borderRadius: "50%",
+                                      backgroundColor: isCardOut
+                                        ? "#ef4444"
+                                        : v.stock <= 5
+                                        ? "#f59e0b"
+                                        : "#22c55e",
+                                      display: "inline-block",
+                                    }}
+                                  />
+                                  <span>
+                                    {isCardOut
+                                      ? "Out of Stock"
+                                      : v.stock <= 5
+                                      ? `Only ${v.stock} left`
+                                      : "In Stock"}
+                                  </span>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Custom Dimensions Notice */}
+                        <div className={styles.customSizeNotice}>
+                          <span>📐 Need custom dimensions carved for your space?</span>
+                          <Link href="/contact" className={styles.customSizeNoticeLink}>
+                            Enquire Custom Order →
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <button
-                  className={`btn-primary ${styles.addToCartBtn}`}
-                  onClick={() => addToCart(product)}
+                  className={`btn-primary ${styles.addToCartBtn} ${
+                    isOutOfStock ? styles.addToCartDisabled : ""
+                  }`}
+                  onClick={handleAddToCart}
+                  disabled={isOutOfStock}
                 >
-                  Add to Cart
+                  {isOutOfStock ? "Out of Stock" : "Add to Cart"}
                 </button>
 
                 <div className={styles.trustStrip}>
@@ -312,7 +793,7 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
                   <div className={styles.specifications}>
                     <table className={styles.specsTable}>
                       <tbody>
-                        {product.dimensions.map((d, i) => (
+                        {effectiveSpecifications.map((d, i) => (
                           <tr key={i}>
                             <td>{d.label}</td>
                             <td>{d.value}</td>

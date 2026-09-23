@@ -15,7 +15,7 @@ export async function getDashboardStats() {
     { count: unresolvedInquiryCount },
     { data: recentOrders },
     { data: recentInquiries },
-    { data: lowStock },
+    { data: activeProducts },
   ] = await Promise.all([
     supabase.from("orders").select("total_amount, order_status"),
     supabase.from("products").select("*", { count: "exact", head: true }),
@@ -34,15 +34,39 @@ export async function getDashboardStats() {
       .limit(5),
     supabase
       .from("products")
-      .select("id, name, stock_quantity")
-      .eq("is_active", true)
-      .lte("stock_quantity", LOW_STOCK_THRESHOLD)
-      .order("stock_quantity", { ascending: true })
-      .limit(5),
+      .select("id, name, stock_quantity, has_variants")
+      .eq("is_active", true),
   ]);
 
   const revenue = (orders || []).reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
   const pendingOrders = (orders || []).filter((o) => o.order_status === "pending").length;
+
+  const variantProductIds = (activeProducts || [])
+    .filter((p) => p.has_variants)
+    .map((p) => p.id);
+
+  let stockByProduct = {};
+  if (variantProductIds.length > 0) {
+    const { data: variantRows } = await supabase
+      .from("product_variants")
+      .select("product_id, stock")
+      .in("product_id", variantProductIds);
+
+    for (const v of variantRows || []) {
+      stockByProduct[v.product_id] = (stockByProduct[v.product_id] || 0) + (v.stock || 0);
+    }
+  }
+
+  const withEffectiveStock = (activeProducts || []).map((p) => ({
+    id: p.id,
+    name: p.name,
+    stock_quantity: p.has_variants ? (stockByProduct[p.id] || 0) : p.stock_quantity,
+  }));
+
+  const lowStock = withEffectiveStock
+    .filter((p) => p.stock_quantity <= LOW_STOCK_THRESHOLD)
+    .sort((a, b) => a.stock_quantity - b.stock_quantity)
+    .slice(0, 5);
 
   return {
     revenue,
@@ -54,7 +78,7 @@ export async function getDashboardStats() {
     unresolvedInquiryCount: unresolvedInquiryCount || 0,
     recentOrders: recentOrders || [],
     recentInquiries: recentInquiries || [],
-    lowStock: lowStock || [],
+    lowStock,
   };
 }
 

@@ -62,6 +62,24 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className={styles.dashboardWrapper}>
+      {/* Mobile Greeting Banner (Visible only on mobile/tablet) */}
+      <div className={styles.mobileGreetingBanner}>
+        <div className={styles.mobileGreetingHeader}>
+          <div>
+            <h1 className={styles.mobileGreetingTitle}>
+              Welcome back, <span className={styles.mobileAdminName}>Admin</span> 👋
+            </h1>
+            <p className={styles.mobileGreetingSub}>
+              Here&apos;s what&apos;s happening with your store today.
+            </p>
+          </div>
+          <span className={styles.mobileLiveBadge}>
+            <span className={styles.mobileLiveDot} />
+            <span>Live</span>
+          </span>
+        </div>
+      </div>
+
       {/* 4 KPI Stat Cards */}
       <div className={styles.kpiGrid}>
         {kpis.map((kpi) => (

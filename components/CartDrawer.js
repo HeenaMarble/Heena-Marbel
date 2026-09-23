@@ -34,28 +34,36 @@ export default function CartDrawer() {
             </div>
           ) : (
             <ul className={styles.itemList}>
-              {cartItems.map((item) => (
-                <li key={item.id} className={styles.item}>
-                  <div className={styles.itemImage}>
-                    <img src={item.img} alt={item.title} />
-                  </div>
-                  <div className={styles.itemDetails}>
-                    <h4>{item.title}</h4>
-                    <p className={styles.price}>₹{item.price.toLocaleString()}</p>
-                    <div className={styles.qtyControl}>
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+              {cartItems.map((item) => {
+                const itemKey = item.cartKey || item.id;
+                return (
+                  <li key={itemKey} className={styles.item}>
+                    <div className={styles.itemImage}>
+                      <img src={item.img} alt={item.title} />
                     </div>
-                  </div>
-                  <button className={styles.removeBtn} onClick={() => removeFromCart(item.id)}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                  </button>
-                </li>
-              ))}
+                    <div className={styles.itemDetails}>
+                      <h4>{item.title}</h4>
+                      {item.variantSummary && (
+                        <p style={{ fontSize: '0.82rem', color: 'var(--text-light)', margin: '2px 0 4px 0' }}>
+                          {item.variantSummary}
+                        </p>
+                      )}
+                      <p className={styles.price}>₹{item.price.toLocaleString()}</p>
+                      <div className={styles.qtyControl}>
+                        <button onClick={() => updateQuantity(itemKey, item.quantity - 1)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(itemKey, item.quantity + 1)}>+</button>
+                      </div>
+                    </div>
+                    <button className={styles.removeBtn} onClick={() => removeFromCart(itemKey)} aria-label="Remove item">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

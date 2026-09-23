@@ -48,36 +48,44 @@ export default function CartPage() {
                     <div className={styles.colTotal}>Total</div>
                   </div>
                   
-                  {cartItems.map((item) => (
-                    <div key={item.id} className={styles.cartRow}>
-                      <div className={`${styles.colProduct} ${styles.productDetails}`}>
-                        <div className={styles.imageWrapper}>
-                          <img src={item.img} alt={item.title} className={styles.productImage} />
+                  {cartItems.map((item) => {
+                    const itemKey = item.cartKey || item.id;
+                    return (
+                      <div key={itemKey} className={styles.cartRow}>
+                        <div className={`${styles.colProduct} ${styles.productDetails}`}>
+                          <div className={styles.imageWrapper}>
+                            <img src={item.img} alt={item.title} className={styles.productImage} />
+                          </div>
+                          <div className={styles.productMeta}>
+                            <Link href={`/shop/${item.id}`} className={styles.productTitle}>{item.title}</Link>
+                            {item.variantSummary ? (
+                              <span style={{ fontSize: '0.85rem', color: 'var(--primary-color)', fontWeight: 500, margin: '2px 0' }}>
+                                {item.variantSummary}
+                              </span>
+                            ) : null}
+                            <span className={styles.productMaterial}>Authentic Makrana Marble</span>
+                            <button onClick={() => removeFromCart(itemKey)} className={styles.removeBtn}>Remove</button>
+                          </div>
                         </div>
-                        <div className={styles.productMeta}>
-                          <Link href={`/shop/${item.id}`} className={styles.productTitle}>{item.title}</Link>
-                          <span className={styles.productMaterial}>Authentic Makrana Marble</span>
-                          <button onClick={() => removeFromCart(item.id)} className={styles.removeBtn}>Remove</button>
+                        
+                        <div className={styles.colPrice}>
+                          ₹{item.price.toLocaleString()}
+                        </div>
+                        
+                        <div className={styles.colQty}>
+                          <div className={styles.qtyControl}>
+                            <button onClick={() => updateQuantity(itemKey, item.quantity - 1)}>-</button>
+                            <span>{item.quantity}</span>
+                            <button onClick={() => updateQuantity(itemKey, item.quantity + 1)}>+</button>
+                          </div>
+                        </div>
+                        
+                        <div className={styles.colTotal}>
+                          ₹{(item.price * item.quantity).toLocaleString()}
                         </div>
                       </div>
-                      
-                      <div className={styles.colPrice}>
-                        ₹{item.price.toLocaleString()}
-                      </div>
-                      
-                      <div className={styles.colQty}>
-                        <div className={styles.qtyControl}>
-                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                          <span>{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.colTotal}>
-                        ₹{(item.price * item.quantity).toLocaleString()}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   
                   <div className={styles.cartFooter}>
                     <Link href="/shop" className={styles.continueLink}>
