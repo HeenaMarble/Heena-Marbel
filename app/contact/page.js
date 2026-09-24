@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import styles from './Contact.module.css';
+import ContactForm from '@/components/contact/ContactForm';
 
 export default function ContactPage() {
   return (
@@ -71,21 +72,7 @@ export default function ContactPage() {
 
               <div className={styles.formBlock}>
                 <h3>Send Us a Message</h3>
-                <form onSubmit={(e) => e.preventDefault()}>
-                  <div className={styles.formGroup}>
-                    <label>Full Name</label>
-                    <input type="text" placeholder="John Doe" required />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Email Address</label>
-                    <input type="email" placeholder="john@example.com" required />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Message</label>
-                    <textarea rows="5" placeholder="Tell us about your project..." required></textarea>
-                  </div>
-                  <button type="submit" className={`btn-primary ${styles.submitBtn}`}>Send Message</button>
-                </form>
+                <ContactForm />
               </div>
 
             </div>
