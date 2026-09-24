@@ -1,79 +1,24 @@
-"use client";
-import { useRef } from 'react';
 import styles from './TestimonialsContact.module.css';
+import TestimonialsCarousel from './TestimonialsCarousel';
+import { getPublicTestimonials } from '@/lib/actions/content-actions';
 
-export default function TestimonialsContact() {
-  const carouselRef = useRef(null);
-
-  const scrollLeft = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-    }
-  };
-
-  const testimonials = [
-    { id: 1, name: 'Ramesh Sharma', location: 'Jaipur', text: 'Excellent craftsmanship and timely delivery. The quality of Makrana marble is outstanding. Highly recommended!', stars: 5 },
-    { id: 2, name: 'Anjali Desai', location: 'Mumbai', text: 'They transformed our home temple into a masterpiece. The attention to detail is truly breathtaking.', stars: 5 },
-    { id: 3, name: 'Vikram Singh', location: 'Delhi', text: 'Very professional team. The marble flooring they provided is top-notch and perfectly polished.', stars: 4 },
-    { id: 4, name: 'Priya Patel', location: 'Ahmedabad', text: 'Beautiful intricate carving work! It looks exactly like the 3D models they showed us initially.', stars: 5 },
-    { id: 5, name: 'Amit Jain', location: 'Surat', text: 'Best marble suppliers in Rajasthan. We sourced all stone for our new office building from them.', stars: 5 },
-    { id: 6, name: 'Neha Gupta', location: 'Pune', text: 'The custom marble fountain they designed for our garden is stunning. Great service from start to finish.', stars: 5 },
-    { id: 7, name: 'Rajesh Kumar', location: 'Udaipur', text: 'Exceptional quality and competitive pricing. Will definitely work with them again on future projects.', stars: 4 },
-    { id: 8, name: 'Meera Reddy', location: 'Hyderabad', text: 'Their artisans are incredibly skilled. The statues we ordered are perfect down to the smallest detail.', stars: 5 },
-    { id: 9, name: 'Sanjay Verma', location: 'Bangalore', text: 'Timely delivery and safe packaging. None of the delicate carved pieces were damaged in transit.', stars: 5 },
-    { id: 10, name: 'Kavita Joshi', location: 'Indore', text: 'A truly premium experience. Their Makrana marble is authentic and gives a royal look to our home.', stars: 5 },
-  ];
+// Server Component — fetches live testimonials from Supabase at request time
+export default async function TestimonialsContact() {
+  const testimonials = await getPublicTestimonials();
 
   return (
     <section className={`section ${styles.tcSection}`}>
       <div className="container">
-        
+
         {/* Testimonials Section */}
         <div className={styles.testimonialsFull}>
           <div className={styles.headerCentered}>
             <span className="subheading">TESTIMONIALS</span>
             <h2 className={`heading ${styles.testimonialsHeading}`}>What Our Clients Say</h2>
           </div>
-          
-          <div className={styles.carouselWrapper}>
-            <button className={styles.arrowBtn} onClick={scrollLeft}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            
-            <div className={styles.testimonialCarousel} ref={carouselRef}>
-              {testimonials.map((t) => (
-                <div key={t.id} className={styles.testimonialCard}>
-                  <div className={styles.quoteIcon}>
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-                    </svg>
-                  </div>
-                  <p className={styles.quoteText}>{t.text}</p>
-                  <div className={styles.stars}>
-                    {'★'.repeat(t.stars)}{'☆'.repeat(5 - t.stars)}
-                  </div>
-                  <div className={styles.author}>
-                    <strong>{t.name}</strong>
-                    <span>{t.location}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            <button className={styles.arrowBtn} onClick={scrollRight}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
+          {/* Client component handles scroll interactivity */}
+          <TestimonialsCarousel testimonials={testimonials} />
         </div>
 
         {/* Div2 Video Section */}
@@ -82,7 +27,7 @@ export default function TestimonialsContact() {
             <span className="subheading">OUR CRAFT</span>
             <h2 className={`heading ${styles.craftHeading}`}>Unveiling the Beauty of Makrana</h2>
             <p>
-              Watch as our master artisans shape raw, premium Makrana marble into divine structures. 
+              Watch as our master artisans shape raw, premium Makrana marble into divine structures.
               Our commitment to quality ensures every cut, polish, and carving meets the highest standards of heritage architecture.
             </p>
           </div>
@@ -100,7 +45,7 @@ export default function TestimonialsContact() {
           <p className={styles.desc}>
             Whether it's a temple, home or a custom design, we are here to help you.
           </p>
-          
+
           <div className={styles.actions}>
             <a href="tel:+918769386438" className="btn-primary">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}>
