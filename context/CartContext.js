@@ -6,8 +6,12 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
+  const [buyNowItem, setBuyNowItem] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const clearBuyNowItem = () => setBuyNowItem(null);
+  const clearCart = () => setCartItems([]);
 
   useEffect(() => {
     setMounted(true);
@@ -33,7 +37,7 @@ function getCartItemKey(item) {
   return String(item.id);
 }
 
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, openDrawer = true) => {
     const key = getCartItemKey(product);
     setCartItems(prev => {
       const existing = prev.find(item => getCartItemKey(item) === key);
@@ -44,7 +48,9 @@ function getCartItemKey(item) {
       }
       return [...prev, { ...product, cartKey: key, quantity: quantity || 1 }];
     });
-    setIsCartOpen(true);
+    if (openDrawer) {
+      setIsCartOpen(true);
+    }
   };
 
   const removeFromCart = (key) => {
@@ -71,6 +77,11 @@ function getCartItemKey(item) {
   return (
     <CartContext.Provider value={{ 
       cartItems, 
+      cart: cartItems,
+      buyNowItem,
+      setBuyNowItem,
+      clearBuyNowItem,
+      clearCart,
       addToCart, 
       removeFromCart, 
       updateQuantity, 

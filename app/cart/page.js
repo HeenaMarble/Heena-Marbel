@@ -119,9 +119,9 @@ export default function CartPage() {
                     <span className={styles.totalAmount}>₹{cartTotal.toLocaleString()}</span>
                   </div>
                   
-                  <button className={`btn-primary ${styles.checkoutBtn}`}>
+                  <Link href="/checkout" className={`btn-primary ${styles.checkoutBtn}`}>
                     Proceed to Secure Checkout
-                  </button>
+                  </Link>
                   
                   <div className={styles.secureCheckout}>
                     <div className={styles.secureIcon}>

@@ -1,61 +1,240 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Package, MapPin, ArrowLeft } from "lucide-react";
 import { getOrder } from "@/actions/orders";
-import OrderStatusSelect from "@/components/admin/OrderStatusSelect";
+import ManageStatusCard from "@/components/admin/ManageStatusCard";
+import styles from "./OrderDetail.module.css";
+
+function parseShippingAddress(rawAddress, fallbackName, fallbackPhone) {
+  let addr = rawAddress;
+  if (typeof addr === "string") {
+    try {
+      addr = JSON.parse(addr);
+    } catch {
+      return {
+        fullName: fallbackName || "Guest",
+        phone: fallbackPhone || "",
+        headerLine: `${fallbackName || "Guest"}${fallbackPhone ? ` · ${fallbackPhone}` : ""}`,
+        addressLine1: rawAddress,
+        addressLine2: "",
+        cityStatePin: "",
+      };
+    }
+  }
+
+  if (!addr || typeof addr !== "object") {
+    return {
+      fullName: fallbackName || "Guest",
+      phone: fallbackPhone || "",
+      headerLine: `${fallbackName || "Guest"}${fallbackPhone ? ` · ${fallbackPhone}` : ""}`,
+      addressLine1: "",
+      addressLine2: "",
+      cityStatePin: "",
+    };
+  }
+
+  const fullName = addr.full_name || fallbackName || "Guest";
+  const phone = addr.phone || fallbackPhone || "";
+  const headerLine = `${fullName}${phone ? ` · ${phone}` : ""}`;
+  const addressLine1 = addr.address_line1 || addr.street || addr.address || "";
+  const addressLine2 = addr.address_line2 || "";
+
+  const cityState = [addr.city, addr.state].filter(Boolean).join(", ");
+  const pin = addr.pin_code || addr.pincode || addr.postal_code || "";
+  const cityStatePin = [cityState, pin].filter(Boolean).join(" ");
+
+  return {
+    fullName,
+    phone,
+    headerLine,
+    addressLine1,
+    addressLine2,
+    cityStatePin,
+  };
+}
 
 export default async function OrderDetailPage({ params }) {
   const { id } = await params;
-  const order = await getOrder(id);
+  let order;
+  try {
+    order = await getOrder(id);
+  } catch (e) {
+    notFound();
+  }
+
+  if (!order) notFound();
+
+  const items = order.items || [];
+  const calculatedSubtotal = items.reduce(
+    (acc, it) => acc + (Number(it.price) || 0) * (it.quantity || 1),
+    0
+  );
+  const subtotal = order.subtotal ?? calculatedSubtotal;
+  const shippingFee = Number(order.shipping_fee || 0);
+  const codFee = Number(order.cod_fee || 0);
+  const totalAmount = Number(order.total_amount || 0);
+
+  const customerName = order.customers?.name || "Guest";
+  const customerEmail = order.customers?.email || "—";
+  const customerPhone = order.customers?.phone || "—";
+
+  const parsedAddress = parseShippingAddress(
+    order.shipping_address,
+    customerName,
+    order.customers?.phone
+  );
+
+  const orderDateObj = new Date(order.created_at);
+  const formattedDate = !isNaN(orderDateObj.getTime())
+    ? `${orderDateObj.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })}, ${orderDateObj.toLocaleTimeString("en-IN", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })}`
+    : String(order.created_at);
 
   return (
-    <div>
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#b38b4d]/20 pb-6">
+    <div className={styles.pageContainer}>
+      {/* Top Header */}
+      <div className={styles.headerSection}>
+        <Link href="/admin/orders" className={styles.backLink}>
+          <ArrowLeft size={16} />
+          <span>Back to Orders</span>
+        </Link>
         <div>
-          <h1 className="text-3xl font-semibold text-[#1a1a1a]">{order.order_number}</h1>
-          <p className="text-base text-[#1a1a1a]/50 mt-1">{new Date(order.created_at).toLocaleString("en-IN")}</p>
+          <h1 className={styles.orderHeading}>{order.order_number}</h1>
+          <p className={styles.orderDate}>{formattedDate}</p>
         </div>
-        <OrderStatusSelect id={order.id} currentStatus={order.order_status} />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6">
-        <div className="rounded-[2rem] border border-[#b38b4d]/20 bg-white/85 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-[#1a1a1a] mb-4">Items</h2>
-          <ul className="divide-y divide-[#b38b4d]/10">
-            {order.items.map((item) => (
-              <li key={item.id} className="flex items-center gap-4 py-3">
-                <div className="h-12 w-12 rounded-lg overflow-hidden bg-[#1a1a1a]/5 shrink-0">
-                  {item.products?.image_url && (
-                    <img src={item.products.image_url} alt="" className="w-full h-full object-cover" />
-                  )}
+      {/* 2-Column SakPack Layout */}
+      <div className={styles.mainGrid}>
+        {/* Left Column: Items + Customer & Shipping */}
+        <div className={styles.leftColumn}>
+          {/* Items Card */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.iconWrap}>
+                <Package size={18} />
+              </div>
+              <h2 className={styles.cardTitle}>Items</h2>
+            </div>
+
+            <div className={styles.itemsList}>
+              {items.map((item) => {
+                const itemTotal = (Number(item.price) || 0) * (item.quantity || 1);
+                return (
+                  <div key={item.id} className={styles.itemRow}>
+                    <div className={styles.itemLeft}>
+                      <div className={styles.itemThumb}>
+                        {item.products?.image_url ? (
+                          <img
+                            src={item.products.image_url}
+                            alt={item.products?.name || "Product"}
+                          />
+                        ) : (
+                          <span className={styles.noThumb}>No pic</span>
+                        )}
+                      </div>
+                      <div className={styles.itemInfo}>
+                        <p className={styles.itemName}>
+                          {item.products?.name || "Product"}
+                        </p>
+                        <p className={styles.itemMeta}>Qty: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <span className={styles.itemPrice}>
+                      ₹{itemTotal.toLocaleString("en-IN")}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Price Breakdown */}
+            <div className={styles.totalsSection}>
+              <div className={styles.totalRow}>
+                <span>Subtotal</span>
+                <span className={styles.totalRowValue}>
+                  ₹{Number(subtotal).toLocaleString("en-IN")}
+                </span>
+              </div>
+
+              <div className={styles.totalRow}>
+                <span>Shipping</span>
+                <span className={styles.totalRowValue}>
+                  {shippingFee === 0 ? "Free" : `₹${shippingFee.toLocaleString("en-IN")}`}
+                </span>
+              </div>
+
+              {codFee > 0 && (
+                <div className={styles.totalRow}>
+                  <span>COD Fee</span>
+                  <span className={styles.totalRowValue}>
+                    ₹{codFee.toLocaleString("en-IN")}
+                  </span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#1a1a1a] truncate">{item.products?.name || "Deleted product"}</p>
-                  <p className="text-xs text-[#1a1a1a]/50">Qty: {item.quantity}</p>
-                </div>
-                <p className="font-semibold text-[#1a1a1a]">₹{Number(item.price).toLocaleString("en-IN")}</p>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 pt-4 border-t border-[#b38b4d]/10 flex justify-between font-semibold text-[#1a1a1a]">
-            <span>Total</span>
-            <span>₹{Number(order.total_amount).toLocaleString("en-IN")}</span>
+              )}
+
+              <div className={styles.grandTotalRow}>
+                <span className={styles.grandTotalLabel}>Total</span>
+                <span className={styles.grandTotalValue}>
+                  ₹{totalAmount.toLocaleString("en-IN")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Customer & Shipping Card */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.iconWrap}>
+                <MapPin size={18} />
+              </div>
+              <h2 className={styles.cardTitle}>Customer &amp; Shipping</h2>
+            </div>
+
+            <div className={styles.customerShippingGrid}>
+              {/* Customer Column */}
+              <div className={styles.columnGroup}>
+                <span className={styles.colSubLabel}>CUSTOMER</span>
+                <p className={styles.boldContact}>{customerName}</p>
+                <p className={styles.contactLine}>{customerEmail}</p>
+                {customerPhone !== "—" && (
+                  <p className={styles.contactLine}>{customerPhone}</p>
+                )}
+              </div>
+
+              {/* Shipping Address Column */}
+              <div className={styles.columnGroup}>
+                <span className={styles.colSubLabel}>SHIPPING ADDRESS</span>
+                <p className={styles.boldContact}>{parsedAddress.headerLine}</p>
+                {parsedAddress.addressLine1 && (
+                  <p className={styles.contactLine}>{parsedAddress.addressLine1}</p>
+                )}
+                {parsedAddress.addressLine2 && (
+                  <p className={styles.contactLine}>{parsedAddress.addressLine2}</p>
+                )}
+                {parsedAddress.cityStatePin && (
+                  <p className={styles.contactLine}>{parsedAddress.cityStatePin}</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-[#b38b4d]/20 bg-white/85 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-[#1a1a1a] mb-4">Customer</h2>
-          <p className="font-semibold text-[#1a1a1a]">{order.customers?.name || "Guest"}</p>
-          <p className="text-sm text-[#1a1a1a]/60">{order.customers?.email}</p>
-          <p className="text-sm text-[#1a1a1a]/60">{order.customers?.phone}</p>
-
-          {order.shipping_address && (
-            <>
-              <h3 className="text-sm font-semibold text-[#1a1a1a] mt-5 mb-2">Shipping Address</h3>
-              <p className="text-sm text-[#1a1a1a]/70 whitespace-pre-line">
-                {typeof order.shipping_address === "string"
-                  ? order.shipping_address
-                  : JSON.stringify(order.shipping_address, null, 2)}
-              </p>
-            </>
-          )}
+        {/* Right Column: Manage Status Card */}
+        <div className={styles.rightColumn}>
+          <ManageStatusCard
+            orderId={order.id}
+            orderNumber={order.order_number}
+            currentStatus={order.order_status}
+            paymentMethod={order.payment_method}
+          />
         </div>
       </div>
     </div>

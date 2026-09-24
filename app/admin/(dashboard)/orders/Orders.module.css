@@ -1,0 +1,285 @@
+.pageContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 4px;
+  padding-bottom: 40px;
+  box-sizing: border-box;
+}
+
+/* Header Section */
+.headerSection {
+  border-bottom: 1px solid rgba(179, 139, 77, 0.22);
+  padding-bottom: 24px;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.4px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.titleHighlight {
+  color: #967440;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #777777;
+  margin-top: 6px;
+  margin-bottom: 0;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* KPI Stat Cards Grid */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.kpiCard {
+  background: #ffffff;
+  border: 1px solid rgba(179, 139, 77, 0.25);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(179, 139, 77, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(179, 139, 77, 0.5);
+  box-shadow: 0 10px 30px rgba(179, 139, 77, 0.12);
+}
+
+.kpiHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpiLabel {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #967440;
+}
+
+.kpiIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(179, 139, 77, 0.1);
+  border: 1px solid rgba(179, 139, 77, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #967440;
+  transition: all 0.2s ease;
+}
+
+.kpiCard:hover .kpiIconWrap {
+  background: #b38b4d;
+  color: #ffffff;
+}
+
+.kpiValue {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 14px 0 0 0;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+/* Orders Table Wrapper */
+.contentWrapper {
+  border-radius: 16px;
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.tableContainer {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.ordersTable {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ordersTable th {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(179, 139, 77, 0.18);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #967440;
+  background: #fcfbf9;
+  white-space: nowrap;
+}
+
+.ordersTable td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f2ede5;
+  color: #1a1a1a;
+  vertical-align: middle;
+}
+
+.ordersTable tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.ordersTable tbody tr:hover {
+  background-color: rgba(26, 26, 26, 0.015);
+}
+
+.ordersTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.orderNumber {
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.customerName {
+  font-weight: 500;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.orderDate {
+  color: #666666;
+  white-space: nowrap;
+}
+
+.paymentLabel {
+  color: #555555;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.totalAmount {
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+/* Status Badges (matching customer /account/orders styles) */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.statusPending {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.statusProcessing {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.statusShipped {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.statusDelivered {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.statusCancelled {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Action Button */
+.viewDetailsBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #967440 !important;
+  border: 1px solid rgba(179, 139, 77, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: #ffffff;
+  white-space: nowrap;
+}
+
+.viewDetailsBtn:hover {
+  background: rgba(179, 139, 77, 0.1);
+  border-color: #b38b4d;
+  color: #725225 !important;
+}
+
+/* Empty State */
+.emptyStateContainer {
+  padding: 56px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.emptyStateMessage {
+  font-size: 16px;
+  font-weight: 600;
+  color: #777777;
+  margin: 0;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1200px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+}

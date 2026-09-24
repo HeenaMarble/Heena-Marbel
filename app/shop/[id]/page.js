@@ -1,4 +1,6 @@
 import { getShopProduct, getRelatedProducts } from "@/actions/shop";
+import { getApprovedReviews } from "@/actions/reviews";
+import { getCurrentCustomer } from "@/actions/customer-auth";
 import { PRODUCTS } from "@/data/products";
 import ProductDetailClient from "@/components/ProductDetailClient";
 import Navbar from "@/components/Navbar";
@@ -66,10 +68,18 @@ export default async function ProductDetailPage({ params }) {
     );
   }
 
+  // Fetch top 4 approved reviews and current customer in parallel
+  const [initialReviews, currentCustomer] = await Promise.all([
+    getApprovedReviews(product.id, 4).catch(() => []),
+    getCurrentCustomer().catch(() => null),
+  ]);
+
   return (
     <ProductDetailClient
       product={product}
       relatedProducts={relatedProducts}
+      initialReviews={initialReviews}
+      currentCustomer={currentCustomer}
     />
   );
 }

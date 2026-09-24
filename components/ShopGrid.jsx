@@ -28,14 +28,6 @@ export default function ShopGrid({ products }) {
             <Link href={`/shop/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <h3>{product.title}</h3>
             </Link>
-            <div className={styles.cardRating}>
-              <span className={styles.starFilled}>★</span>
-              <span className={styles.starFilled}>★</span>
-              <span className={styles.starFilled}>★</span>
-              <span className={styles.starFilled}>★</span>
-              <span className={styles.starHalf}>★</span>
-              <span className={styles.reviewCount}>(24)</span>
-            </div>
             <div className={styles.priceRow}>
               <div className={styles.priceGroup}>
                 <span className={styles.price}>₹{product.price.toLocaleString()}</span>

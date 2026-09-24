@@ -223,3 +223,19 @@
     font-size: 0.95rem;
   }
 }
+
+.errorMsg {
+  background-color: #fdecea;
+  color: #b3261e;
+  border: 1px solid #f5c6c2;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

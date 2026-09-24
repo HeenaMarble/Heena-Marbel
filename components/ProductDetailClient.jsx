@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import styles from "@/app/shop/[id]/ProductDetail.module.css";
+import { submitReview } from "@/actions/reviews";
+
 
 function formatDimensionSummary(dimValues) {
   if (!dimValues || typeof dimValues !== "object") return "";
@@ -51,8 +54,9 @@ function getSizeTitle(variant, index, total) {
   return `Size Option ${index + 1}`;
 }
 
-export default function ProductDetailClient({ product, relatedProducts = [] }) {
-  const { addToCart } = useCart();
+export default function ProductDetailClient({ product, relatedProducts = [], initialReviews = [], reviewStats = null, currentCustomer = null }) {
+  const router = useRouter();
+  const { addToCart, setBuyNowItem } = useCart();
 
   const hasVariants = Boolean(product?.has_variants && product?.variants?.length > 0);
   const hasColors = Boolean(hasVariants && product?.has_colors);
@@ -220,6 +224,53 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
     setActiveTab(hasDimensions ? "specs" : "details");
   }, [product?.id, hasDimensions]);
 
+  // Review form state
+  const [reviewRating, setReviewRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewToast, setReviewToast] = useState(null); // { type: "success"|"error", msg }
+  const [isPendingReview, startReviewTransition] = useTransition();
+
+  function handleSubmitReview(e) {
+    e.preventDefault();
+    if (reviewRating === 0) {
+      setReviewToast({ type: "error", msg: "Please select a star rating." });
+      setTimeout(() => setReviewToast(null), 3500);
+      return;
+    }
+    startReviewTransition(async () => {
+      try {
+        await submitReview(product.id, reviewRating, reviewComment);
+        setReviewRating(0);
+        setReviewComment("");
+        setReviewToast({ type: "success", msg: "Thank you! Your review is pending approval." });
+        setTimeout(() => setReviewToast(null), 4000);
+      } catch {
+        setReviewToast({ type: "error", msg: "Something went wrong. Please try again." });
+        setTimeout(() => setReviewToast(null), 3500);
+      }
+    });
+  }
+
+  // Compute avg rating and count from reviewStats (live DB aggregate) or fallback to initialReviews
+  const reviewCount = reviewStats?.count ?? initialReviews.length;
+  const avgRating = reviewStats?.avgRating ?? (
+    initialReviews.length > 0
+      ? (initialReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / initialReviews.length).toFixed(1)
+      : null
+  );
+
+  function timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return "Today";
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} week${Math.floor(days / 7) > 1 ? "s" : ""} ago`;
+    if (days < 365) return `${Math.floor(days / 30)} month${Math.floor(days / 30) > 1 ? "s" : ""} ago`;
+    return `${Math.floor(days / 365)} year${Math.floor(days / 365) > 1 ? "s" : ""} ago`;
+  }
+
   // Color change handler with auto-clamping of dimension selections
   const handleColorChange = (newColor) => {
     setSelectedColor(newColor);
@@ -321,7 +372,7 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
   const isOutOfStock = effectiveStock <= 0;
 
   // Add to cart handler
-  const handleAddToCart = () => {
+  const handleAddToCart = (openDrawer = true) => {
     if (isOutOfStock) return;
 
     if (hasVariants && activeVariant) {
@@ -345,7 +396,7 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
         price: effectivePrice,
         stock_quantity: effectiveStock,
         img: selectedImage || filteredImages[0] || product.img,
-      });
+      }, 1, openDrawer);
     } else {
       addToCart({
         ...product,
@@ -353,8 +404,45 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
         compare_at_price: compareAtPrice,
         stock_quantity: effectiveStock,
         img: selectedImage || product.img,
-      });
+      }, 1, openDrawer);
     }
+  };
+
+  const handleBuyNow = () => {
+    if (isOutOfStock) return;
+
+    let variantSummary = "";
+    if (hasVariants && activeVariant) {
+      const variantSummaryParts = [];
+      if (hasColors && activeVariant.color_name) {
+        variantSummaryParts.push(activeVariant.color_name);
+      }
+      if (activeVariant.dimension_values) {
+        Object.entries(activeVariant.dimension_values).forEach(([k, v]) => {
+          variantSummaryParts.push(`${k}: ${v}`);
+        });
+      }
+      variantSummary = variantSummaryParts.join(" • ");
+    }
+
+    const itemImage = selectedImage || (hasVariants && filteredImages[0]) || product.img || product.image_url;
+
+    setBuyNowItem({
+      id: product.id,
+      productId: product.id,
+      variantId: activeVariant?.id || null,
+      name: product.title || product.name,
+      title: product.title || product.name,
+      price: effectivePrice ?? activeVariant?.price ?? product.price,
+      quantity: 1,
+      colorName: activeVariant?.color_name || null,
+      dimensionValues: activeVariant?.dimension_values || null,
+      variantSummary: variantSummary || null,
+      image: itemImage,
+      img: itemImage,
+    });
+
+    router.push("/checkout?mode=buynow");
   };
 
   if (!product) {
@@ -481,11 +569,30 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
                       </span>
                     )}
                   </div>
-                  <div className={styles.ratingBadge}>
-                    <span className={styles.starFilled}>★</span>
-                    <span>4.8</span>
-                    <span className={styles.ratingReviews}>(24 reviews)</span>
-                  </div>
+                  <a
+                    href="#reviews"
+                    className={styles.ratingBadge}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    title={reviewCount > 0 ? "View customer reviews" : "Write a review"}
+                  >
+                    {reviewCount > 0 ? (
+                      <>
+                        <span className={styles.starFilled}>★</span>
+                        <span>{avgRating}</span>
+                        <span className={styles.ratingReviews}>
+                          ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className={styles.starEmpty}>★</span>
+                        <span className={styles.ratingReviews}>No reviews yet</span>
+                      </>
+                    )}
+                  </a>
                 </div>
 
                 {/* Variant Selectors Section (only if has_variants is true) */}
@@ -631,15 +738,59 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
                   </div>
                 )}
 
-                <button
-                  className={`btn-primary ${styles.addToCartBtn} ${
-                    isOutOfStock ? styles.addToCartDisabled : ""
-                  }`}
-                  onClick={handleAddToCart}
-                  disabled={isOutOfStock}
-                >
-                  {isOutOfStock ? "Out of Stock" : "Add to Cart"}
-                </button>
+                <div className={styles.actionButtonGroup}>
+                  <button
+                    type="button"
+                    className={`${styles.addToCartBtn} ${
+                      isOutOfStock ? styles.addToCartDisabled : ""
+                    }`}
+                    onClick={() => handleAddToCart(true)}
+                    disabled={isOutOfStock}
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={styles.buttonIcon}
+                    >
+                      <circle cx="9" cy="21" r="1"></circle>
+                      <circle cx="20" cy="21" r="1"></circle>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`${styles.buyNowBtn} ${
+                      isOutOfStock ? styles.addToCartDisabled : ""
+                    }`}
+                    onClick={handleBuyNow}
+                    disabled={isOutOfStock}
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={styles.buttonIcon}
+                    >
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span>Buy Now</span>
+                  </button>
+                </div>
 
                 <div className={styles.trustStrip}>
                   <div className={styles.trustItem}>
@@ -847,96 +998,165 @@ export default function ProductDetailClient({ product, relatedProducts = [] }) {
             </div>
 
             {/* Reviews Section */}
-            <div className={styles.reviewsContainer}>
+            <div id="reviews" className={styles.reviewsContainer}>
               <div className={styles.reviewsList}>
                 <h3>Customer Reviews</h3>
-                <div className={styles.overallRating}>
-                  <div className={styles.stars}>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starHalf}>★</span>
-                  </div>
-                  <span>4.8 based on 24 reviews</span>
-                </div>
 
-                <div className={styles.reviewItem}>
-                  <div className={styles.reviewHeader}>
-                    <span className={styles.reviewerName}>Rahul Sharma</span>
-                    <span className={styles.reviewDate}>2 weeks ago</span>
-                  </div>
-                  <div className={styles.stars}>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                  </div>
-                  <p className={styles.reviewText}>
-                    Absolutely stunning craftsmanship. The details on the marble
-                    are exquisite. Highly recommended!
-                  </p>
-                </div>
-
-                <div className={styles.reviewItem}>
-                  <div className={styles.reviewHeader}>
-                    <span className={styles.reviewerName}>Priya Patel</span>
-                    <span className={styles.reviewDate}>1 month ago</span>
-                  </div>
-                  <div className={styles.stars}>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starFilled}>★</span>
-                    <span className={styles.starEmpty}>★</span>
-                  </div>
-                  <p className={styles.reviewText}>
-                    Beautiful piece, arrived well packaged and safe. The marble
-                    quality is genuine Makrana.
-                  </p>
-                </div>
-              </div>
-
-              <div className={styles.reviewForm}>
-                <h3>Write a Review</h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    alert("Review submitted!");
-                  }}
-                >
-                  <div className={styles.formGroup}>
-                    <label>Your Rating</label>
-                    <div className={styles.ratingInput}>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          type="button"
-                          key={star}
-                          className={styles.starBtn}
+                {/* Overall rating summary */}
+                {reviewCount > 0 ? (
+                  <div className={styles.overallRating}>
+                    <div className={styles.stars}>
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <span
+                          key={s}
+                          className={
+                            s <= Math.round(Number(avgRating))
+                              ? styles.starFilled
+                              : styles.starEmpty
+                          }
                         >
                           ★
-                        </button>
+                        </span>
                       ))}
                     </div>
+                    <span>{avgRating} based on {reviewCount} review{reviewCount !== 1 ? "s" : ""}</span>
                   </div>
-                  <div className={styles.formGroup}>
-                    <label>Review</label>
-                    <textarea
-                      className={styles.textareaField}
-                      rows="4"
-                      placeholder="Share your thoughts about this masterpiece"
-                      required
-                    ></textarea>
+                ) : (
+                  <p style={{ color: "var(--text-light)", marginBottom: "30px", fontSize: "0.95rem" }}>
+                    No reviews yet. Be the first to review this product!
+                  </p>
+                )}
+
+                {/* Dynamic reviews list */}
+                {initialReviews.map((r) => (
+                  <div key={r.id} className={styles.reviewItem}>
+                    <div className={styles.reviewHeader}>
+                      <span className={styles.reviewerName}>{r.customers?.name || "Customer"}</span>
+                      <span className={styles.reviewDate}>{timeAgo(r.created_at)}</span>
+                    </div>
+                    <div className={styles.stars}>
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <span
+                          key={s}
+                          className={s <= r.rating ? styles.starFilled : styles.starEmpty}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <p className={styles.reviewText}>{r.comment}</p>
                   </div>
-                  <button
-                    type="submit"
-                    className="btn-primary"
-                    style={{ width: "100%" }}
+                ))}
+
+                {/* View All Reviews link */}
+                {reviewCount > 0 && (
+                  <div style={{ marginTop: "20px" }}>
+                    <Link
+                      href={`/shop/${product.id}/reviews`}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        color: "var(--primary-color)",
+                        fontWeight: 600,
+                        fontSize: "0.95rem",
+                        textDecoration: "none",
+                        borderBottom: "1px solid var(--primary-color)",
+                        paddingBottom: "2px",
+                      }}
+                    >
+                      View all reviews →
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Review Form */}
+              <div className={styles.reviewForm}>
+                <h3>Write a Review</h3>
+
+                {/* Toast notification */}
+                {reviewToast && (
+                  <div
+                    style={{
+                      marginBottom: "16px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                      background: reviewToast.type === "success" ? "#f0fdf4" : "#fef2f2",
+                      color: reviewToast.type === "success" ? "#15803d" : "#b91c1c",
+                      border: `1px solid ${reviewToast.type === "success" ? "#bbf7d0" : "#fecaca"}`,
+                    }}
                   >
-                    Submit Review
-                  </button>
-                </form>
+                    {reviewToast.msg}
+                  </div>
+                )}
+
+                {currentCustomer ? (
+                  <form onSubmit={handleSubmitReview}>
+                    <div className={styles.formGroup}>
+                      <label>Your Rating</label>
+                      <div className={styles.ratingInput}>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            type="button"
+                            key={star}
+                            className={styles.starBtn}
+                            style={{
+                              color:
+                                star <= (hoverRating || reviewRating)
+                                  ? "#f5b041"
+                                  : "#e0e0e0",
+                            }}
+                            onClick={() => setReviewRating(star)}
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            aria-label={`Rate ${star} star${star !== 1 ? "s" : ""}`}
+                          >
+                            ★
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Review</label>
+                      <textarea
+                        className={styles.textareaField}
+                        rows="4"
+                        placeholder="Share your thoughts about this masterpiece"
+                        required
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      style={{ width: "100%", opacity: isPendingReview ? 0.7 : 1 }}
+                      disabled={isPendingReview}
+                    >
+                      {isPendingReview ? "Submitting…" : "Submit Review"}
+                    </button>
+                  </form>
+                ) : (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "30px 20px",
+                      background: "#faf8f5",
+                      borderRadius: "8px",
+                      border: "1px dashed #efe8d8",
+                    }}
+                  >
+                    <p style={{ color: "var(--text-light)", marginBottom: "16px", fontSize: "0.95rem" }}>
+                      You must be logged in to write a review.
+                    </p>
+                    <Link href="/signin" className="btn-primary" style={{ display: "inline-block" }}>
+                      Login to Write a Review
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

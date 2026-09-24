@@ -21,6 +21,7 @@ import {
   FolderKanban,
   X,
   LogOut,
+  Truck,
 } from "lucide-react";
 import { useAdminSidebar } from "@/context/AdminSidebarContext";
 import { adminLogout } from "@/actions/auth";
@@ -53,7 +54,13 @@ const NAV_GROUPS = [
       { label: "Stats", href: "/admin/content/stats", icon: BarChart3 },
       { label: "Testimonials", href: "/admin/content/testimonials", icon: Quote },
       { label: "Reels", href: "/admin/content/reels", icon: Film },
+    ],
+  },
+  {
+    title: "Settings",
+    items: [
       { label: "Site Settings", href: "/admin/content/settings", icon: Settings },
+      { label: "Shipping Settings", href: "/admin/settings/shipping", icon: Truck },
     ],
   },
 ];
@@ -132,7 +139,9 @@ export default function AdminSidebar({ adminName = "Admin" }) {
               <div className={styles.navItems}>
                 {group.items.map((item) => {
                   const active =
-                    item.href === "/admin" || item.href === "/admin/content/settings"
+                    item.href === "/admin" ||
+                    item.href === "/admin/content/settings" ||
+                    item.href === "/admin/settings/shipping"
                       ? pathname === item.href
                       : pathname.startsWith(item.href);
                   const badgeCount = badges[item.href];

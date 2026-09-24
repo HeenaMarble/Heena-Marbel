@@ -1,0 +1,349 @@
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(179, 139, 77, 0.05);
+  box-sizing: border-box;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.iconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(179, 139, 77, 0.1);
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #967440;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: -0.3px;
+  flex: 1;
+}
+
+.savingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #b38b4d;
+  background: rgba(179, 139, 77, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.savedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fieldSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #967440;
+  margin-bottom: 8px;
+}
+
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.styledSelect {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #faf7f2;
+  border: 1px solid rgba(179, 139, 77, 0.28);
+  border-radius: 14px;
+  padding: 14px 44px 14px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.styledSelect:hover {
+  border-color: rgba(179, 139, 77, 0.5);
+  background-color: #f7f3eb;
+}
+
+.styledSelect:focus {
+  border-color: #b38b4d;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(179, 139, 77, 0.15);
+}
+
+.styledSelect:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.selectChevron {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666666;
+}
+
+.paymentMethodNotice {
+  font-size: 14px;
+  color: #555555;
+  padding-top: 4px;
+}
+
+.paymentMethodNotice strong {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.shipmentSection {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(179, 139, 77, 0.15);
+}
+
+.shipmentLabelRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.truckIcon {
+  color: #967440;
+}
+
+.shiprocketBtn {
+  width: 100%;
+  background-color: #3b1220;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 15px 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(59, 18, 32, 0.28);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.shiprocketBtn:hover {
+  background-color: #511c2e;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59, 18, 32, 0.38);
+}
+
+.shiprocketBtn:active {
+  transform: translateY(0);
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modalContent {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(179, 139, 77, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-width: 460px;
+  width: 100%;
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(179, 139, 77, 0.15);
+}
+
+.modalTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.modalCloseBtn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: #888888;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.modalCloseBtn:hover {
+  color: #1a1a1a;
+}
+
+.modalBody {
+  padding: 20px 24px;
+}
+
+.modalText {
+  font-size: 14px;
+  color: #333333;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.modalDetailsBox {
+  background: #faf7f2;
+  border: 1px solid rgba(179, 139, 77, 0.2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.modalDetailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #666666;
+}
+
+.modalDetailRow strong {
+  color: #1a1a1a;
+}
+
+.badgePartner {
+  font-size: 11px;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #047857;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #a7f3d0;
+}
+
+.modalSubtext {
+  font-size: 12px;
+  color: #777777;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.modalFooter {
+  padding: 16px 24px;
+  background: #fbfbf9;
+  border-top: 1px solid rgba(179, 139, 77, 0.15);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modalPrimaryBtn {
+  background: #3b1220;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modalPrimaryBtn:hover {
+  background: #511c2e;
+}
+
+.modalSecondaryBtn {
+  background: transparent;
+  color: #666666;
+  border: 1px solid #dcd8d0;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalSecondaryBtn:hover {
+  background: #ffffff;
+  color: #1a1a1a;
+}

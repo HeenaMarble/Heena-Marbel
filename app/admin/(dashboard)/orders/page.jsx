@@ -1,48 +1,189 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { getOrders } from "@/actions/orders";
+import { ShoppingCart, Clock, Truck, XCircle, Eye } from "lucide-react";
+import { getOrdersOverview } from "@/lib/actions/orders-admin-actions";
+import styles from "./Orders.module.css";
 
-const STATUS_STYLES = {
-  pending: "bg-[#1a1a1a]/10 text-[#1a1a1a]/70",
-  processing: "bg-[#b38b4d]/15 text-[#967440]",
-  shipped: "bg-blue-400/15 text-blue-600",
-  delivered: "bg-green-400/15 text-green-600",
-  cancelled: "bg-red-400/15 text-red-600",
-};
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
+];
+
+function formatOrderDate(dateInput) {
+  if (!dateInput) return "—";
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput);
+  return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatPaymentLabel(paymentMethod) {
+  const isCod = (paymentMethod || "").toLowerCase() === "cod";
+  return isCod ? "COD · Pending" : "Online · Paid";
+}
+
+function getCustomerName(order) {
+  if (order.customers?.name) return order.customers.name;
+  let addr = order.shipping_address;
+  if (typeof addr === "string") {
+    try {
+      addr = JSON.parse(addr);
+    } catch {}
+  }
+  if (addr?.full_name) return addr.full_name;
+  return "Guest";
+}
+
+function formatTotalAmount(amount) {
+  const num = Math.round(Number(amount) || 0);
+  return `₹${num.toLocaleString("en-IN")}`;
+}
+
+function getStatusBadgeClass(status) {
+  const s = (status || "").toLowerCase();
+  switch (s) {
+    case "pending":
+      return styles.statusPending;
+    case "processing":
+      return styles.statusProcessing;
+    case "shipped":
+      return styles.statusShipped;
+    case "delivered":
+      return styles.statusDelivered;
+    case "cancelled":
+    case "canceled":
+      return styles.statusCancelled;
+    default:
+      return styles.statusPending;
+  }
+}
 
 export default async function OrdersPage() {
-  const orders = await getOrders();
+  const { orders = [], stats = { total: 0, pending: 0, shipped: 0, cancelled: 0 } } =
+    await getOrdersOverview();
+
+  const statCards = [
+    {
+      label: "TOTAL ORDERS",
+      value: stats.total ?? 0,
+      icon: ShoppingCart,
+    },
+    {
+      label: "PENDING",
+      value: stats.pending ?? 0,
+      icon: Clock,
+    },
+    {
+      label: "SHIPPED",
+      value: stats.shipped ?? 0,
+      icon: Truck,
+    },
+    {
+      label: "CANCELLED",
+      value: stats.cancelled ?? 0,
+      icon: XCircle,
+    },
+  ];
 
   return (
-    <div>
-      <div className="border-b border-[#b38b4d]/20 pb-6">
-        <h1 className="text-3xl font-semibold text-[#1a1a1a]">Orders</h1>
-        <p className="text-base text-[#1a1a1a]/50 mt-1">Track and manage customer orders.</p>
+    <div className={styles.pageContainer}>
+      {/* Header */}
+      <div className={styles.headerSection}>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.pageTitle}>
+            Order <span className={styles.titleHighlight}>Management</span>
+          </h1>
+          <p className={styles.pageSubtitle}>
+            {stats.total ?? 0} orders placed so far.
+          </p>
+        </div>
       </div>
 
-      <div className="mt-8 rounded-[2rem] border border-[#b38b4d]/20 bg-white/85 overflow-hidden shadow-sm">
+      {/* 4 Stat Cards Row */}
+      <div className={styles.kpiGrid}>
+        {statCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} className={styles.kpiCard}>
+              <div className={styles.kpiHeader}>
+                <span className={styles.kpiLabel}>{card.label}</span>
+                <div className={styles.kpiIconWrap}>
+                  <Icon size={20} />
+                </div>
+              </div>
+              <p className={styles.kpiValue}>{card.value}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Orders Table or Empty State */}
+      <div className={styles.contentWrapper}>
         {orders.length === 0 ? (
-          <p className="text-center py-12 text-[#1a1a1a]/50 font-semibold">No orders yet.</p>
+          <div className={styles.emptyStateContainer}>
+            <p className={styles.emptyStateMessage}>No orders yet</p>
+          </div>
         ) : (
-          <ul className="divide-y divide-[#b38b4d]/10">
-            {orders.map((o) => (
-              <li key={o.id}>
-                <Link href={`/admin/orders/${o.id}`} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-5 py-4 hover:bg-[#1a1a1a]/[0.02]">
-                  <div>
-                    <p className="font-semibold text-[#1a1a1a]">{o.order_number}</p>
-                    <p className="text-xs text-[#1a1a1a]/50">{o.customers?.name || "Guest"} • {new Date(o.created_at).toLocaleDateString("en-IN")}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[#1a1a1a]/80 font-semibold">₹{Number(o.total_amount).toLocaleString("en-IN")}</span>
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${STATUS_STYLES[o.order_status] || ""}`}>
-                      {o.order_status}
-                    </span>
-                    <ChevronRight className="h-4 w-4 text-[#1a1a1a]/30" />
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className={styles.tableContainer}>
+            <table className={styles.ordersTable}>
+              <thead>
+                <tr>
+                  <th>ORDER</th>
+                  <th>CUSTOMER</th>
+                  <th>DATE</th>
+                  <th>PAYMENT</th>
+                  <th>TOTAL</th>
+                  <th>STATUS</th>
+                  <th style={{ textAlign: "right" }}>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((o) => (
+                  <tr key={o.id}>
+                    <td>
+                      <span className={styles.orderNumber}>{o.order_number}</span>
+                    </td>
+                    <td>
+                      <span className={styles.customerName}>
+                        {getCustomerName(o)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.orderDate}>
+                        {formatOrderDate(o.created_at)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.paymentLabel}>
+                        {formatPaymentLabel(o.payment_method)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.totalAmount}>
+                        {formatTotalAmount(o.total_amount)}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`${styles.statusBadge} ${getStatusBadgeClass(
+                          o.order_status
+                        )}`}
+                      >
+                        {o.order_status}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <Link
+                        href={`/admin/orders/${o.id}`}
+                        className={styles.viewDetailsBtn}
+                      >
+                        <Eye size={14} />
+                        <span>View Details</span>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

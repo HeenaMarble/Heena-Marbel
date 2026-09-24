@@ -6,11 +6,13 @@ import Link from 'next/link';
 import styles from './Navbar.module.css';
 
 import CartIcon from './CartIcon';
+import { getCurrentCustomer, logoutCustomer } from '@/actions/customer-auth';
 
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [customer, setCustomer] = useState(null);
 
   const profileRef = useRef(null);
   const pathname = usePathname();
@@ -26,6 +28,15 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Route change pe logged-in customer dobara fetch hota hai (login/logout ke baad sync rehne ke liye)
+  useEffect(() => {
+    let active = true;
+    getCurrentCustomer()
+      .then((c) => { if (active) setCustomer(c); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [pathname]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -123,10 +134,34 @@ export default function Navbar() {
                     <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"></path>
                   </svg>
                 </div>
-                <h3>Sacred Sanctuary</h3>
+                {customer ? (
+                  <>
+                    <h3>{customer.name}</h3>
+                    <p>{customer.email}</p>
+                    <Link
+                      href="/account/orders"
+                      className={styles.signInBtn}
+                      onClick={() => setIsProfileOpen(false)}
+                      style={{ textAlign: 'center', marginBottom: '12px' }}
+                    >
+                      My Orders
+                    </Link>
+                    <form
+                      action={logoutCustomer}
+                      onSubmit={() => { setCustomer(null); setIsProfileOpen(false); }}
+                      style={{ width: '100%' }}
+                    >
+                      <button type="submit" className={styles.createAccBtn}>Sign Out</button>
+                    </form>
+                  </>
+                ) : (
+                  <>
+                    <h3>Sacred Sanctuary</h3>
                 <p>Sign in to track orders, save favorites & consultations</p>
                 <Link href="/signin" className={styles.signInBtn} onClick={() => setIsProfileOpen(false)}>Sign In</Link>
                 <Link href="/register" className={styles.createAccBtn} onClick={() => setIsProfileOpen(false)}>Create Account</Link>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -193,9 +228,33 @@ export default function Navbar() {
             <Link href="/contact" className={styles.mobileQuoteLink} onClick={() => setIsMobileMenuOpen(false)}>
               Request a Free Quote
             </Link>
-            <Link href="/signin" className={styles.mobileAuthLink} onClick={() => setIsMobileMenuOpen(false)}>
+            {customer ? (
+              <>
+                <Link 
+                  href="/account/orders" 
+                  className={pathname.startsWith('/account') ? styles.activeMobile : ''}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  My Orders
+                </Link>
+                <form
+                  action={logoutCustomer}
+                  onSubmit={() => { setCustomer(null); setIsMobileMenuOpen(false); }}
+                >
+                  <button
+                    type="submit"
+                    className={styles.mobileAuthLink}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', marginTop: '8px' }}
+                  >
+                    Sign Out ({customer.name})
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link href="/signin" className={styles.mobileAuthLink} onClick={() => setIsMobileMenuOpen(false)}>
               Sign In / Register
             </Link>
+            )}
           </nav>
         </div>
       )}

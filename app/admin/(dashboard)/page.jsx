@@ -225,6 +225,45 @@ export default async function AdminDashboardPage() {
             )}
           </div>
 
+          {/* Inventory Health Card */}
+          <div className={styles.sectionCard}>
+            <div className="flex items-center gap-3 mb-3">
+              {stats.lowStock.length === 0 ? (
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
+                  <CheckCircle2 size={20} />
+                </div>
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600 border border-amber-200">
+                  <AlertTriangle size={20} />
+                </div>
+              )}
+              <div>
+                <h2 className={styles.cardHeading} style={{ fontSize: "16px" }}>Inventory Health</h2>
+                <p className={styles.cardDescription}>Makrana stock monitoring</p>
+              </div>
+            </div>
+
+            {stats.lowStock.length === 0 ? (
+              <p className="text-sm text-[#555555] leading-relaxed">
+                ✓ All marble mandirs, statues, and raw stone slabs are adequately stocked in the studio.
+              </p>
+            ) : (
+              <div className="space-y-2 mt-3">
+                {stats.lowStock.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 text-sm"
+                  >
+                    <span className="font-semibold text-[#1a1a1a] truncate">{p.name}</span>
+                    <span className="font-bold text-amber-700 shrink-0">
+                      {p.stock_quantity} left
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Quality Standard Box */}
           <div className={styles.qualityCard}>
             <div className={styles.qualityIconWrap}>
@@ -239,7 +278,7 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Right Column: Action Desk, Inquiries & Stock */}
+        {/* Right Column: Action Desk & Inquiries */}
         <div className={styles.rightColumn}>
           {/* Action Desk Card */}
           <div className={styles.sectionCard}>
@@ -337,45 +376,6 @@ export default async function AdminDashboardPage() {
                     <p className={styles.inquiryName}>{i.name}</p>
                     <p className={styles.inquiryMessage}>{i.message}</p>
                   </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Inventory Health Card */}
-          <div className={styles.sectionCard}>
-            <div className="flex items-center gap-3 mb-3">
-              {stats.lowStock.length === 0 ? (
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
-                  <CheckCircle2 size={20} />
-                </div>
-              ) : (
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600 border border-amber-200">
-                  <AlertTriangle size={20} />
-                </div>
-              )}
-              <div>
-                <h2 className={styles.cardHeading} style={{ fontSize: "16px" }}>Inventory Health</h2>
-                <p className={styles.cardDescription}>Makrana stock monitoring</p>
-              </div>
-            </div>
-
-            {stats.lowStock.length === 0 ? (
-              <p className="text-sm text-[#555555] leading-relaxed">
-                ✓ All marble mandirs, statues, and raw stone slabs are adequately stocked in the studio.
-              </p>
-            ) : (
-              <div className="space-y-2 mt-3">
-                {stats.lowStock.map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 text-sm"
-                  >
-                    <span className="font-semibold text-[#1a1a1a] truncate">{p.name}</span>
-                    <span className="font-bold text-amber-700 shrink-0">
-                      {p.stock_quantity} left
-                    </span>
-                  </div>
                 ))}
               </div>
             )}
