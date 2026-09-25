@@ -186,14 +186,14 @@ export default async function OrderDetailPage({ params }) {
                       <div className={styles.itemMeta}>
                         <span className={styles.itemQuantity}>Qty: {item.quantity}</span>
                         <span>·</span>
-                        <span>₹{Number(item.price || 0).toLocaleString()} each</span>
+                        <span>₹{Number(item.price || 0).toLocaleString('en-IN')} each</span>
                       </div>
                     </div>
 
                     {/* Item Total Price */}
                     <div className={styles.itemPriceCol}>
                       <div className={styles.itemTotalPrice}>
-                        ₹{itemTotal.toLocaleString()}
+                        ₹{Number(itemTotal).toLocaleString('en-IN')}
                       </div>
                     </div>
                   </div>
@@ -206,14 +206,14 @@ export default async function OrderDetailPage({ params }) {
               <div className={styles.totalRow}>
                 <span className={styles.totalRowLabel}>Subtotal</span>
                 <span className={styles.totalRowValue}>
-                  ₹{Number(order.subtotal || 0).toLocaleString()}
+                  ₹{Number(order.subtotal || 0).toLocaleString('en-IN')}
                 </span>
               </div>
               {order.quantity_discount && Number(order.quantity_discount) > 0 ? (
                 <div className={styles.totalRow}>
                   <span className={styles.totalRowLabel}>Quantity Discount</span>
                   <span className={styles.totalRowValue} style={{ color: "#15803d", fontWeight: 600 }}>
-                    − ₹{Number(order.quantity_discount).toLocaleString()}
+                    − ₹{Number(order.quantity_discount).toLocaleString('en-IN')}
                   </span>
                 </div>
               ) : null}
@@ -223,28 +223,28 @@ export default async function OrderDetailPage({ params }) {
                     Coupon Discount {order.coupon_code ? `(${order.coupon_code})` : ""}
                   </span>
                   <span className={styles.totalRowValue} style={{ color: "#15803d", fontWeight: 600 }}>
-                    − ₹{Number(order.coupon_discount).toLocaleString()}
+                    − ₹{Number(order.coupon_discount).toLocaleString('en-IN')}
                   </span>
                 </div>
               ) : null}
               <div className={styles.totalRow}>
                 <span className={styles.totalRowLabel}>Shipping</span>
                 <span className={styles.totalRowValue}>
-                  {Number(order.shipping_fee) === 0 ? "FREE" : `₹${Number(order.shipping_fee).toLocaleString()}`}
+                  {Number(order.shipping_fee) === 0 ? "FREE" : `₹${Number(order.shipping_fee).toLocaleString('en-IN')}`}
                 </span>
               </div>
               {order.cod_fee && Number(order.cod_fee) > 0 ? (
                 <div className={styles.totalRow}>
                   <span className={styles.totalRowLabel}>Cash on Delivery Fee</span>
                   <span className={styles.totalRowValue}>
-                    ₹{Number(order.cod_fee).toLocaleString()}
+                    ₹{Number(order.cod_fee).toLocaleString('en-IN')}
                   </span>
                 </div>
               ) : null}
               <div className={styles.grandTotalRow}>
                 <span className={styles.grandTotalLabel}>Total</span>
                 <span className={styles.grandTotalValue}>
-                  ₹{Number(order.total_amount || 0).toLocaleString()}
+                  ₹{Number(order.total_amount || 0).toLocaleString('en-IN')}
                 </span>
               </div>
             </div>

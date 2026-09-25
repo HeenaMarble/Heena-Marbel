@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlusCircle, Pencil, Package } from "lucide-react";
+import { PlusCircle, Pencil, Package, Star } from "lucide-react";
 import { getProducts } from "@/actions/products";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
 import styles from "./Products.module.css";
@@ -44,6 +44,7 @@ export default async function ProductsPage() {
                   <th>Category</th>
                   <th>Price</th>
                   <th>Stock</th>
+                  <th>Featured</th>
                   <th>Status</th>
                   <th style={{ textAlign: "right" }}>Actions</th>
                 </tr>
@@ -90,6 +91,16 @@ export default async function ProductsPage() {
                         <span className="text-orange-600 font-bold text-sm">{p.stock_quantity} left</span>
                       ) : (
                         <span className="text-[#1a1a1a]/70 text-sm">{p.stock_quantity}</span>
+                      )}
+                    </td>
+                    <td>
+                      {p.is_featured ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold bg-amber-500/15 text-amber-700 whitespace-nowrap">
+                          <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                          Featured{p.featured_order !== null && p.featured_order !== undefined ? ` (#${p.featured_order})` : ""}
+                        </span>
+                      ) : (
+                        <span className="text-[#1a1a1a]/30 text-xs">—</span>
                       )}
                     </td>
                     <td>

@@ -33,10 +33,13 @@ function mapProduct(row, images = [], variants = []) {
     category_name: row.categories?.name || null,
     category_slug: row.categories?.slug || null,
     stock_quantity: effectiveStock,
+    video_url: row.video_url || null,
     has_variants: hasVariants,
     has_colors: !!row.has_colors,
     variant_dimension_labels: Array.isArray(row.variant_dimension_labels) ? row.variant_dimension_labels : [],
     variants,
+    created_at: row.created_at || null,
+    is_featured: !!row.is_featured,
   };
 }
 
@@ -57,6 +60,40 @@ export async function getShopProducts(categorySlug) {
 
   const rows = categorySlug ? (data || []).filter((r) => r.categories?.slug === categorySlug) : (data || []);
 
+  const variantProductIds = rows.filter((r) => r.has_variants).map((r) => r.id);
+  let defaultVariantsByProduct = {};
+
+  if (variantProductIds.length > 0) {
+    const { data: defaultVariants } = await supabase
+      .from("product_variants")
+      .select("*")
+      .in("product_id", variantProductIds)
+      .eq("is_default", true);
+
+    for (const v of defaultVariants || []) {
+      defaultVariantsByProduct[v.product_id] = [v];
+    }
+  }
+
+  return rows.map((row) => mapProduct(row, [], defaultVariantsByProduct[row.id] || []));
+}
+
+export async function getFeaturedProducts() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("*, categories(name, slug)")
+    .eq("is_active", true)
+    .eq("is_featured", true)
+    .order("featured_order", { ascending: true, nullsFirst: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("getFeaturedProducts error:", error);
+    return [];
+  }
+
+  const rows = data || [];
   const variantProductIds = rows.filter((r) => r.has_variants).map((r) => r.id);
   let defaultVariantsByProduct = {};
 
@@ -100,18 +137,39 @@ export async function getShopProduct(id) {
   return mapProduct(data, images || [], variants || []);
 }
 
-export async function getRelatedProducts(currentId, categoryId) {
+export async function getRelatedProducts(excludeProductId, limit = 4) {
   const supabase = await createClient();
-  let query = supabase
+  const { data, error } = await supabase
     .from("products")
-    .select("*")
+    .select("*, categories(name, slug)")
     .eq("is_active", true)
-    .neq("id", currentId)
-    .limit(4);
-  if (categoryId) query = query.eq("category_id", categoryId);
-  const { data, error } = await query;
-  if (error) return [];
-  return (data || []).map((row) => mapProduct(row));
+    .neq("id", excludeProductId)
+    .limit(limit * 3);
+
+  if (error) {
+    console.error("getRelatedProducts error:", error);
+    return [];
+  }
+
+  const rows = data || [];
+  const variantProductIds = rows.filter((r) => r.has_variants).map((r) => r.id);
+  let defaultVariantsByProduct = {};
+
+  if (variantProductIds.length > 0) {
+    const { data: defaultVariants } = await supabase
+      .from("product_variants")
+      .select("*")
+      .in("product_id", variantProductIds)
+      .eq("is_default", true);
+
+    for (const v of defaultVariants || []) {
+      defaultVariantsByProduct[v.product_id] = [v];
+    }
+  }
+
+  const mapped = rows.map((row) => mapProduct(row, [], defaultVariantsByProduct[row.id] || []));
+  const shuffled = (mapped || []).sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, limit);
 }
 
 export async function getVisibleCategories() {

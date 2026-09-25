@@ -9,14 +9,74 @@ import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import styles from "@/app/shop/[id]/ProductDetail.module.css";
 import { submitReview } from "@/actions/reviews";
+import ShopGrid from "@/components/ShopGrid";
 
 
-function formatDimensionSummary(dimValues) {
+function parseDimensionLabel(item) {
+  if (!item) return { label: "", unit: "" };
+  let current = item;
+
+  while (typeof current === "string") {
+    const trimmed = current.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
+      try {
+        current = JSON.parse(current);
+      } catch {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (typeof current === "object" && current !== null && !Array.isArray(current)) {
+    let label = current.label ?? "";
+    let unit = current.unit ?? "";
+
+    while (typeof label === "string") {
+      const trimmed = label.trim();
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(label);
+          if (parsed && typeof parsed === "object") {
+            label = parsed.label ?? "";
+            if (!unit && parsed.unit) unit = parsed.unit;
+          } else {
+            break;
+          }
+        } catch {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return { label: String(label || ""), unit: String(unit || "") };
+  }
+
+  return { label: String(current || ""), unit: "" };
+}
+
+function formatDimensionSummary(dimValues, dimensionLabelsWithUnits = []) {
   if (!dimValues || typeof dimValues !== "object") return "";
   const entries = Object.entries(dimValues);
   if (entries.length === 0) return "";
 
-  const priority = ["length", "width", "breadth", "depth", "height", "thickness", "diameter"];
+  const unitMap = new Map();
+  if (Array.isArray(dimensionLabelsWithUnits)) {
+    dimensionLabelsWithUnits.forEach((item) => {
+      const parsed = parseDimensionLabel(item);
+      if (parsed?.label) {
+        if (parsed.unit) unitMap.set(parsed.label.toLowerCase(), parsed.unit);
+      }
+    });
+  }
+
+  const priority = ["length", "width", "breadth", "depth", "height", "thickness", "diameter", "size"];
   const sorted = [...entries].sort((a, b) => {
     const idxA = priority.indexOf(a[0].toLowerCase());
     const idxB = priority.indexOf(b[0].toLowerCase());
@@ -29,7 +89,15 @@ function formatDimensionSummary(dimValues) {
   return sorted
     .map(([k, val]) => {
       const cleanVal = String(val).trim();
-      const valWithUnit = /^[0-9]+(\.[0-9]+)?$/.test(cleanVal) ? `${cleanVal}"` : cleanVal;
+      const customUnit = unitMap.get(k.toLowerCase());
+      let valWithUnit = cleanVal;
+      if (customUnit) {
+        if (!cleanVal.toLowerCase().endsWith(customUnit.toLowerCase())) {
+          valWithUnit = `${cleanVal} ${customUnit}`;
+        }
+      } else if (/^[0-9]+(\.[0-9]+)?$/.test(cleanVal)) {
+        valWithUnit = `${cleanVal}"`;
+      }
       if (sorted.length === 1) return `${k}: ${valWithUnit}`;
       const shortKey = k.charAt(0).toUpperCase();
       if (["L", "W", "H", "D"].includes(shortKey)) {
@@ -60,9 +128,17 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
 
   const hasVariants = Boolean(product?.has_variants && product?.variants?.length > 0);
   const hasColors = Boolean(hasVariants && product?.has_colors);
-  const dimensionLabels = Array.isArray(product?.variant_dimension_labels)
-    ? product.variant_dimension_labels
-    : [];
+
+  const dimensionLabelObjects = React.useMemo(() => {
+    if (!Array.isArray(product?.variant_dimension_labels)) return [];
+    return product.variant_dimension_labels
+      .map(parseDimensionLabel)
+      .filter((d) => Boolean(d.label));
+  }, [product?.variant_dimension_labels]);
+
+  const dimensionLabels = React.useMemo(() => {
+    return dimensionLabelObjects.map((d) => d.label);
+  }, [dimensionLabelObjects]);
 
   const initialVariant = React.useMemo(() => {
     if (!hasVariants) return null;
@@ -151,11 +227,13 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
   const [selectedImage, setSelectedImage] = useState(
     filteredImages[0] || product?.img || ""
   );
+  const [isVideoSelected, setIsVideoSelected] = useState(false);
 
   // When filtered images change (e.g. color switched), default to first image
   useEffect(() => {
     if (filteredImages && filteredImages.length > 0) {
       setSelectedImage(filteredImages[0]);
+      setIsVideoSelected(false);
     }
   }, [filteredImages]);
 
@@ -175,6 +253,23 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
       setActiveVariant(null);
     }
   }, [product?.id, hasVariants, product?.variants]);
+
+  // Quantity selection state
+  const [quantity, setQuantity] = useState(1);
+
+  // Reset quantity to 1 when active variant or product changes
+  useEffect(() => {
+    setQuantity(1);
+  }, [product?.id, activeVariant?.id]);
+
+  const handleDecrement = () => {
+    setQuantity((prev) => Math.max(1, prev - 1));
+  };
+
+  const handleIncrement = () => {
+    const maxLimit = effectiveStock > 0 ? effectiveStock : 99;
+    setQuantity((prev) => Math.min(maxLimit, prev + 1));
+  };
 
   // Dynamic specifications that update when switching variants (e.g. Standard vs Grand Size)
   const effectiveSpecifications = React.useMemo(() => {
@@ -198,13 +293,38 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
 
     if (hasVariants && activeVariant) {
       const specMap = new Map();
+      const unitMap = new Map();
+      dimensionLabelObjects.forEach((d) => {
+        if (d.label && d.unit) unitMap.set(d.label.toLowerCase(), d.unit);
+      });
 
-      // If variant has dimension_values (e.g. Height, Width, Length)
+      // If variant has dimension_values (e.g. Height, Width, Length, Size)
       if (activeVariant.dimension_values && typeof activeVariant.dimension_values === "object") {
-        Object.entries(activeVariant.dimension_values).forEach(([k, v]) => {
+        Object.entries(activeVariant.dimension_values).forEach(([rawK, v]) => {
+          const parsedK = parseDimensionLabel(rawK).label || rawK;
+          const cleanK = String(parsedK).trim();
+          if (!cleanK) return;
+
           const cleanVal = String(v).trim();
-          const valWithUnit = /^[0-9]+(\.[0-9]+)?$/.test(cleanVal) ? `${cleanVal} inches` : cleanVal;
-          specMap.set(k, valWithUnit);
+          const customUnit = unitMap.get(cleanK.toLowerCase());
+          let valWithUnit = cleanVal;
+          if (customUnit) {
+            if (!cleanVal.toLowerCase().endsWith(customUnit.toLowerCase())) {
+              valWithUnit = `${cleanVal} ${customUnit}`;
+            }
+          } else if (/^[0-9]+(\.[0-9]+)?$/.test(cleanVal)) {
+            valWithUnit = `${cleanVal} inches`;
+          }
+
+          // Case-insensitive key deduplication
+          const existingKey = Array.from(specMap.keys()).find(
+            (k) => k.toLowerCase() === cleanK.toLowerCase()
+          );
+          if (existingKey) {
+            specMap.set(existingKey, valWithUnit);
+          } else {
+            specMap.set(cleanK, valWithUnit);
+          }
         });
       }
 
@@ -213,11 +333,13 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
         specMap.set("Color", activeVariant.color_name);
       }
 
-      // Add baseAll from product level that are not already overridden
+      // Add baseAll from product level that are not already overridden (e.g. Material, Finish, etc.)
       const existingKeysLower = new Set(Array.from(specMap.keys()).map((k) => k.toLowerCase()));
       baseAll.forEach((item) => {
-        if (item?.label && !existingKeysLower.has(item.label.toLowerCase())) {
-          specMap.set(item.label, item.value);
+        const parsedLabel = parseDimensionLabel(item?.label).label || item?.label;
+        if (parsedLabel && !existingKeysLower.has(parsedLabel.toLowerCase())) {
+          existingKeysLower.add(parsedLabel.toLowerCase());
+          specMap.set(parsedLabel, item.value);
         }
       });
 
@@ -225,9 +347,11 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
     }
 
     return baseAll;
-  }, [product?.dimensions, product?.specifications, hasVariants, activeVariant, hasColors]);
+  }, [product?.dimensions, product?.specifications, hasVariants, activeVariant, hasColors, dimensionLabelObjects]);
 
-  const hasMultipleImages = Boolean(filteredImages.length > 1);
+  const hasMultipleMedia = Boolean(
+    filteredImages.length > 1 || (product?.video_url && filteredImages.length > 0)
+  );
   const hasDimensions = Boolean(
     effectiveSpecifications.length > 0 ||
     (product?.dimensions && product.dimensions.length > 0) ||
@@ -414,7 +538,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
         price: effectivePrice,
         stock_quantity: effectiveStock,
         img: selectedImage || filteredImages[0] || product.img,
-      }, 1, openDrawer);
+      }, quantity, openDrawer);
     } else {
       addToCart({
         ...product,
@@ -422,7 +546,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
         compare_at_price: compareAtPrice,
         stock_quantity: effectiveStock,
         img: selectedImage || product.img,
-      }, 1, openDrawer);
+      }, quantity, openDrawer);
     }
   };
 
@@ -452,7 +576,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
       name: product.title || product.name,
       title: product.title || product.name,
       price: effectivePrice ?? activeVariant?.price ?? product.price,
-      quantity: 1,
+      quantity: quantity,
       colorName: activeVariant?.color_name || null,
       dimensionValues: activeVariant?.dimension_values || null,
       variantSummary: variantSummary || null,
@@ -502,26 +626,42 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
 
           <div className={styles.productMainCard}>
             <div className={styles.productLayout}>
-              {/* Left Column: Images & Guarantee */}
+              {/* Left Column: Images, Video & Guarantee */}
               <div className={styles.imageColumn}>
                 <div className={styles.imageWrapper}>
-                  <img
-                    src={selectedImage}
-                    alt={product.title}
-                    className={styles.mainImage}
-                  />
+                  {isVideoSelected && product?.video_url ? (
+                    <video
+                      key={product.video_url}
+                      src={product.video_url}
+                      controls
+                      autoPlay
+                      playsInline
+                      className={styles.mainVideo}
+                    />
+                  ) : (
+                    <img
+                      src={selectedImage}
+                      alt={product.title}
+                      className={styles.mainImage}
+                    />
+                  )}
                 </div>
 
                 {/* Thumbnail Strip */}
-                {hasMultipleImages && (
+                {hasMultipleMedia && (
                   <div className={styles.thumbnailStrip}>
                     {filteredImages.map((imgUrl, idx) => (
                       <button
                         key={idx}
                         type="button"
-                        onClick={() => setSelectedImage(imgUrl)}
+                        onClick={() => {
+                          setSelectedImage(imgUrl);
+                          setIsVideoSelected(false);
+                        }}
                         className={`${styles.thumbnailBtn} ${
-                          selectedImage === imgUrl ? styles.thumbnailActive : ""
+                          !isVideoSelected && selectedImage === imgUrl
+                            ? styles.thumbnailActive
+                            : ""
                         }`}
                         aria-label={`View image ${idx + 1}`}
                       >
@@ -532,6 +672,38 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
                         />
                       </button>
                     ))}
+
+                    {product?.video_url && (
+                      <button
+                        type="button"
+                        onClick={() => setIsVideoSelected(true)}
+                        className={`${styles.thumbnailBtn} ${styles.videoThumbnailBtn} ${
+                          isVideoSelected ? styles.thumbnailActive : ""
+                        }`}
+                        aria-label="View product video"
+                      >
+                        <div className={styles.videoThumbnailContent}>
+                          <video
+                            src={product.video_url}
+                            className={styles.thumbnailVideo}
+                            preload="metadata"
+                            muted
+                          />
+                          <div className={styles.playIconOverlay}>
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              stroke="none"
+                            >
+                              <polygon points="6 4 20 12 6 20 6 4" />
+                            </svg>
+                          </div>
+                          <span className={styles.videoBadge}>VIDEO</span>
+                        </div>
+                      </button>
+                    )}
                   </div>
                 )}
 
@@ -574,11 +746,11 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
                 <div className={styles.priceRatingRow}>
                   <div className={styles.priceGroup}>
                     <p className={styles.price}>
-                      ₹{effectivePrice.toLocaleString()}
+                      ₹{Number(effectivePrice).toLocaleString('en-IN')}
                     </p>
                     {compareAtPrice && compareAtPrice > effectivePrice && (
                       <span className={styles.compareAtPrice}>
-                        ₹{compareAtPrice.toLocaleString()}
+                        ₹{Number(compareAtPrice).toLocaleString('en-IN')}
                       </span>
                     )}
                     {discountPercent > 0 && (
@@ -670,7 +842,7 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
                           {variantsForSelectedColor.map((v, idx) => {
                             const isSelected = activeVariant?.id === v.id;
                             const sizeTitle = getSizeTitle(v, idx, variantsForSelectedColor.length);
-                            const dimSummary = formatDimensionSummary(v.dimension_values);
+                            const dimSummary = formatDimensionSummary(v.dimension_values, dimensionLabelObjects);
                             const cardPrice = Number(v.price) || 0;
                             const cardCompare = v.compare_at_price ? Number(v.compare_at_price) : null;
                             const isCardOut = (v.stock ?? 0) <= 0;
@@ -699,11 +871,11 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
 
                                 <div className={styles.sizeCardPriceRow}>
                                   <span className={styles.sizeCardPrice}>
-                                    ₹{cardPrice.toLocaleString()}
+                                    ₹{Number(cardPrice).toLocaleString('en-IN')}
                                   </span>
                                   {cardCompare && cardCompare > cardPrice && (
                                     <span className={styles.sizeCardComparePrice}>
-                                      ₹{cardCompare.toLocaleString()}
+                                      ₹{Number(cardCompare).toLocaleString('en-IN')}
                                     </span>
                                   )}
                                 </div>
@@ -756,58 +928,95 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
                   </div>
                 )}
 
-                <div className={styles.actionButtonGroup}>
-                  <button
-                    type="button"
-                    className={`${styles.addToCartBtn} ${
-                      isOutOfStock ? styles.addToCartDisabled : ""
-                    }`}
-                    onClick={() => handleAddToCart(true)}
-                    disabled={isOutOfStock}
+                <div className={styles.actionContainer}>
+                  <div
+                    className={styles.quantityStepper}
+                    role="group"
+                    aria-label="Quantity selector"
                   >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className={styles.buttonIcon}
+                    <button
+                      type="button"
+                      className={styles.qtyBtn}
+                      onClick={handleDecrement}
+                      disabled={quantity <= 1 || isOutOfStock}
+                      aria-label="Decrease quantity"
+                      title="Decrease quantity"
                     >
-                      <circle cx="9" cy="21" r="1"></circle>
-                      <circle cx="20" cy="21" r="1"></circle>
-                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
-                  </button>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
+                    <span className={styles.qtyValue} aria-live="polite">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.qtyBtn}
+                      onClick={handleIncrement}
+                      disabled={quantity >= effectiveStock || isOutOfStock}
+                      aria-label="Increase quantity"
+                      title={quantity >= effectiveStock ? "Max available stock reached" : "Increase quantity"}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
+                  </div>
 
-                  <button
-                    type="button"
-                    className={`${styles.buyNowBtn} ${
-                      isOutOfStock ? styles.addToCartDisabled : ""
-                    }`}
-                    onClick={handleBuyNow}
-                    disabled={isOutOfStock}
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className={styles.buttonIcon}
+                  <div className={styles.actionButtonGroup}>
+                    <button
+                      type="button"
+                      className={`${styles.addToCartBtn} ${
+                        isOutOfStock ? styles.addToCartDisabled : ""
+                      }`}
+                      onClick={() => handleAddToCart(true)}
+                      disabled={isOutOfStock}
                     >
-                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                      <line x1="3" y1="6" x2="21" y2="6"></line>
-                      <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                    <span>Buy Now</span>
-                  </button>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={styles.buttonIcon}
+                      >
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                      </svg>
+                      <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`${styles.buyNowBtn} ${
+                        isOutOfStock ? styles.addToCartDisabled : ""
+                      }`}
+                      onClick={handleBuyNow}
+                      disabled={isOutOfStock}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={styles.buttonIcon}
+                      >
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                      </svg>
+                      <span>Buy Now</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className={styles.trustStrip}>
@@ -1180,29 +1389,10 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
           </div>
 
           {/* Related Products */}
-          {relatedProducts.length > 0 && (
+          {relatedProducts && relatedProducts.length > 0 && (
             <div className={styles.relatedSection}>
               <h2 className={styles.relatedTitle}>You May Also Like</h2>
-              <div className={styles.relatedGrid}>
-                {relatedProducts.map((related) => (
-                  <div key={related.id} className={styles.relatedCard}>
-                    <Link
-                      href={`/shop/${related.id}`}
-                      className={styles.relatedLink}
-                    >
-                      <div className={styles.relatedImageWrapper}>
-                        <img src={related.img} alt={related.title} />
-                      </div>
-                      <div className={styles.relatedDetails}>
-                        <h4>{related.title}</h4>
-                        <p className={styles.relatedPrice}>
-                          ₹{related.price.toLocaleString()}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+              <ShopGrid products={relatedProducts} />
             </div>
           )}
 

@@ -532,11 +532,11 @@ export default function CheckoutClient({
                               <p className={styles.itemVariant}>{variantLine}</p>
                             ) : null}
                             <p className={styles.itemQtyPrice}>
-                              Qty: {itemQty} × ₹{itemPrice.toLocaleString()}
+                              Qty: {itemQty} × ₹{Number(itemPrice).toLocaleString('en-IN')}
                             </p>
                           </div>
                           <div className={styles.itemTotal}>
-                            ₹{(itemPrice * itemQty).toLocaleString()}
+                            ₹{(Number(itemPrice) * itemQty).toLocaleString('en-IN')}
                           </div>
                         </div>
                       );
@@ -549,7 +549,7 @@ export default function CheckoutClient({
                       <div className={styles.couponAppliedInfo}>
                         <span className={styles.couponAppliedCode}>{appliedCoupon.code}</span>
                         <span className={styles.couponAppliedDiscount}>
-                          (−₹{Number(appliedCoupon.discount).toLocaleString()} applied)
+                          (−₹{Number(appliedCoupon.discount).toLocaleString('en-IN')} applied)
                         </span>
                       </div>
                       <button
@@ -601,14 +601,14 @@ export default function CheckoutClient({
                   <div className={styles.costBreakdown}>
                     <div className={styles.costRow}>
                       <span className={styles.costLabel}>Subtotal</span>
-                      <span className={styles.costValue}>₹{subtotal.toLocaleString()}</span>
+                      <span className={styles.costValue}>₹{Number(subtotal).toLocaleString('en-IN')}</span>
                     </div>
 
                     {quantityDiscount > 0 && (
                       <div className={styles.costRow}>
                         <span className={styles.costLabel}>Quantity Discount</span>
                         <span className={styles.costValue} style={{ color: "#15803d", fontWeight: 600 }}>
-                          − ₹{quantityDiscount.toLocaleString()}
+                          − ₹{Number(quantityDiscount).toLocaleString('en-IN')}
                         </span>
                       </div>
                     )}
@@ -617,7 +617,7 @@ export default function CheckoutClient({
                       <div className={styles.costRow}>
                         <span className={styles.costLabel}>Coupon ({appliedCoupon.code})</span>
                         <span className={styles.costValue} style={{ color: "#15803d", fontWeight: 600 }}>
-                          − ₹{couponDiscount.toLocaleString()}
+                          − ₹{Number(couponDiscount).toLocaleString('en-IN')}
                         </span>
                       </div>
                     )}
@@ -638,7 +638,7 @@ export default function CheckoutClient({
                   {/* Grand Total */}
                   <div className={styles.grandTotalRow}>
                     <span className={styles.grandTotalLabel}>Total Payable</span>
-                    <span className={styles.grandTotalAmount}>₹{totalPayable.toLocaleString()}</span>
+                    <span className={styles.grandTotalAmount}>₹{Number(totalPayable).toLocaleString('en-IN')}</span>
                   </div>
 
                   {/* Error Notification */}
@@ -665,7 +665,7 @@ export default function CheckoutClient({
                         <span>Processing Order...</span>
                       </>
                     ) : (
-                      <span>Place Order — ₹{totalPayable.toLocaleString()}</span>
+                      <span>Place Order — ₹{Number(totalPayable).toLocaleString('en-IN')}</span>
                     )}
                   </button>
 

@@ -1,7 +1,7 @@
 .container {
   position: relative;
   width: 100%;
-  margin: 12px 0 32px 0;
+  margin: 6px 0 14px 0;
 }
 
 /* Subtle edge fades on scrollable container for mobile UX */
@@ -34,7 +34,7 @@
   align-items: flex-start;
   gap: 18px;
   overflow-x: auto;
-  padding: 8px 4px 16px 4px;
+  padding: 6px 4px 8px 4px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
@@ -198,7 +198,7 @@
 /* Mobile & Tablet responsiveness */
 @media (max-width: 768px) {
   .container {
-    margin: 8px 0 24px 0;
+    margin: 4px 0 10px 0;
   }
 
   .container::before,
@@ -208,7 +208,7 @@
 
   .scrollTrack {
     gap: 14px;
-    padding: 6px 12px 14px 12px;
+    padding: 4px 10px 6px 10px;
   }
 
   .item {

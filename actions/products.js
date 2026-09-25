@@ -90,15 +90,72 @@ export async function getProduct(id) {
   return { ...product, images: images || [], variants: variants || [] };
 }
 
+function parseDimensionLabel(item) {
+  if (!item) return { label: "", unit: "" };
+  let current = item;
+
+  while (typeof current === "string") {
+    const trimmed = current.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
+      try {
+        current = JSON.parse(current);
+      } catch {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (typeof current === "object" && current !== null && !Array.isArray(current)) {
+    let label = current.label ?? "";
+    let unit = current.unit ?? "";
+
+    while (typeof label === "string") {
+      const trimmed = label.trim();
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(label);
+          if (parsed && typeof parsed === "object") {
+            label = parsed.label ?? "";
+            if (!unit && parsed.unit) unit = parsed.unit;
+          } else {
+            break;
+          }
+        } catch {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return { label: String(label || ""), unit: String(unit || "") };
+  }
+
+  return { label: String(current || ""), unit: "" };
+}
+
 function buildProductFields(formData) {
   const name = formData.get("name");
   const dimensions = safeParseArray(formData.get("dimensions_json"));
   const specifications = safeParseArray(formData.get("specifications_json"));
-  const variantDimensionLabels = safeParseArray(formData.get("variant_dimension_labels_json"));
+  const rawDimensionLabels = safeParseArray(formData.get("variant_dimension_labels_json"));
+  const variantDimensionLabels = rawDimensionLabels.map(parseDimensionLabel);
   const compareAtPriceRaw = formData.get("compare_at_price");
   const compareAtPrice = compareAtPriceRaw && !isNaN(parseFloat(compareAtPriceRaw))
     ? parseFloat(compareAtPriceRaw)
     : null;
+  const videoUrl = formData.get("video_url") || null;
+  const isFeatured = formData.get("is_featured") === "on";
+  const featuredOrderRaw = formData.get("featured_order");
+  const featuredOrder = isFeatured && featuredOrderRaw !== null && featuredOrderRaw !== "" && !isNaN(parseInt(featuredOrderRaw, 10))
+    ? parseInt(featuredOrderRaw, 10)
+    : null;
+
   return {
     name,
     category_id: formData.get("category_id") || null,
@@ -107,11 +164,14 @@ function buildProductFields(formData) {
     compare_at_price: compareAtPrice,
     stock_quantity: parseInt(formData.get("stock_quantity"), 10) || 0,
     is_active: formData.get("is_active") === "on",
+    is_featured: isFeatured,
+    featured_order: featuredOrder,
     dimensions,
     specifications,
     has_variants: formData.get("has_variants") === "on",
     has_colors: formData.get("has_colors") === "on",
     variant_dimension_labels: variantDimensionLabels,
+    video_url: videoUrl,
   };
 }
 
@@ -138,22 +198,63 @@ async function syncProductImages(supabase, productId, images, colorImages) {
 }
 
 async function syncProductVariants(supabase, productId, variants) {
-  await supabase.from("product_variants").delete().eq("product_id", productId);
+  const { data: existingVariants } = await supabase
+    .from("product_variants")
+    .select("id")
+    .eq("product_id", productId);
 
-  if (variants.length > 0) {
-    const rows = variants.map((v, index) => ({
-      product_id: productId,
-      color_name: v.color_name || null,
-      color_hex: v.color_hex || null,
-      dimension_values: v.dimension_values || {},
-      price: parseFloat(v.price) || 0,
-      compare_at_price: v.compare_at_price ? parseFloat(v.compare_at_price) : null,
-      stock: parseInt(v.stock, 10) || 0,
-      is_default: index === 0 ? true : !!v.is_default,
-      display_order: index,
-    }));
-    const { error } = await supabase.from("product_variants").insert(rows);
-    if (error) throw new Error(error.message);
+  const existingIds = (existingVariants || []).map((v) => v.id);
+  const incomingIds = (variants || []).map((v) => v.id).filter(Boolean);
+
+  // 1. Delete removed variants (if any)
+  const idsToDelete = existingIds.filter((id) => !incomingIds.includes(id));
+  for (const id of idsToDelete) {
+    const { error } = await supabase.from("product_variants").delete().eq("id", id);
+    if (error) {
+      console.warn(`Could not delete removed variant ${id} (possibly referenced by orders):`, error.message);
+    }
+  }
+
+  // 2. Temporarily set is_default = false on existing variants to avoid unique constraint collision during updates
+  if (existingIds.length > 0) {
+    await supabase
+      .from("product_variants")
+      .update({ is_default: false })
+      .eq("product_id", productId);
+  }
+
+  // 3. Upsert / update submitted variants
+  if (variants && variants.length > 0) {
+    const explicitDefaultIndex = variants.findIndex((v) => !!v.is_default);
+    const defaultIndex = explicitDefaultIndex >= 0 ? explicitDefaultIndex : 0;
+
+    for (let index = 0; index < variants.length; index++) {
+      const v = variants[index];
+      const payload = {
+        product_id: productId,
+        color_name: v.color_name || null,
+        color_hex: v.color_hex || null,
+        dimension_values: v.dimension_values || {},
+        price: parseFloat(v.price) || 0,
+        compare_at_price: v.compare_at_price ? parseFloat(v.compare_at_price) : null,
+        stock: parseInt(v.stock, 10) || 0,
+        is_default: index === defaultIndex,
+        display_order: index,
+      };
+
+      if (v.id && existingIds.includes(v.id)) {
+        const { error } = await supabase
+          .from("product_variants")
+          .update(payload)
+          .eq("id", v.id);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabase
+          .from("product_variants")
+          .insert(payload);
+        if (error) throw new Error(error.message);
+      }
+    }
   }
 }
 
@@ -202,6 +303,8 @@ export async function createProduct(prevState, formData) {
   }
 
   revalidatePath("/admin/products");
+  revalidatePath("/");
+  revalidatePath("/shop");
   return { success: true };
 }
 
@@ -235,6 +338,8 @@ export async function updateProduct(id, prevState, formData) {
   }
 
   revalidatePath("/admin/products");
+  revalidatePath("/");
+  revalidatePath("/shop");
   return { success: true };
 }
 
@@ -243,4 +348,6 @@ export async function deleteProduct(id) {
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/products");
+  revalidatePath("/");
+  revalidatePath("/shop");
 }

@@ -69,7 +69,7 @@ export default function CartPage() {
                         </div>
                         
                         <div className={styles.colPrice}>
-                          ₹{item.price.toLocaleString()}
+                          ₹{Number(item.price).toLocaleString('en-IN')}
                         </div>
                         
                         <div className={styles.colQty}>
@@ -81,7 +81,7 @@ export default function CartPage() {
                         </div>
                         
                         <div className={styles.colTotal}>
-                          ₹{(item.price * item.quantity).toLocaleString()}
+                          ₹{(Number(item.price) * item.quantity).toLocaleString('en-IN')}
                         </div>
                       </div>
                     );
@@ -100,7 +100,7 @@ export default function CartPage() {
                   <div className={styles.summaryBody}>
                     <div className={styles.summaryRow}>
                       <span className={styles.summaryLabel}>Subtotal</span>
-                      <span className={styles.summaryValue}>₹{cartTotal.toLocaleString()}</span>
+                      <span className={styles.summaryValue}>₹{Number(cartTotal).toLocaleString('en-IN')}</span>
                     </div>
                     <div className={styles.summaryRow}>
                       <span className={styles.summaryLabel}>Shipping</span>
@@ -116,7 +116,7 @@ export default function CartPage() {
                   
                   <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
                     <span className={styles.totalLabel}>Estimated Total</span>
-                    <span className={styles.totalAmount}>₹{cartTotal.toLocaleString()}</span>
+                    <span className={styles.totalAmount}>₹{Number(cartTotal).toLocaleString('en-IN')}</span>
                   </div>
                   
                   <Link href="/checkout" className={`btn-primary ${styles.checkoutBtn}`}>

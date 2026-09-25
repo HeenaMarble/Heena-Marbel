@@ -3,8 +3,15 @@
 import Link from 'next/link';
 import styles from '@/components/CategorySelector.module.css';
 
-export default function CategorySelector({ categories, activeSlug }) {
+export default function CategorySelector({ categories, activeSlug, onSelectCategory }) {
   if (!categories || categories.length === 0) return null;
+
+  const handleSelect = (e, slug) => {
+    if (onSelectCategory) {
+      e.preventDefault();
+      onSelectCategory(slug);
+    }
+  };
 
   return (
     <nav aria-label="Category selector" className={styles.container}>
@@ -12,6 +19,7 @@ export default function CategorySelector({ categories, activeSlug }) {
         {/* All Products Option */}
         <Link
           href="/shop"
+          onClick={(e) => handleSelect(e, null)}
           className={`${styles.item} ${styles.allItem} ${!activeSlug ? styles.active : ''}`}
           aria-current={!activeSlug ? 'page' : undefined}
         >
@@ -60,6 +68,7 @@ export default function CategorySelector({ categories, activeSlug }) {
             <Link
               key={c.id}
               href={`/shop?category=${c.slug}`}
+              onClick={(e) => handleSelect(e, c.slug)}
               className={`${styles.item} ${isActive ? styles.active : ''}`}
               aria-current={isActive ? 'page' : undefined}
             >

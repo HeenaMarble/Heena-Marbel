@@ -143,7 +143,7 @@ export default async function OrdersListPage() {
                             </td>
                             <td>
                               <span className={styles.orderTotal}>
-                                ₹{Number(order.total_amount || 0).toLocaleString()}
+                                ₹{Number(order.total_amount || 0).toLocaleString('en-IN')}
                               </span>
                             </td>
                             <td>
@@ -179,7 +179,7 @@ export default async function OrdersListPage() {
                         <div className={styles.mobileCardMeta}>
                           <span className={styles.orderDate}>{formatDate(order.created_at)}</span>
                           <span className={styles.orderTotal}>
-                            ₹{Number(order.total_amount || 0).toLocaleString()}
+                            ₹{Number(order.total_amount || 0).toLocaleString('en-IN')}
                           </span>
                         </div>
                         <Link

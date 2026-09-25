@@ -2,15 +2,21 @@ import Link from 'next/link';
 import styles from './Hero.module.css';
 import { getHeroSettings } from '@/lib/actions/content-actions';
 
-export default async function Hero({ video_url, videoUrl } = {}) {
-  const heroSettings = (!video_url && !videoUrl) ? await getHeroSettings() : null;
-  const videoSrc = video_url || videoUrl || heroSettings?.video_url || '/hero-bg.mp4';
+export default async function Hero(props = {}) {
+  const needsFetch = !props.video_url && !props.videoUrl && (!props.title || !props.description);
+  const heroSettings = needsFetch ? await getHeroSettings() : null;
+
+  const videoSrc = props.video_url || props.videoUrl || heroSettings?.video_url || '/hero-bg.mp4';
+  const heroTitle = (props.title || heroSettings?.title)?.trim() || 'HEENA MARBLE';
+  const heroDescription = (props.description || heroSettings?.description)?.trim() ||
+    'We create masterpieces in marble with precision, passion and perfection. From temples to homes, we bring tradition and craftsmanship to life.';
 
   return (
     <div className={styles.heroWrapper}>
       <section className={styles.heroSection}>
         <div className={styles.heroBackground}>
           <video 
+            key={videoSrc}
             autoPlay 
             loop 
             muted 
@@ -25,14 +31,14 @@ export default async function Hero({ video_url, videoUrl } = {}) {
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.content}>
             <span className={`subheading ${styles.heroSubheading}`}>CRAFTING TIMELESS BEAUTY IN MARBLE</span>
-            <h1 className={styles.title}>HEENA MARBLE</h1>
+            <h1 className={styles.title}>{heroTitle}</h1>
             <div className={styles.subtitleWrapper}>
               <span className={styles.line}></span>
               <span className={styles.subtitle}>MAKRANA RAJASTHAN</span>
               <span className={styles.line}></span>
             </div>
             <p className={styles.description}>
-              We create masterpieces in marble with precision, passion and perfection. From temples to homes, we bring tradition and craftsmanship to life.
+              {heroDescription}
             </p>
             
             <div className={styles.actions}>

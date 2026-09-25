@@ -11,7 +11,6 @@ import {
   Users,
   Star,
   MessageSquare,
-  Mail,
   Quote,
   Settings,
   Megaphone,
@@ -44,13 +43,12 @@ const NAV_GROUPS = [
       { label: "Inquiries", href: "/admin/inquiries", icon: MessageSquare },
       { label: "Reviews", href: "/admin/reviews", icon: Star },
       { label: "Users", href: "/admin/users", icon: Users },
-      { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
     ],
   },
   {
     title: "Studio & Content",
     items: [
-      { label: "Hero Video", href: "/admin/content/hero-video", icon: Video },
+      { label: "Hero Content", href: "/admin/content/hero-video", icon: Video },
       { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
       { label: "Services", href: "/admin/content/services", icon: Layers },
       { label: "Projects", href: "/admin/projects", icon: FolderKanban },

@@ -1,5 +1,11 @@
 import "./globals.css";
 import Providers from "@/components/Providers";
+import AnnouncementBar from "@/components/AnnouncementBar";
+
+// Ensures the announcement banner (and anything else reading live DB state
+// in this tree) is re-fetched on every request instead of being cached at
+// build time.
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "HEENA MARBLE | Premium Marble & Stone Masterpieces",
@@ -20,6 +26,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Providers>
+          <AnnouncementBar />
           {children}
         </Providers>
       </body>

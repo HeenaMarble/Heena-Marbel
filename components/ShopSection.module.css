@@ -234,18 +234,14 @@
     gap: 12px;
   }
 
-  .inlineAddBtn {
-    font-size: 0.7rem;
-    padding: 5px 8px;
-  }
-
   .details {
     padding: 10px;
   }
 
   .details h3 {
     font-size: 0.82rem;
-    line-height: 1.2;
+    line-height: 1.25;
+    margin-bottom: 4px;
   }
 
   .desc {
@@ -254,8 +250,33 @@
     height: 30px;
   }
 
+  .priceRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .priceGroup {
+    width: 100%;
+    align-items: baseline;
+    gap: 6px;
+  }
+
   .price {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
+  }
+
+  .comparePrice {
+    font-size: 0.78rem;
+  }
+
+  .inlineAddBtn {
+    width: 100%;
+    font-size: 0.74rem;
+    padding: 7px 8px;
+    border-radius: var(--radius-sm, 4px);
+    margin-top: 2px;
   }
 
   .cardRating {
@@ -272,12 +293,16 @@
     padding: 8px 6px;
   }
 
-  .inlineAddBtn {
-    font-size: 0.64rem;
-    padding: 4px 6px;
+  .details h3 {
+    font-size: 0.78rem;
   }
 
-  .inlineAddBtn svg {
-    display: none;
+  .price {
+    font-size: 0.88rem;
+  }
+
+  .inlineAddBtn {
+    font-size: 0.7rem;
+    padding: 6px 6px;
   }
 }

@@ -48,7 +48,7 @@ export default function CartDrawer() {
                           {item.variantSummary}
                         </p>
                       )}
-                      <p className={styles.price}>₹{item.price.toLocaleString()}</p>
+                      <p className={styles.price}>₹{Number(item.price).toLocaleString('en-IN')}</p>
                       <div className={styles.qtyControl}>
                         <button onClick={() => updateQuantity(itemKey, item.quantity - 1)}>-</button>
                         <span>{item.quantity}</span>
@@ -72,7 +72,7 @@ export default function CartDrawer() {
           <div className={styles.footer}>
             <div className={styles.totalRow}>
               <span>Subtotal</span>
-              <strong>₹{cartTotal.toLocaleString()}</strong>
+              <strong>₹{Number(cartTotal).toLocaleString('en-IN')}</strong>
             </div>
             <p className={styles.taxNote}>Taxes and shipping calculated at checkout.</p>
             <Link href="/cart" className={`btn-primary ${styles.checkoutBtn}`} onClick={toggleCart}>

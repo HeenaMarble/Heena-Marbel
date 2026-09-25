@@ -30,10 +30,10 @@ export default function ShopGrid({ products }) {
             </Link>
             <div className={styles.priceRow}>
               <div className={styles.priceGroup}>
-                <span className={styles.price}>₹{product.price.toLocaleString()}</span>
+                <span className={styles.price}>₹{Number(product.price).toLocaleString('en-IN')}</span>
                 {product.compare_at_price && Number(product.compare_at_price) > Number(product.price) && (
                   <span className={styles.comparePrice}>
-                    ₹{Number(product.compare_at_price).toLocaleString()}
+                    ₹{Number(product.compare_at_price).toLocaleString('en-IN')}
                   </span>
                 )}
               </div>

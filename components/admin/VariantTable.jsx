@@ -1,7 +1,81 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Plus, Trash2, CheckCircle2, Circle } from "lucide-react";
+
+export const UNIT_OPTIONS = [
+  { label: "inches (\")", value: "inches" },
+  { label: "cm", value: "cm" },
+  { label: "mm", value: "mm" },
+  { label: "ft", value: "ft" },
+  { label: "m", value: "m" },
+  { label: "kg", value: "kg" },
+  { label: "g", value: "g" },
+  { label: "lbs", value: "lbs" },
+  { label: "sq ft", value: "sq ft" },
+  { label: "sq m", value: "sq m" },
+  { label: "pcs", value: "pcs" },
+  { label: "— (no unit)", value: "" },
+];
+
+function parseDimensionLabel(item) {
+  if (!item) return { label: "", unit: "" };
+  let current = item;
+
+  while (typeof current === "string") {
+    const trimmed = current.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
+      try {
+        current = JSON.parse(current);
+      } catch {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (typeof current === "object" && current !== null && !Array.isArray(current)) {
+    let label = current.label ?? "";
+    let unit = current.unit ?? "";
+
+    while (typeof label === "string") {
+      const trimmed = label.trim();
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(label);
+          if (parsed && typeof parsed === "object") {
+            label = parsed.label ?? "";
+            if (!unit && parsed.unit) unit = parsed.unit;
+          } else {
+            break;
+          }
+        } catch {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return { label: String(label || ""), unit: String(unit || "") };
+  }
+
+  return { label: String(current || ""), unit: "" };
+}
+
+function getDimensionValue(dimensionValues, labelKey) {
+  if (!dimensionValues || !labelKey) return "";
+  if (dimensionValues[labelKey] !== undefined) return dimensionValues[labelKey];
+  const lowerKey = labelKey.toLowerCase();
+  for (const [k, val] of Object.entries(dimensionValues)) {
+    if (k.toLowerCase() === lowerKey) return val;
+    if (k.includes(labelKey) || k.toLowerCase().includes(lowerKey)) return val;
+  }
+  return "";
+}
 
 export default function VariantTable({
   dimensionLabels = [],
@@ -11,36 +85,61 @@ export default function VariantTable({
   variants = [],
   onChangeVariants,
 }) {
-  // Comma-separated input for dimension labels
-  const [labelsInput, setLabelsInput] = useState(() =>
-    dimensionLabels.join(", ")
+  // Normalize dimension labels to objects: [{ label: "Height", unit: "inches" }]
+  const normalizedLabels = (Array.isArray(dimensionLabels) ? dimensionLabels : []).map(
+    parseDimensionLabel
   );
 
-  // Sync labels input if external labels change (e.g. initial load)
-  useEffect(() => {
-    const current = dimensionLabels.join(", ");
-    const parsed = labelsInput
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .join(", ");
-    if (current !== parsed && !labelsInput.endsWith(",")) {
-      setLabelsInput(current);
+  function handleLabelNameChange(index, newName) {
+    const oldLabel = normalizedLabels[index]?.label || "";
+    const updatedLabels = normalizedLabels.map((item, i) =>
+      i === index ? { ...item, label: newName } : item
+    );
+    onChangeDimensionLabels(updatedLabels);
+
+    // If label was renamed, rename the key in variants' dimension_values
+    if (oldLabel && oldLabel !== newName) {
+      const updatedVariants = variants.map((v) => {
+        const dv = { ...(v.dimension_values || {}) };
+        if (oldLabel in dv) {
+          dv[newName] = dv[oldLabel];
+          delete dv[oldLabel];
+        }
+        return { ...v, dimension_values: dv };
+      });
+      onChangeVariants(updatedVariants);
     }
-  }, [dimensionLabels]);
+  }
 
-  function handleLabelsChange(e) {
-    const raw = e.target.value;
-    setLabelsInput(raw);
+  function handleLabelUnitChange(index, newUnit) {
+    const updatedLabels = normalizedLabels.map((item, i) =>
+      i === index ? { ...item, unit: newUnit } : item
+    );
+    onChangeDimensionLabels(updatedLabels);
+  }
 
-    const parsed = raw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+  function handleAddDimension() {
+    const updatedLabels = [
+      ...normalizedLabels,
+      { label: "", unit: "inches" },
+    ];
+    onChangeDimensionLabels(updatedLabels);
+  }
 
-    // Unique labels preserving order
-    const unique = Array.from(new Set(parsed));
-    onChangeDimensionLabels(unique);
+  function handleRemoveDimension(index) {
+    const removedLabel = normalizedLabels[index]?.label || "";
+    const updatedLabels = normalizedLabels.filter((_, i) => i !== index);
+    onChangeDimensionLabels(updatedLabels);
+
+    // Clean up key in variant rows
+    if (removedLabel) {
+      const updatedVariants = variants.map((v) => {
+        const dv = { ...(v.dimension_values || {}) };
+        delete dv[removedLabel];
+        return { ...v, dimension_values: dv };
+      });
+      onChangeVariants(updatedVariants);
+    }
   }
 
   function addVariantRow() {
@@ -56,7 +155,7 @@ export default function VariantTable({
       price: "",
       compare_at_price: "",
       stock: 0,
-      is_default: isFirst, // First row is default by default
+      is_default: isFirst,
     };
 
     onChangeVariants([...variants, newRow]);
@@ -66,7 +165,6 @@ export default function VariantTable({
     const wasDefault = variants[index]?.is_default;
     const updated = variants.filter((_, i) => i !== index);
 
-    // If we removed the default row and rows remain, make the first row default
     if (wasDefault && updated.length > 0) {
       updated[0] = { ...updated[0], is_default: true };
     }
@@ -116,23 +214,69 @@ export default function VariantTable({
   const showColorColumn = hasColors && colors.length > 0;
 
   return (
-    <div className="space-y-4">
-      {/* 2A. Variant Dimension Labels Input */}
-      <div>
-        <label className="block text-sm font-semibold text-[#1a1a1a] mb-1.5">
-          Variant Dimension Labels
+    <div className="space-y-5">
+      {/* 2A. Variant Dimension Headers with Units */}
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-[#1a1a1a]">
+          Variant Dimensions & Units
         </label>
-        <input
-          type="text"
-          value={labelsInput}
-          onChange={handleLabelsChange}
-          placeholder="e.g. Height, Base Width, Thickness"
-          className="w-full rounded-lg border border-[#e5e0d8] px-3 py-2 text-sm outline-none focus:border-[#b38b4d] bg-white transition-colors"
-        />
-        <p className="text-xs text-[#1a1a1a]/55 mt-1">
-          Enter comma-separated dimension headers (e.g. Height, Width). These
-          will become the column headers below.
+        <p className="text-xs text-[#1a1a1a]/55">
+          Define dimension headers (e.g. Size, Height, Width) and their measurement units. These become the column headers below.
         </p>
+
+        {normalizedLabels.length > 0 && (
+          <div className="space-y-2 pt-1">
+            <div className="hidden sm:grid sm:grid-cols-[1fr_140px_36px] gap-2 px-1">
+              <span className="text-[11px] font-semibold text-[#1a1a1a]/50 uppercase tracking-wide">
+                Dimension Name
+              </span>
+              <span className="text-[11px] font-semibold text-[#1a1a1a]/50 uppercase tracking-wide">
+                Unit
+              </span>
+              <span />
+            </div>
+
+            {normalizedLabels.map((dim, idx) => (
+              <div key={idx} className="grid grid-cols-[1fr_140px_36px] items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. Height, Width, Size"
+                  value={dim.label}
+                  onChange={(e) => handleLabelNameChange(idx, e.target.value)}
+                  className="rounded-lg border border-[#e5e0d8] px-3 py-2 text-sm outline-none focus:border-[#b38b4d] bg-white transition-colors w-full"
+                />
+                <select
+                  value={dim.unit ?? ""}
+                  onChange={(e) => handleLabelUnitChange(idx, e.target.value)}
+                  className="rounded-lg border border-[#e5e0d8] px-2.5 py-2 text-sm outline-none focus:border-[#b38b4d] bg-white transition-colors cursor-pointer w-full"
+                  aria-label="Select unit"
+                >
+                  {UNIT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveDimension(idx)}
+                  className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg border border-[#e5e0d8] text-[#1a1a1a]/60 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors cursor-pointer"
+                  title="Remove dimension"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={handleAddDimension}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#967440] hover:text-[#b38b4d] bg-[#b38b4d]/10 hover:bg-[#b38b4d]/15 px-3 py-1.5 rounded-lg transition-colors cursor-pointer mt-1"
+        >
+          <Plus className="h-3.5 w-3.5" /> Add Dimension (e.g. Height, Width, Size)
+        </button>
       </div>
 
       {/* 2B. Variant SKU Table */}
@@ -164,11 +308,16 @@ export default function VariantTable({
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-[#e5e0d8] bg-[#faf8f5] text-[#1a1a1a]/80 font-semibold">
-                  {/* Dynamic Dimension Column Headers */}
-                  {dimensionLabels.length > 0 ? (
-                    dimensionLabels.map((label, idx) => (
-                      <th key={idx} className="p-2.5 whitespace-nowrap min-w-[110px]">
-                        {label}
+                  {/* Dynamic Dimension Column Headers with Units */}
+                  {normalizedLabels.length > 0 ? (
+                    normalizedLabels.map((dim, idx) => (
+                      <th key={idx} className="p-2.5 whitespace-nowrap min-w-[120px]">
+                        <span>{dim.label || `Dim ${idx + 1}`}</span>
+                        {dim.unit && (
+                          <span className="ml-1 text-[10px] font-normal text-[#967440] bg-[#b38b4d]/15 px-1.5 py-0.5 rounded">
+                            {dim.unit}
+                          </span>
+                        )}
                       </th>
                     ))
                   ) : (
@@ -177,7 +326,7 @@ export default function VariantTable({
                     </th>
                   )}
 
-                  {/* Color Dropdown Column (only if colors are active) */}
+                  {/* Color Dropdown Column */}
                   {showColorColumn && (
                     <th className="p-2.5 whitespace-nowrap min-w-[120px]">
                       Color
@@ -208,23 +357,26 @@ export default function VariantTable({
                     }`}
                   >
                     {/* Dimension Value Inputs */}
-                    {dimensionLabels.length > 0 ? (
-                      dimensionLabels.map((label, idx) => (
-                        <td key={idx} className="p-2">
-                          <input
-                            type="text"
-                            placeholder={`e.g. 12"`}
-                            value={v.dimension_values?.[label] || ""}
-                            onChange={(e) =>
-                              updateDimensionValue(index, label, e.target.value)
-                            }
-                            className="w-full rounded-md border border-[#e5e0d8] px-2 py-1.5 text-xs outline-none focus:border-[#b38b4d] bg-white"
-                          />
-                        </td>
-                      ))
+                    {normalizedLabels.length > 0 ? (
+                      normalizedLabels.map((dim, idx) => {
+                        const labelKey = dim.label || `Dim ${idx + 1}`;
+                        return (
+                          <td key={idx} className="p-2">
+                            <input
+                              type="text"
+                              placeholder={dim.unit ? `e.g. 12` : `e.g. 12"`}
+                              value={getDimensionValue(v.dimension_values, labelKey)}
+                              onChange={(e) =>
+                                updateDimensionValue(index, labelKey, e.target.value)
+                              }
+                              className="w-full rounded-md border border-[#e5e0d8] px-2 py-1.5 text-xs outline-none focus:border-[#b38b4d] bg-white"
+                            />
+                          </td>
+                        );
+                      })
                     ) : (
                       <td className="p-2 text-xs text-[#1a1a1a]/40 italic">
-                        Enter dimension labels above
+                        Add dimension headers above
                       </td>
                     )}
 

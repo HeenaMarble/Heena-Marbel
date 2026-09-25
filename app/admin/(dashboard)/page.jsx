@@ -44,10 +44,10 @@ export default async function AdminDashboardPage() {
       badgeType: stats.pendingOrders > 0 ? "amber" : "emerald",
     },
     {
-      label: "Marble Catalog",
+      label: "Product Catalog",
       value: stats.productCount,
       icon: Package,
-      description: "Active mandirs & stone art",
+      description: "Active products & items",
       trend: "Live in Storefront",
     },
     {
@@ -137,9 +137,9 @@ export default async function AdminDashboardPage() {
             <span>Client Inquiries</span>
           </Link>
 
-          <Link href="/admin/hero-slides" className={styles.actionBtnSecondary}>
+          <Link href="/admin/content/hero-video" className={styles.actionBtnSecondary}>
             <LayoutTemplate className={styles.actionIcon} style={{ color: "#967440" }} />
-            <span>Hero Showcase & Reels</span>
+            <span>Hero Content</span>
           </Link>
         </div>
       </div>

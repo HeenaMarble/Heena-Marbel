@@ -7,7 +7,57 @@ import SpecificationsInput from "@/components/admin/SpecificationsInput";
 import VariantTable from "@/components/admin/VariantTable";
 import ColorManager from "@/components/admin/ColorManager";
 import TabbedImageUploader from "@/components/admin/TabbedImageUploader";
-import { AlertCircle } from "lucide-react";
+import VideoUploader from "@/components/admin/VideoUploader";
+import { AlertCircle, X } from "lucide-react";
+
+function parseDimensionLabel(item) {
+  if (!item) return { label: "", unit: "" };
+  let current = item;
+
+  while (typeof current === "string") {
+    const trimmed = current.trim();
+    if (
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]"))
+    ) {
+      try {
+        current = JSON.parse(current);
+      } catch {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (typeof current === "object" && current !== null && !Array.isArray(current)) {
+    let label = current.label ?? "";
+    let unit = current.unit ?? "";
+
+    while (typeof label === "string") {
+      const trimmed = label.trim();
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(label);
+          if (parsed && typeof parsed === "object") {
+            label = parsed.label ?? "";
+            if (!unit && parsed.unit) unit = parsed.unit;
+          } else {
+            break;
+          }
+        } catch {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return { label: String(label || ""), unit: String(unit || "") };
+  }
+
+  return { label: String(current || ""), unit: "" };
+}
 
 export default function ProductForm({ action, categories = [], initialData = {} }) {
   const [state, formAction, pending] = useActionState(action, null);
@@ -21,13 +71,17 @@ export default function ProductForm({ action, categories = [], initialData = {} 
   const [hasColors, setHasColors] = useState(
     () => initialData.has_colors ?? false
   );
-
-  // Variant Dimension Labels (array of strings, e.g. ["Height", "Width"])
-  const [dimensionLabels, setDimensionLabels] = useState(() =>
-    Array.isArray(initialData.variant_dimension_labels)
-      ? initialData.variant_dimension_labels
-      : []
+  const [isFeatured, setIsFeatured] = useState(
+    () => initialData.is_featured ?? false
   );
+
+  // Variant Dimension Labels (array of {label, unit} objects or strings)
+  const [dimensionLabels, setDimensionLabels] = useState(() => {
+    if (Array.isArray(initialData.variant_dimension_labels)) {
+      return initialData.variant_dimension_labels.map(parseDimensionLabel);
+    }
+    return [];
+  });
 
   // Dimensions for Simple Product mode (array of {label, value, unit})
   const [dimensions, setDimensions] = useState(() =>
@@ -64,6 +118,7 @@ export default function ProductForm({ action, categories = [], initialData = {} 
     if (Array.isArray(initialData.variants) && initialData.variants.length > 0) {
       const hasDefault = initialData.variants.some((v) => v.is_default);
       return initialData.variants.map((v, idx) => ({
+        id: v.id || undefined,
         dimension_values: v.dimension_values || {},
         color_name: v.color_name || null,
         color_hex: v.color_hex || null,
@@ -75,6 +130,9 @@ export default function ProductForm({ action, categories = [], initialData = {} 
     }
     return [];
   });
+
+  // Product Video URL (single optional video)
+  const [videoUrl, setVideoUrl] = useState(() => initialData.video_url || "");
 
   // Common Images (flat array of URLs)
   const [commonImages, setCommonImages] = useState(() => {
@@ -278,10 +336,15 @@ export default function ProductForm({ action, categories = [], initialData = {} 
         </>
       )}
 
-      {/* 2. Dimensions / Specifications Section */}
+      {/* 2. Dimensions / Variants Section */}
       {hasVariants ? (
         <div className="pt-2">
           {/* Hidden JSON serialization for variant dimension labels & variants */}
+          <input
+            type="hidden"
+            name="dimensions_json"
+            value="[]"
+          />
           <input
             type="hidden"
             name="variant_dimension_labels_json"
@@ -303,8 +366,19 @@ export default function ProductForm({ action, categories = [], initialData = {} 
           />
         </div>
       ) : (
-        <div className="space-y-5">
-          {/* Dimensions */}
+        <div className="space-y-4">
+          <input
+            type="hidden"
+            name="variant_dimension_labels_json"
+            value="[]"
+          />
+          <input
+            type="hidden"
+            name="variants_json"
+            value="[]"
+          />
+
+          {/* Dimensions for Simple Product */}
           <div>
             <label className="block text-sm font-semibold text-[#1a1a1a] mb-0.5">
               Dimensions
@@ -319,24 +393,24 @@ export default function ProductForm({ action, categories = [], initialData = {} 
             />
             <DimensionsInput value={dimensions} onChange={setDimensions} />
           </div>
-
-          {/* Specifications */}
-          <div>
-            <label className="block text-sm font-semibold text-[#1a1a1a] mb-0.5">
-              Specifications
-            </label>
-            <p className="text-[11px] text-[#1a1a1a]/50 mb-2">
-              Product attributes without units (e.g. Material: Makrana Marble)
-            </p>
-            <input
-              type="hidden"
-              name="specifications_json"
-              value={JSON.stringify(specifications)}
-            />
-            <SpecificationsInput value={specifications} onChange={setSpecifications} />
-          </div>
         </div>
       )}
+
+      {/* Specifications (Common across all product types & variants) */}
+      <div className="pt-2">
+        <label className="block text-sm font-semibold text-[#1a1a1a] mb-0.5">
+          Specifications <span className="text-[11px] font-normal text-[#1a1a1a]/50">(Common across all variants)</span>
+        </label>
+        <p className="text-[11px] text-[#1a1a1a]/50 mb-2">
+          Product attributes that apply to all variants (e.g. Material: Makrana Marble, Finish: Polished, Craftsmanship: Hand Carved)
+        </p>
+        <input
+          type="hidden"
+          name="specifications_json"
+          value={JSON.stringify(specifications)}
+        />
+        <SpecificationsInput value={specifications} onChange={setSpecifications} />
+      </div>
 
       {/* 3A. Canonical Color List (only shown if Has Colors is ON) */}
       {hasColors && (
@@ -376,16 +450,101 @@ export default function ProductForm({ action, categories = [], initialData = {} 
         />
       </div>
 
-      {/* Active Checkbox */}
-      <label className="flex items-center gap-2 text-sm font-semibold text-[#1a1a1a] cursor-pointer">
-        <input
-          type="checkbox"
-          name="is_active"
-          defaultChecked={initialData.is_active ?? true}
-          className="h-4 w-4 accent-[#b38b4d] cursor-pointer"
-        />
-        Active (visible on the shop)
-      </label>
+      {/* 3C. Product Video (optional, single video) */}
+      <div className="pt-2">
+        <label className="block text-sm font-semibold text-[#1a1a1a] mb-1">
+          Product Video <span className="text-[11px] font-normal text-[#1a1a1a]/50">(Optional)</span>
+        </label>
+        <p className="text-[11px] text-[#1a1a1a]/50 mb-3">
+          Upload a short product video (MP4 / WebM / MOV, max 50 MB). It will appear on the product page.
+        </p>
+
+        {/* Hidden input serialised for server action */}
+        <input type="hidden" name="video_url" value={videoUrl} />
+
+        {videoUrl ? (
+          /* Video preview with remove button */
+          <div className="relative rounded-2xl overflow-hidden border border-[#b38b4d]/30 bg-black/5">
+            <video
+              src={videoUrl}
+              controls
+              className="w-full max-h-64 object-contain bg-black"
+            />
+            <button
+              type="button"
+              onClick={() => setVideoUrl("")}
+              className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-red-600/90 hover:bg-red-700 text-white text-xs font-semibold px-2.5 py-1 transition-colors shadow"
+            >
+              <X className="h-3.5 w-3.5" />
+              Remove
+            </button>
+          </div>
+        ) : (
+          <VideoUploader
+            folder="/heena-marble/products/videos"
+            onUploadComplete={(url) => setVideoUrl(url)}
+          />
+        )}
+      </div>
+
+      {/* Visibility & Promotion Settings */}
+      <div className="rounded-xl border border-[#b38b4d]/25 bg-[#faf8f5] p-4 sm:p-5 space-y-4 shadow-xs">
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            name="is_active"
+            defaultChecked={initialData.is_active ?? true}
+            className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#b38b4d] cursor-pointer"
+          />
+          <div>
+            <span className="block text-sm font-semibold text-[#1a1a1a] group-hover:text-[#b38b4d] transition-colors">
+              Active (Visible in Shop)
+            </span>
+            <span className="block text-xs text-[#1a1a1a]/60 mt-0.5">
+              Product will be publicly visible and purchasable in the shop catalog
+            </span>
+          </div>
+        </label>
+
+        <div className="border-t border-[#b38b4d]/15 pt-3">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              name="is_featured"
+              checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#b38b4d] cursor-pointer"
+            />
+            <div>
+              <span className="block text-sm font-semibold text-[#1a1a1a] group-hover:text-[#b38b4d] transition-colors">
+                Featured on Homepage
+              </span>
+              <span className="block text-xs text-[#1a1a1a]/60 mt-0.5">
+                Display this product in the Featured Products carousel section on the homepage
+              </span>
+            </div>
+          </label>
+
+          {isFeatured && (
+            <div className="mt-3 pl-7">
+              <label className="block text-xs font-semibold text-[#1a1a1a] mb-1">
+                Featured Display Order (optional)
+              </label>
+              <input
+                type="number"
+                name="featured_order"
+                defaultValue={initialData.featured_order ?? ""}
+                placeholder="e.g. 1, 2, 3... (lower numbers show first)"
+                min="0"
+                className="w-full sm:w-64 rounded-lg border border-[#e5e0d8] px-3 py-1.5 text-sm outline-none focus:border-[#b38b4d] bg-white transition-colors"
+              />
+              <span className="block text-[11px] text-[#1a1a1a]/50 mt-1">
+                Lower numbers appear first. Leave empty for newest-first order after numbered items.
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Client validation error */}
       {clientError && (
