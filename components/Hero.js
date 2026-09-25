@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import styles from './Hero.module.css';
+import { getHeroSettings } from '@/lib/actions/content-actions';
 
-export default function Hero() {
+export default async function Hero({ video_url, videoUrl } = {}) {
+  const heroSettings = (!video_url && !videoUrl) ? await getHeroSettings() : null;
+  const videoSrc = video_url || videoUrl || heroSettings?.video_url || '/hero-bg.mp4';
+
   return (
     <div className={styles.heroWrapper}>
       <section className={styles.heroSection}>
@@ -13,7 +17,7 @@ export default function Hero() {
             playsInline
             className={styles.bgVideo}
           >
-            <source src="/hero-bg.mp4" type="video/mp4" />
+            <source src={videoSrc} type="video/mp4" />
           </video>
           <div className={styles.overlay}></div>
         </div>

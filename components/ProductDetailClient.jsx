@@ -178,7 +178,23 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
 
   // Dynamic specifications that update when switching variants (e.g. Standard vs Grand Size)
   const effectiveSpecifications = React.useMemo(() => {
-    const baseSpecs = Array.isArray(product?.dimensions) ? [...product.dimensions] : [];
+    // Helper: format a dimension value with its unit if present
+    function fmtDimValue(item) {
+      const cleanVal = String(item.value ?? "").trim();
+      const unit = item.unit ? item.unit : null;
+      if (unit) return `${cleanVal} ${unit}`;
+      // Legacy fallback: if purely numeric, add " inches"
+      if (/^[0-9]+(\.[0-9]+)?$/.test(cleanVal)) return `${cleanVal} inches`;
+      return cleanVal;
+    }
+
+    const baseDims = Array.isArray(product?.dimensions)
+      ? product.dimensions.map((item) => ({ label: item.label, value: fmtDimValue(item) }))
+      : [];
+    const baseSpecs = Array.isArray(product?.specifications)
+      ? product.specifications
+      : [];
+    const baseAll = [...baseDims, ...baseSpecs];
 
     if (hasVariants && activeVariant) {
       const specMap = new Map();
@@ -197,9 +213,9 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
         specMap.set("Color", activeVariant.color_name);
       }
 
-      // Add baseSpecs from product level that are not already overridden
+      // Add baseAll from product level that are not already overridden
       const existingKeysLower = new Set(Array.from(specMap.keys()).map((k) => k.toLowerCase()));
-      baseSpecs.forEach((item) => {
+      baseAll.forEach((item) => {
         if (item?.label && !existingKeysLower.has(item.label.toLowerCase())) {
           specMap.set(item.label, item.value);
         }
@@ -208,12 +224,14 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
       return Array.from(specMap.entries()).map(([label, value]) => ({ label, value }));
     }
 
-    return baseSpecs;
-  }, [product?.dimensions, hasVariants, activeVariant, hasColors]);
+    return baseAll;
+  }, [product?.dimensions, product?.specifications, hasVariants, activeVariant, hasColors]);
 
   const hasMultipleImages = Boolean(filteredImages.length > 1);
   const hasDimensions = Boolean(
-    effectiveSpecifications.length > 0 || (product?.dimensions && product.dimensions.length > 0)
+    effectiveSpecifications.length > 0 ||
+    (product?.dimensions && product.dimensions.length > 0) ||
+    (product?.specifications && product.specifications.length > 0)
   );
 
   const [activeTab, setActiveTab] = useState(

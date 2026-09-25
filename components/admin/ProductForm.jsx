@@ -3,6 +3,7 @@
 import { useActionState, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DimensionsInput from "@/components/admin/DimensionsInput";
+import SpecificationsInput from "@/components/admin/SpecificationsInput";
 import VariantTable from "@/components/admin/VariantTable";
 import ColorManager from "@/components/admin/ColorManager";
 import TabbedImageUploader from "@/components/admin/TabbedImageUploader";
@@ -28,9 +29,14 @@ export default function ProductForm({ action, categories = [], initialData = {} 
       : []
   );
 
-  // Dimensions for Simple Product mode (array of {label, value})
+  // Dimensions for Simple Product mode (array of {label, value, unit})
   const [dimensions, setDimensions] = useState(() =>
     Array.isArray(initialData.dimensions) ? initialData.dimensions : []
+  );
+
+  // Specifications for Simple Product mode (array of {label, value})
+  const [specifications, setSpecifications] = useState(() =>
+    Array.isArray(initialData.specifications) ? initialData.specifications : []
   );
 
   // Canonical Colors: [{ name: "White", hex: "#FFFFFF" }, ...]
@@ -297,16 +303,38 @@ export default function ProductForm({ action, categories = [], initialData = {} 
           />
         </div>
       ) : (
-        <div>
-          <label className="block text-sm font-semibold text-[#1a1a1a] mb-1.5">
-            Dimensions & Specifications
-          </label>
-          <input
-            type="hidden"
-            name="dimensions_json"
-            value={JSON.stringify(dimensions)}
-          />
-          <DimensionsInput value={dimensions} onChange={setDimensions} />
+        <div className="space-y-5">
+          {/* Dimensions */}
+          <div>
+            <label className="block text-sm font-semibold text-[#1a1a1a] mb-0.5">
+              Dimensions
+            </label>
+            <p className="text-[11px] text-[#1a1a1a]/50 mb-2">
+              Physical measurements with units (e.g. Height: 12, cm)
+            </p>
+            <input
+              type="hidden"
+              name="dimensions_json"
+              value={JSON.stringify(dimensions)}
+            />
+            <DimensionsInput value={dimensions} onChange={setDimensions} />
+          </div>
+
+          {/* Specifications */}
+          <div>
+            <label className="block text-sm font-semibold text-[#1a1a1a] mb-0.5">
+              Specifications
+            </label>
+            <p className="text-[11px] text-[#1a1a1a]/50 mb-2">
+              Product attributes without units (e.g. Material: Makrana Marble)
+            </p>
+            <input
+              type="hidden"
+              name="specifications_json"
+              value={JSON.stringify(specifications)}
+            />
+            <SpecificationsInput value={specifications} onChange={setSpecifications} />
+          </div>
         </div>
       )}
 

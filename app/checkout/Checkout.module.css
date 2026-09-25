@@ -451,6 +451,67 @@
   background-color: #000000;
 }
 
+.couponBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.couponAppliedBadge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm, 4px);
+  margin-bottom: 12px;
+}
+
+.couponAppliedInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.couponAppliedCode {
+  font-family: monospace;
+  font-weight: 700;
+  color: #166534;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.couponAppliedDiscount {
+  font-size: 0.8rem;
+  color: #15803d;
+  font-weight: 500;
+}
+
+.couponRemoveBtn {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.couponRemoveBtn:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.couponError {
+  font-size: 0.8rem;
+  color: #dc2626;
+  margin: -4px 0 10px;
+  font-weight: 500;
+}
+
 /* Totals Breakdown */
 .costBreakdown {
   display: flex;

@@ -164,6 +164,24 @@ export default async function OrderDetailPage({ params }) {
                 </span>
               </div>
 
+              {order.quantity_discount && Number(order.quantity_discount) > 0 ? (
+                <div className={styles.totalRow}>
+                  <span>Quantity Discount</span>
+                  <span className={styles.totalRowValue} style={{ color: "#15803d", fontWeight: 600 }}>
+                    − ₹{Number(order.quantity_discount).toLocaleString("en-IN")}
+                  </span>
+                </div>
+              ) : null}
+
+              {order.coupon_discount && Number(order.coupon_discount) > 0 ? (
+                <div className={styles.totalRow}>
+                  <span>Coupon {order.coupon_code ? `(${order.coupon_code})` : "Discount"}</span>
+                  <span className={styles.totalRowValue} style={{ color: "#15803d", fontWeight: 600 }}>
+                    − ₹{Number(order.coupon_discount).toLocaleString("en-IN")}
+                  </span>
+                </div>
+              ) : null}
+
               <div className={styles.totalRow}>
                 <span>Shipping</span>
                 <span className={styles.totalRowValue}>

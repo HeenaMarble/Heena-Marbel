@@ -28,6 +28,7 @@ function mapProduct(row, images = [], variants = []) {
     imageObjects: images, // [{ image_url, color_name, display_order }]
     desc: row.description || "",
     dimensions: Array.isArray(row.dimensions) ? row.dimensions : [],
+    specifications: Array.isArray(row.specifications) ? row.specifications : [],
     category_id: row.category_id,
     category_name: row.categories?.name || null,
     category_slug: row.categories?.slug || null,

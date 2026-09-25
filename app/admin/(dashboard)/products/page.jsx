@@ -62,8 +62,18 @@ export default async function ProductsPage() {
                             </div>
                           )}
                         </div>
-                        <span className={styles.productName}>{p.name}</span>
+                        <div>
+                          <span className={styles.productName}>{p.name}</span>
+                          {p.has_variants && (
+                            <span className="block text-[11px] text-[#1a1a1a]/40 mt-0.5">
+                              {p.variant_count ? `${p.variant_count} variants` : "Has variants"}
+                            </span>
+                          )}
+                        </div>
                       </div>
+                    </td>
+                    <td className="text-[#1a1a1a]/60 text-sm">
+                      {p.categories?.name || <span className="text-[#1a1a1a]/30 italic">—</span>}
                     </td>
                     <td className="text-[#1a1a1a]/70 font-semibold whitespace-nowrap">
                       ₹{Number(p.price).toLocaleString("en-IN")}
@@ -74,10 +84,12 @@ export default async function ProductsPage() {
                       )}
                     </td>
                     <td>
-                      {p.stock_quantity <= 5 ? (
-                        <span className="text-red-600 font-bold">{p.stock_quantity} left</span>
+                      {p.stock_quantity === 0 ? (
+                        <span className="text-red-600 font-bold text-sm">Out of stock</span>
+                      ) : p.stock_quantity <= 5 ? (
+                        <span className="text-orange-600 font-bold text-sm">{p.stock_quantity} left</span>
                       ) : (
-                        <span className="text-[#1a1a1a]/70">{p.stock_quantity}</span>
+                        <span className="text-[#1a1a1a]/70 text-sm">{p.stock_quantity}</span>
                       )}
                     </td>
                     <td>

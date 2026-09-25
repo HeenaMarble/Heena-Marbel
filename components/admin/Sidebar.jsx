@@ -19,9 +19,11 @@ import {
   BarChart3,
   Film,
   FolderKanban,
+  Video,
   X,
   LogOut,
   Truck,
+  Tag,
 } from "lucide-react";
 import { useAdminSidebar } from "@/context/AdminSidebarContext";
 import { adminLogout } from "@/actions/auth";
@@ -48,6 +50,7 @@ const NAV_GROUPS = [
   {
     title: "Studio & Content",
     items: [
+      { label: "Hero Video", href: "/admin/content/hero-video", icon: Video },
       { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
       { label: "Services", href: "/admin/content/services", icon: Layers },
       { label: "Projects", href: "/admin/projects", icon: FolderKanban },
@@ -60,7 +63,9 @@ const NAV_GROUPS = [
     title: "Settings",
     items: [
       { label: "Site Settings", href: "/admin/content/settings", icon: Settings },
+      { label: "Coupons", href: "/admin/settings/coupons", icon: Tag },
       { label: "Shipping Settings", href: "/admin/settings/shipping", icon: Truck },
+      { label: "Quantity Discount", href: "/admin/settings/quantity-discount", icon: Layers },
     ],
   },
 ];
@@ -140,8 +145,11 @@ export default function AdminSidebar({ adminName = "Admin" }) {
                 {group.items.map((item) => {
                   const active =
                     item.href === "/admin" ||
+                    item.href === "/admin/content/hero-video" ||
                     item.href === "/admin/content/settings" ||
-                    item.href === "/admin/settings/shipping"
+                    item.href === "/admin/settings/shipping" ||
+                    item.href === "/admin/settings/coupons" ||
+                    item.href === "/admin/settings/quantity-discount"
                       ? pathname === item.href
                       : pathname.startsWith(item.href);
                   const badgeCount = badges[item.href];

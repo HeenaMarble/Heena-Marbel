@@ -7,9 +7,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import { placeOrder } from "@/lib/actions/checkout-actions";
+import { validateCoupon } from "@/lib/actions/coupons";
+import { getActiveQuantityDiscount } from "@/lib/actions/quantity-discount";
 import styles from "./Checkout.module.css";
 
-export default function CheckoutClient({ customer, shippingSettings }) {
+export default function CheckoutClient({
+  customer,
+  shippingSettings,
+  initialQuantityDiscount = null,
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
@@ -20,9 +26,16 @@ export default function CheckoutClient({ customer, shippingSettings }) {
   const [submitError, setSubmitError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // Coupon state (UI only)
-  const [couponCode, setCouponCode] = useState("");
-  const [couponApplied, setCouponApplied] = useState(false);
+  // Quantity discount rules state
+  const [quantityDiscountRules, setQuantityDiscountRules] = useState(
+    initialQuantityDiscount || null
+  );
+
+  // Coupon state
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   // Address form fields
   const [formData, setFormData] = useState({
@@ -37,7 +50,16 @@ export default function CheckoutClient({ customer, shippingSettings }) {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (!initialQuantityDiscount) {
+      getActiveQuantityDiscount()
+        .then((rules) => {
+          if (rules) setQuantityDiscountRules(rules);
+        })
+        .catch(() => {
+          // Fail gracefully
+        });
+    }
+  }, [initialQuantityDiscount]);
 
   // Determine items to checkout
   const isBuyNow = mode === "buynow";
@@ -55,12 +77,35 @@ export default function CheckoutClient({ customer, shippingSettings }) {
     }
   }, [mounted, itemsToCheckout.length, router]);
 
-  // Shipping calculation
+  // Totals & Discounts calculations
+  const totalItems = itemsToCheckout.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 1),
+    0
+  );
+
   const subtotal = itemsToCheckout.reduce((sum, item) => {
     const p = Number(item.price) || 0;
     const q = Number(item.quantity) || 1;
     return sum + p * q;
   }, 0);
+
+  // Quantity discount calculation
+  let quantityDiscount = 0;
+  if (quantityDiscountRules?.enabled && Array.isArray(quantityDiscountRules?.tiers)) {
+    const sortedTiers = [...quantityDiscountRules.tiers].sort(
+      (a, b) => Number(b.min_items) - Number(a.min_items)
+    );
+    const match = sortedTiers.find((t) => totalItems >= Number(t.min_items));
+    if (match) {
+      quantityDiscount = Number(match.discount_amount) || 0;
+    }
+  }
+
+  // Coupon discount calculation
+  const couponDiscount = appliedCoupon ? Number(appliedCoupon.discount) || 0 : 0;
+
+  // Clamp subtotal discount at 0
+  const discountedSubtotal = Math.max(0, subtotal - quantityDiscount - couponDiscount);
 
   const flatRate = Number(shippingSettings?.flat_rate) || 79;
   const freeShippingAbove = Number(shippingSettings?.free_shipping_above) || 1499;
@@ -68,7 +113,7 @@ export default function CheckoutClient({ customer, shippingSettings }) {
 
   const isFreeShipping = subtotal >= freeShippingAbove;
   const shippingCharge = isFreeShipping ? 0 : flatRate;
-  const totalPayable = subtotal + shippingCharge + codFee;
+  const totalPayable = discountedSubtotal + shippingCharge + codFee;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,11 +151,11 @@ export default function CheckoutClient({ customer, shippingSettings }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    if (isSubmitting) return;
     setSubmitError("");
 
     if (!validateForm()) {
-      const firstErrorKey = Object.keys(fieldErrors)[0];
       setSubmitError("Please fill in all required fields accurately.");
       return;
     }
@@ -143,22 +188,17 @@ export default function CheckoutClient({ customer, shippingSettings }) {
     fd.set("state", formData.state.trim());
     fd.set("pin_code", formData.pinCode.trim());
     fd.set("items_json", JSON.stringify(preparedItems));
+    fd.set("coupon_code", appliedCoupon ? appliedCoupon.code : "");
+    fd.set("coupon_discount", String(couponDiscount));
+    fd.set("quantity_discount", String(quantityDiscount));
 
-       try {
+    try {
       const result = await placeOrder(fd);
-      // placeOrder redirects on success (throws internally) — this line
-      // only runs if it returned instead, i.e. an error happened
       if (result?.error) {
         setSubmitError(result.error);
         setIsSubmitting(false);
       }
     } catch (err) {
-      // Next.js redirect throws a special error on success — let it
-      // propagate untouched. DO NOT clear cart/buyNowItem here: it
-      // triggers a re-render + the empty-cart redirect effect above,
-      // which races the real redirect and wins (sends to /shop instead
-      // of the confirmation page). Cart is cleared on the confirmation
-      // page instead.
       if (err?.message === "NEXT_REDIRECT" || err?.digest?.includes("NEXT_REDIRECT")) {
         throw err;
       }
@@ -167,10 +207,35 @@ export default function CheckoutClient({ customer, shippingSettings }) {
     }
   };
 
-  const handleApplyCoupon = (e) => {
-    e.preventDefault();
-    if (!couponCode.trim()) return;
-    setCouponApplied(true);
+  const handleApplyCoupon = async (e) => {
+    if (e) e.preventDefault();
+    if (isApplyingCoupon) return;
+    if (!couponInput.trim()) return;
+    setCouponError("");
+    setIsApplyingCoupon(true);
+
+    try {
+      const res = await validateCoupon(couponInput.trim(), subtotal);
+      if (res?.valid) {
+        setAppliedCoupon({
+          code: couponInput.trim().toUpperCase(),
+          discount: res.discount,
+        });
+        setCouponInput("");
+        setCouponError("");
+      } else {
+        setCouponError(res?.error || "Invalid coupon code");
+      }
+    } catch (err) {
+      setCouponError(err?.message || "Failed to validate coupon");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError("");
   };
 
   if (!mounted) {
@@ -478,27 +543,58 @@ export default function CheckoutClient({ customer, shippingSettings }) {
                     })}
                   </div>
 
-                  {/* Coupon Code Section (UI only) */}
-                  <div className={styles.couponBox}>
-                    <input
-                      type="text"
-                      placeholder="Coupon Code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      className={styles.couponInput}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleApplyCoupon}
-                      className={styles.couponBtn}
-                    >
-                      Apply
-                    </button>
-                  </div>
-                  {couponApplied && (
-                    <p style={{ fontSize: "0.8rem", color: "var(--primary-color)", margin: "-10px 0 12px", fontWeight: 500 }}>
-                      Coupon code applied at checkout.
-                    </p>
+                  {/* Coupon Code Section */}
+                  {appliedCoupon ? (
+                    <div className={styles.couponAppliedBadge}>
+                      <div className={styles.couponAppliedInfo}>
+                        <span className={styles.couponAppliedCode}>{appliedCoupon.code}</span>
+                        <span className={styles.couponAppliedDiscount}>
+                          (−₹{Number(appliedCoupon.discount).toLocaleString()} applied)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveCoupon}
+                        className={styles.couponRemoveBtn}
+                        title="Remove coupon"
+                      >
+                        ✕ Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ marginBottom: "14px" }}>
+                      <div className={styles.couponBox}>
+                        <input
+                          type="text"
+                          placeholder="Coupon Code"
+                          value={couponInput}
+                          onChange={(e) => {
+                            setCouponInput(e.target.value);
+                            if (couponError) setCouponError("");
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleApplyCoupon(e);
+                            }
+                          }}
+                          className={styles.couponInput}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyCoupon}
+                          disabled={isApplyingCoupon || !couponInput.trim()}
+                          className={styles.couponBtn}
+                        >
+                          {isApplyingCoupon ? "Applying..." : "Apply"}
+                        </button>
+                      </div>
+                      {couponError && (
+                        <p className={styles.couponError} role="alert">
+                          {couponError}
+                        </p>
+                      )}
+                    </div>
                   )}
 
                   {/* Cost Breakdown */}
@@ -507,6 +603,24 @@ export default function CheckoutClient({ customer, shippingSettings }) {
                       <span className={styles.costLabel}>Subtotal</span>
                       <span className={styles.costValue}>₹{subtotal.toLocaleString()}</span>
                     </div>
+
+                    {quantityDiscount > 0 && (
+                      <div className={styles.costRow}>
+                        <span className={styles.costLabel}>Quantity Discount</span>
+                        <span className={styles.costValue} style={{ color: "#15803d", fontWeight: 600 }}>
+                          − ₹{quantityDiscount.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+
+                    {appliedCoupon && couponDiscount > 0 && (
+                      <div className={styles.costRow}>
+                        <span className={styles.costLabel}>Coupon ({appliedCoupon.code})</span>
+                        <span className={styles.costValue} style={{ color: "#15803d", fontWeight: 600 }}>
+                          − ₹{couponDiscount.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
 
                     <div className={styles.costRow}>
                       <span className={styles.costLabel}>Shipping</span>

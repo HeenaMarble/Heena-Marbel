@@ -93,6 +93,7 @@ export async function getProduct(id) {
 function buildProductFields(formData) {
   const name = formData.get("name");
   const dimensions = safeParseArray(formData.get("dimensions_json"));
+  const specifications = safeParseArray(formData.get("specifications_json"));
   const variantDimensionLabels = safeParseArray(formData.get("variant_dimension_labels_json"));
   const compareAtPriceRaw = formData.get("compare_at_price");
   const compareAtPrice = compareAtPriceRaw && !isNaN(parseFloat(compareAtPriceRaw))
@@ -107,6 +108,7 @@ function buildProductFields(formData) {
     stock_quantity: parseInt(formData.get("stock_quantity"), 10) || 0,
     is_active: formData.get("is_active") === "on",
     dimensions,
+    specifications,
     has_variants: formData.get("has_variants") === "on",
     has_colors: formData.get("has_colors") === "on",
     variant_dimension_labels: variantDimensionLabels,
