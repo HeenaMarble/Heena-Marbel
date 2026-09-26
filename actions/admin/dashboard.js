@@ -26,12 +26,12 @@ export async function getDashboardStats() {
       .from("orders")
       .select("id, order_number, total_amount, order_status, created_at")
       .order("created_at", { ascending: false })
-      .limit(5),
+      .limit(12),
     supabase
       .from("inquiries")
       .select("id, name, message, created_at")
       .order("created_at", { ascending: false })
-      .limit(5),
+      .limit(10),
     supabase
       .from("products")
       .select("id, name, stock_quantity, has_variants")

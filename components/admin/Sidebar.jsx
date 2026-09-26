@@ -86,7 +86,7 @@ export default function AdminSidebar({ adminName = "Admin" }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <>

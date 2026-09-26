@@ -1,11 +1,13 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import styles from '@/components/ShopSection.module.css';
 
 export default function ShopGrid({ products }) {
-  const { addToCart } = useCart();
+  const { addToCart, setBuyNowItem } = useCart();
+  const router = useRouter();
 
   if (!products || products.length === 0) {
     return (
@@ -14,6 +16,25 @@ export default function ShopGrid({ products }) {
       </p>
     );
   }
+
+  const handleBuyNow = (e, product) => {
+    e.preventDefault();
+    setBuyNowItem({
+      id: product.id,
+      productId: product.id,
+      variantId: null,
+      name: product.title,
+      title: product.title,
+      price: product.price,
+      quantity: 1,
+      colorName: null,
+      dimensionValues: null,
+      variantSummary: null,
+      image: product.img,
+      img: product.img,
+    });
+    router.push('/checkout?mode=buynow');
+  };
 
   return (
     <div className={styles.grid}>
@@ -37,6 +58,8 @@ export default function ShopGrid({ products }) {
                   </span>
                 )}
               </div>
+            </div>
+            <div className={styles.actionsRow}>
               <button
                 className={styles.inlineAddBtn}
                 onClick={(e) => {
@@ -50,6 +73,12 @@ export default function ShopGrid({ products }) {
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
                 Add to Cart
+              </button>
+              <button
+                className={styles.buyNowBtn}
+                onClick={(e) => handleBuyNow(e, product)}
+              >
+                Buy Now
               </button>
             </div>
           </div>

@@ -28,6 +28,14 @@ export default function AnnouncementForm({ initialData = null }) {
       return;
     }
 
+    if (formData.link_url.trim()) {
+      const link = formData.link_url.trim();
+      const isValidLink = /^\//.test(link) || /^https?:\/\/[^\s]+\.[^\s]+/.test(link);
+      if (!isValidLink) {
+        setError("Please enter a valid URL (starting with http:// or https://) or an internal path (starting with /).");
+        return;
+      }
+    }
     startTransition(async () => {
       try {
         const payload = {

@@ -37,3 +37,11 @@ export async function updateOrderStatus(id, status) {
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${id}`);
 }
+
+export async function updatePaymentStatus(id, paymentStatus) {
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("orders").update({ payment_status: paymentStatus }).eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${id}`);
+}

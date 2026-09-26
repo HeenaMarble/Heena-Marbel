@@ -15,9 +15,11 @@ function formatOrderDate(dateInput) {
   return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-function formatPaymentLabel(paymentMethod) {
+function formatPaymentLabel(paymentMethod, paymentStatus) {
   const isCod = (paymentMethod || "").toLowerCase() === "cod";
-  return isCod ? "COD · Pending" : "Online · Paid";
+  const methodLabel = isCod ? "COD" : "Online";
+  const statusLabel = paymentStatus || (isCod ? "Pending" : "Paid");
+  return `${methodLabel} · ${statusLabel}`;
 }
 
 function getCustomerName(order) {
@@ -153,7 +155,7 @@ export default async function OrdersPage() {
                     </td>
                     <td>
                       <span className={styles.paymentLabel}>
-                        {formatPaymentLabel(o.payment_method)}
+                        {formatPaymentLabel(o.payment_method, o.payment_status)}
                       </span>
                     </td>
                     <td>

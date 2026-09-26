@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { CreditCard, Truck, ChevronDown, Check, Loader2 } from "lucide-react";
-import { updateOrderStatus } from "@/actions/orders";
+import { updateOrderStatus, updatePaymentStatus } from "@/actions/orders";
 import styles from "./ManageStatusCard.module.css";
 
 const ORDER_STATUS_OPTIONS = [
@@ -20,14 +20,14 @@ const PAYMENT_STATUS_OPTIONS = [
   { value: "Failed", label: "Failed" },
 ];
 
-export default function ManageStatusCard({ orderId, orderNumber, currentStatus, paymentMethod }) {
+export default function ManageStatusCard({ orderId, orderNumber, currentStatus, paymentMethod, currentPaymentStatus }) {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState(currentStatus || "pending");
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  // Derive initial payment status based on payment method
+  // Derive default payment status only if DB has no value yet
   const isCod = (paymentMethod || "").toLowerCase() === "cod";
-  const [paymentStatus, setPaymentStatus] = useState(isCod ? "Pending" : "Paid");
+  const [paymentStatus, setPaymentStatus] = useState(currentPaymentStatus || (isCod ? "Pending" : "Paid"));
   const [shippingModalOpen, setShippingModalOpen] = useState(false);
 
   const paymentMethodLabel = isCod ? "Cash on Delivery" : "Online Payment";
@@ -42,6 +42,20 @@ export default function ManageStatusCard({ orderId, orderNumber, currentStatus, 
         setTimeout(() => setSavedSuccess(false), 3000);
       } catch (err) {
         console.error("Failed to update order status:", err);
+      }
+    });
+  };
+
+  const handlePaymentStatusChange = (newStatus) => {
+    setPaymentStatus(newStatus);
+    setSavedSuccess(false);
+    startTransition(async () => {
+      try {
+        await updatePaymentStatus(orderId, newStatus);
+        setSavedSuccess(true);
+        setTimeout(() => setSavedSuccess(false), 3000);
+      } catch (err) {
+        console.error("Failed to update payment status:", err);
       }
     });
   };
@@ -99,7 +113,8 @@ export default function ManageStatusCard({ orderId, orderNumber, currentStatus, 
           <div className={styles.selectWrapper}>
             <select
               value={paymentStatus}
-              onChange={(e) => setPaymentStatus(e.target.value)}
+              disabled={isPending}
+              onChange={(e) => handlePaymentStatusChange(e.target.value)}
               className={styles.styledSelect}
             >
               {PAYMENT_STATUS_OPTIONS.map((opt) => (

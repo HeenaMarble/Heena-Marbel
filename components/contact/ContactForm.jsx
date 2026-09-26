@@ -37,7 +37,7 @@ export default function ContactForm() {
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="c-phone">Phone (optional)</label>
-        <input id="c-phone" name="phone" type="tel" placeholder="+91 98765 43210" maxLength={20} />
+        <input id="c-phone" name="phone" type="tel" inputMode="numeric" pattern="[0-9]{7,15}" title="Enter digits only (7-15 numbers)" placeholder="9876543210" maxLength={15} onInput={(e) => { e.target.value = e.target.value.replace(/\D/g, ""); }} />
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="c-message">Message</label>

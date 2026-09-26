@@ -52,6 +52,9 @@ export async function submitInquiry(prevState, formData) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { error: "Please enter a valid email address." };
   }
+  if (phone && !/^[0-9]{7,15}$/.test(phone)) {
+    return { error: "Please enter a valid phone number (digits only)." };
+  }
   if (name.length > 100 || email.length > 150 || phone.length > 20 || message.length > 3000) {
     return { error: "One of the fields is too long. Please shorten it and try again." };
   }
