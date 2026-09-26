@@ -1,12 +1,51 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import styles from './Contact.module.css';
 import ContactForm from '@/components/contact/ContactForm';
+import { getSiteSettings } from '@/lib/actions/content-actions';
+
+const DEFAULTS = {
+  address: '9th Street, Palada Road,\nMakrana, Rajasthan 341505, India',
+  phone: '+91 87693 86438',
+  business_hours: 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: Closed',
+  maps_query: 'Palada Road, Makrana, Rajasthan 341505',
+};
+
+function renderMultiline(text) {
+  return String(text)
+    .split('\n')
+    .map((line, i, arr) => (
+      <span key={i}>
+        {line}
+        {i < arr.length - 1 && <br />}
+      </span>
+    ));
+}
 
 export default function ContactPage() {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSiteSettings()
+      .then((data) => {
+        if (!cancelled && data) setSettings(data);
+      })
+      .catch((err) => {
+        console.error('Failed to load site settings for contact page:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const s = (key) => (settings && settings[key]) || DEFAULTS[key];
+  const mapsQuery = encodeURIComponent(s('maps_query'));
+
   return (
     <>
       <Navbar />
@@ -45,7 +84,7 @@ export default function ContactPage() {
                   </div>
                   <div className={styles.infoText}>
                     <h4>Location</h4>
-                    <p>9th Street, Palada Road,<br />Makrana, Rajasthan 341505, India</p>
+                    <p>{renderMultiline(s('address'))}</p>
                   </div>
                 </div>
 
@@ -55,7 +94,7 @@ export default function ContactPage() {
                   </div>
                   <div className={styles.infoText}>
                     <h4>Phone</h4>
-                    <p>+91 87693 86438</p>
+                    <p>{s('phone')}</p>
                   </div>
                 </div>
 
@@ -65,7 +104,7 @@ export default function ContactPage() {
                   </div>
                   <div className={styles.infoText}>
                     <h4>Working Hours</h4>
-                    <p>Monday - Saturday: 9:00 AM - 7:00 PM<br />Sunday: Closed</p>
+                    <p>{renderMultiline(s('business_hours'))}</p>
                   </div>
                 </div>
               </div>
@@ -100,7 +139,7 @@ export default function ContactPage() {
         <section className={`section ${styles.mapSection}`}>
           <div className="container">
             <iframe 
-              src="https://maps.google.com/maps?q=Palada%20Road,%20Makrana,%20Rajasthan%20341505&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+              src={`https://maps.google.com/maps?q=${mapsQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`} 
               width="100%" 
               height="450" 
               style={{ border: 0, borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-medium)' }} 

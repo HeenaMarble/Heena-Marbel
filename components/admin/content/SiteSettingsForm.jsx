@@ -60,6 +60,7 @@ export default function SiteSettingsForm({ initialData = null }) {
     phone: initialData?.phone || "",
     whatsapp_number: initialData?.whatsapp_number || "",
     email: initialData?.email || "",
+    website_url: initialData?.website_url || "",
     address: initialData?.address || "",
     business_hours: initialData?.business_hours || "",
     maps_query: initialData?.maps_query || "",
@@ -85,6 +86,7 @@ export default function SiteSettingsForm({ initialData = null }) {
           phone: formData.phone.trim() || null,
           whatsapp_number: formData.whatsapp_number.trim() || null,
           email: formData.email.trim() || null,
+          website_url: formData.website_url.trim() || null,
           address: formData.address.trim() || null,
           business_hours: formData.business_hours.trim() || null,
           maps_query: formData.maps_query.trim() || null,
@@ -177,6 +179,20 @@ export default function SiteSettingsForm({ initialData = null }) {
               placeholder="contact@heenamarble.com"
               value={formData.email}
               onChange={(e) => handleChange("email", e.target.value)}
+              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
+            />
+          </div>
+
+          {/* Website URL */}
+          <div>
+            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
+              <Navigation className="h-3.5 w-3.5 text-[#b38b4d]" /> Website URL (display text)
+            </label>
+            <input
+              type="text"
+              placeholder="www.heenamarble.com"
+              value={formData.website_url}
+              onChange={(e) => handleChange("website_url", e.target.value)}
               className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
             />
           </div>
