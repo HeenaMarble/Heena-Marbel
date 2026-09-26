@@ -58,6 +58,8 @@ export default function SiteSettingsForm({ initialData = null }) {
 
   const [formData, setFormData] = useState({
     phone: initialData?.phone || "",
+    phone_2: initialData?.phone_2 || "",
+    phone_3: initialData?.phone_3 || "",
     whatsapp_number: initialData?.whatsapp_number || "",
     email: initialData?.email || "",
     website_url: initialData?.website_url || "",
@@ -84,6 +86,8 @@ export default function SiteSettingsForm({ initialData = null }) {
       try {
         const payload = {
           phone: formData.phone.trim() || null,
+          phone_2: formData.phone_2.trim() || null,
+          phone_3: formData.phone_3.trim() || null,
           whatsapp_number: formData.whatsapp_number.trim() || null,
           email: formData.email.trim() || null,
           website_url: formData.website_url.trim() || null,
@@ -151,6 +155,34 @@ export default function SiteSettingsForm({ initialData = null }) {
               placeholder="+91 98765 43210"
               value={formData.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
+              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
+            />
+          </div>
+
+          {/* Phone 2 */}
+          <div>
+            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5 text-[#b38b4d]" /> Secondary Phone Number
+            </label>
+            <input
+              type="text"
+              placeholder="+91 98765 43210"
+              value={formData.phone_2}
+              onChange={(e) => handleChange("phone_2", e.target.value)}
+              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
+            />
+          </div>
+
+          {/* Phone 3 */}
+          <div>
+            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5 text-[#b38b4d]" /> Third Phone Number
+            </label>
+            <input
+              type="text"
+              placeholder="+91 98765 43210"
+              value={formData.phone_3}
+              onChange={(e) => handleChange("phone_3", e.target.value)}
               className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
             />
           </div>

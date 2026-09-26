@@ -12,9 +12,14 @@ import StatsBar from '@/components/StatsBar';
 import TestimonialsContact from '@/components/TestimonialsContact';
 import Footer from '@/components/Footer';
 import { getFeaturedProducts } from '@/actions/shop';
+import { getPublicApplications, getApplicationsTagline } from '@/lib/actions/content-actions';
 
 export default async function Home() {
-  const featuredProducts = await getFeaturedProducts();
+  const [featuredProducts, applications, applicationsTagline] = await Promise.all([
+    getFeaturedProducts(),
+    getPublicApplications(),
+    getApplicationsTagline(),
+  ]);
 
   return (
     <>
@@ -28,7 +33,7 @@ export default async function Home() {
         <FeaturedProductsSection products={featuredProducts} />
         <ConstructionPromo />
         <ServicesSection />
-        <ApplicationsSection />
+        <ApplicationsSection applications={applications} tagline={applicationsTagline} />
         <StatsBar />
         <TestimonialsContact />
       </main>

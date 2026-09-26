@@ -39,7 +39,7 @@ export default async function AdminDashboardPage() {
       label: "Total Orders",
       value: stats.orderCount,
       icon: ShoppingCart,
-      description: "Custom mandir & statue orders",
+      description: "Store product orders & purchases",
       badge: stats.pendingOrders > 0 ? `${stats.pendingOrders} pending` : "All dispatched",
       badgeType: stats.pendingOrders > 0 ? "amber" : "emerald",
     },

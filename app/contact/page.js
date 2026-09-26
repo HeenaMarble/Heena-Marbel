@@ -11,6 +11,8 @@ import { getSiteSettings } from '@/lib/actions/content-actions';
 const DEFAULTS = {
   address: '9th Street, Palada Road,\nMakrana, Rajasthan 341505, India',
   phone: '+91 87693 86438',
+  phone_2: '+91 98295 06544',
+  phone_3: '+91 77377 86059',
   business_hours: 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: Closed',
   maps_query: 'Palada Road, Makrana, Rajasthan 341505',
 };
@@ -94,7 +96,7 @@ export default function ContactPage() {
                   </div>
                   <div className={styles.infoText}>
                     <h4>Phone</h4>
-                    <p>{s('phone')}</p>
+                    <p>{renderMultiline([s('phone'), s('phone_2'), s('phone_3')].filter(Boolean).join('\n'))}</p>
                   </div>
                 </div>
 

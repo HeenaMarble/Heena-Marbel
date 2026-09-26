@@ -17,12 +17,15 @@ import {
   Layers,
   BarChart3,
   Film,
+  LayoutGrid,
   FolderKanban,
   Video,
   X,
   LogOut,
   Truck,
   Tag,
+  ChevronDown,
+  Globe,
 } from "lucide-react";
 import { useAdminSidebar } from "@/context/AdminSidebarContext";
 import { adminLogout } from "@/actions/auth";
@@ -46,15 +49,22 @@ const NAV_GROUPS = [
     ],
   },
   {
-    title: "Studio & Content",
+    title: "Appearance & Content",
     items: [
-      { label: "Hero Content", href: "/admin/content/hero-video", icon: Video },
-      { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
-      { label: "Services", href: "/admin/content/services", icon: Layers },
+      {
+        label: "Landing Page",
+        icon: Globe,
+        children: [
+          { label: "Hero Content", href: "/admin/content/hero-video", icon: Video },
+          { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
+          { label: "Services", href: "/admin/content/services", icon: Layers },
+          { label: "Our Applications", href: "/admin/content/applications", icon: LayoutGrid },
+          { label: "Stats & Numbers", href: "/admin/content/stats", icon: BarChart3 },
+          { label: "Testimonials", href: "/admin/content/testimonials", icon: Quote },
+        ],
+      },
       { label: "Projects", href: "/admin/projects", icon: FolderKanban },
-      { label: "Stats", href: "/admin/content/stats", icon: BarChart3 },
-      { label: "Testimonials", href: "/admin/content/testimonials", icon: Quote },
-      { label: "Reels", href: "/admin/content/reels", icon: Film },
+      { label: "Reels Showcase", href: "/admin/content/reels", icon: Film },
     ],
   },
   {
@@ -74,6 +84,22 @@ export default function AdminSidebar({ adminName = "Admin" }) {
   const initial = adminName.trim().charAt(0).toUpperCase();
 
   const [badges, setBadges] = useState({});
+  const [openAccordions, setOpenAccordions] = useState({ "Landing Page": true });
+
+  const isLinkActive = (href) => {
+    if (href === "/admin") return pathname === "/admin";
+    if (
+      href === "/admin/content/hero-video" ||
+      href === "/admin/content/settings" ||
+      href === "/admin/settings/shipping" ||
+      href === "/admin/settings/coupons" ||
+      href === "/admin/settings/quantity-discount"
+    ) {
+      return pathname === href;
+    }
+    return pathname.startsWith(href);
+  };
+
   useEffect(() => {
     let cancelled = false;
     getSidebarBadgeCounts().then((counts) => {
@@ -87,6 +113,27 @@ export default function AdminSidebar({ adminName = "Admin" }) {
       cancelled = true;
     };
   }, [pathname]);
+
+  // Keep accordion open if currently on any landing page child route
+  useEffect(() => {
+    NAV_GROUPS.forEach((group) => {
+      group.items.forEach((item) => {
+        if (item.children) {
+          const hasActiveChild = item.children.some((child) => isLinkActive(child.href));
+          if (hasActiveChild) {
+            setOpenAccordions((prev) => ({ ...prev, [item.label]: true }));
+          }
+        }
+      });
+    });
+  }, [pathname]);
+
+  const toggleAccordion = (label) => {
+    setOpenAccordions((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
 
   return (
     <>
@@ -141,15 +188,81 @@ export default function AdminSidebar({ adminName = "Admin" }) {
               <p className={styles.groupTitle}>{group.title}</p>
               <div className={styles.navItems}>
                 {group.items.map((item) => {
-                  const active =
-                    item.href === "/admin" ||
-                    item.href === "/admin/content/hero-video" ||
-                    item.href === "/admin/content/settings" ||
-                    item.href === "/admin/settings/shipping" ||
-                    item.href === "/admin/settings/coupons" ||
-                    item.href === "/admin/settings/quantity-discount"
-                      ? pathname === item.href
-                      : pathname.startsWith(item.href);
+                  if (item.children) {
+                    const isOpen = !!openAccordions[item.label];
+                    const isAnyChildActive = item.children.some((child) =>
+                      isLinkActive(child.href)
+                    );
+
+                    return (
+                      <div key={item.label}>
+                        <button
+                          type="button"
+                          onClick={() => toggleAccordion(item.label)}
+                          className={`${styles.accordionBtn} ${
+                            isAnyChildActive ? styles.accordionParentActive : ""
+                          }`}
+                          aria-expanded={isOpen}
+                        >
+                          <item.icon
+                            className={`${styles.navIcon} ${
+                              isAnyChildActive ? styles.navIconActive : ""
+                            }`}
+                          />
+                          <span className={styles.navLabel}>{item.label}</span>
+                          <span className={styles.subCountBadge}>
+                            {item.children.length}
+                          </span>
+                          <ChevronDown
+                            className={`${styles.chevronIcon} ${
+                              isOpen ? styles.chevronOpen : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isOpen && (
+                          <div className={styles.subItemsContainer}>
+                            {item.children.map((child) => {
+                              const active = isLinkActive(child.href);
+                              const badgeCount = badges[child.href];
+                              return (
+                                <Link
+                                  key={child.href}
+                                  href={child.href}
+                                  onClick={() => setMobileOpen(false)}
+                                  className={`${styles.subNavLink} ${
+                                    active ? styles.subNavLinkActive : ""
+                                  }`}
+                                >
+                                  <child.icon
+                                    className={`${styles.subNavIcon} ${
+                                      active ? styles.subNavIconActive : ""
+                                    }`}
+                                  />
+                                  <span className={styles.navLabel}>
+                                    {child.label}
+                                  </span>
+                                  {!!badgeCount && (
+                                    <span
+                                      className={`${styles.badge} ${
+                                        active
+                                          ? styles.badgeActive
+                                          : styles.badgeAlert
+                                      }`}
+                                    >
+                                      {badgeCount > 99 ? "99+" : badgeCount}
+                                    </span>
+                                  )}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  const active = isLinkActive(item.href);
                   const badgeCount = badges[item.href];
                   return (
                     <Link
@@ -209,4 +322,3 @@ export default function AdminSidebar({ adminName = "Admin" }) {
     </>
   );
 }
-

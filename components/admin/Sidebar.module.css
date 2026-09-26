@@ -3,6 +3,8 @@
   top: 0;
   bottom: 0;
   left: 0;
+  height: 100vh;
+  height: 100dvh;
   z-index: 50;
   display: flex;
   width: 275px;
@@ -16,8 +18,10 @@
 
 @media (min-width: 1024px) {
   .aside {
-    position: static;
+    position: sticky;
+    top: 0;
     height: 100vh;
+    height: 100dvh;
     transform: none !important;
   }
 }
@@ -236,6 +240,136 @@
 .badgeAlert {
   background-color: #ef4444;
   color: #ffffff;
+}
+
+/* Accordion Parent Button */
+.accordionBtn {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #333333;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.accordionBtn:hover {
+  background-color: rgba(179, 139, 77, 0.08);
+  color: #1a1a1a;
+}
+
+.accordionParentActive {
+  border-left: 3px solid #b38b4d;
+  background-color: rgba(179, 139, 77, 0.08);
+  color: #967440;
+  font-weight: 700;
+}
+
+.chevronIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #888888;
+  margin-left: auto;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #b38b4d;
+}
+
+.subCountBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background-color: rgba(179, 139, 77, 0.14);
+  color: #967440;
+  margin-left: auto;
+  margin-right: 4px;
+}
+
+/* Sub-items Container */
+.subItemsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 12px;
+  margin-left: 16px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  border-left: 2px solid rgba(179, 139, 77, 0.22);
+  animation: accordionSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes accordionSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sub-nav Link */
+.subNavLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #4b5563;
+  transition: all 0.15s ease;
+}
+
+.subNavLink:hover {
+  background-color: rgba(179, 139, 77, 0.08);
+  color: #1a1a1a;
+  transform: translateX(2px);
+}
+
+.subNavLinkActive {
+  background-color: rgba(179, 139, 77, 0.14);
+  color: #967440;
+  font-weight: 700;
+}
+
+.subNavLinkActive:hover {
+  background-color: rgba(179, 139, 77, 0.18);
+  color: #967440;
+}
+
+.subNavIcon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: #888888;
+  transition: color 0.15s ease;
+}
+
+.subNavLink:hover .subNavIcon {
+  color: #b38b4d;
+}
+
+.subNavIconActive {
+  color: #b38b4d !important;
 }
 
 .profileSection {
