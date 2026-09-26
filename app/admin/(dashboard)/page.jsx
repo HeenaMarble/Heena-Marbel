@@ -248,15 +248,21 @@ export default async function AdminDashboardPage() {
                 ✓ All marble mandirs, statues, and raw stone slabs are adequately stocked in the studio.
               </p>
             ) : (
-              <div className="space-y-2 mt-3">
+              <div className={styles.lowStockList}>
                 {stats.lowStock.map((p) => (
                   <div
                     key={p.id}
                     className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 text-sm"
                   >
-                    <span className="font-semibold text-[#1a1a1a] truncate">{p.name}</span>
-                    <span className="font-bold text-amber-700 shrink-0">
-                      {p.stock_quantity} left
+                    <span className="font-semibold text-[#1a1a1a] truncate pr-2">{p.name}</span>
+                    <span
+                      className={`font-bold shrink-0 text-xs px-2 py-0.5 rounded ${
+                        p.stock_quantity === 0
+                          ? "bg-red-100 text-red-700 border border-red-200"
+                          : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
+                      {p.stock_quantity === 0 ? "Out of Stock" : `${p.stock_quantity} left`}
                     </span>
                   </div>
                 ))}
@@ -370,8 +376,8 @@ export default async function AdminDashboardPage() {
                 No pending customer inquiries.
               </p>
             ) : (
-              <div>
-                {stats.recentInquiries.map((i) => (
+              <div className={styles.inquiriesList}>
+                {stats.recentInquiries.slice(0, 2).map((i) => (
                   <Link key={i.id} href="/admin/inquiries" className={styles.inquiryItem}>
                     <p className={styles.inquiryName}>{i.name}</p>
                     <p className={styles.inquiryMessage}>{i.message}</p>

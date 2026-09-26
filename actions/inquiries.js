@@ -26,6 +26,15 @@ export async function toggleInquiryResolved(id, resolved) {
   revalidatePath("/admin");
 }
 
+export async function markInquiriesAsRead() {
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("inquiries")
+    .update({ is_read: true })
+    .eq("is_read", false);
+  if (error) throw new Error(error.message);
+}
+
 export async function deleteInquiry(id) {
   const supabase = createAdminClient();
   const { error } = await supabase.from("inquiries").delete().eq("id", id);

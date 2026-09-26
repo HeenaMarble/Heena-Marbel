@@ -65,8 +65,7 @@ export async function getDashboardStats() {
 
   const lowStock = withEffectiveStock
     .filter((p) => p.stock_quantity <= LOW_STOCK_THRESHOLD)
-    .sort((a, b) => a.stock_quantity - b.stock_quantity)
-    .slice(0, 5);
+    .sort((a, b) => a.stock_quantity - b.stock_quantity);
 
   return {
     revenue,
@@ -84,12 +83,12 @@ export async function getDashboardStats() {
 
 export async function getSidebarBadgeCounts() {
   const supabase = createAdminClient();
-  const [{ count: pendingReviewCount }, { count: unresolvedInquiryCount }] = await Promise.all([
+  const [{ count: pendingReviewCount }, { count: unreadInquiryCount }] = await Promise.all([
     supabase.from("reviews").select("*", { count: "exact", head: true }).eq("is_approved", false),
-    supabase.from("inquiries").select("*", { count: "exact", head: true }).eq("is_resolved", false),
+    supabase.from("inquiries").select("*", { count: "exact", head: true }).eq("is_read", false),
   ]);
   return {
     pendingReviewCount: pendingReviewCount || 0,
-    unresolvedInquiryCount: unresolvedInquiryCount || 0,
+    unreadInquiryCount: unreadInquiryCount || 0,
   };
 }

@@ -80,7 +80,7 @@ export default function AdminSidebar({ adminName = "Admin" }) {
       if (cancelled) return;
       setBadges({
         "/admin/reviews": counts.pendingReviewCount,
-        "/admin/inquiries": counts.unresolvedInquiryCount,
+        "/admin/inquiries": counts.unreadInquiryCount,
       });
     });
     return () => {
