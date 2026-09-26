@@ -2,18 +2,23 @@
 .checkoutMain {
   min-height: 85vh;
   background-color: var(--bg-main, #fcfbf9);
-  padding: 40px 0 80px;
+  padding: 36px 0 80px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .checkoutContainer {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header & Breadcrumbs */
 .checkoutHeader {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .breadcrumb {
@@ -22,7 +27,8 @@
   gap: 8px;
   font-size: 0.85rem;
   color: var(--text-light, #666666);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .breadcrumb a {
@@ -45,8 +51,9 @@
   font-weight: 500;
   color: var(--text-dark, #1a1a1a);
   font-family: var(--font-sans);
-  margin: 0;
+  margin: 0 0 4px 0;
   letter-spacing: -0.02em;
+  word-break: break-word;
 }
 
 .secureBadgeTop {
@@ -56,7 +63,8 @@
   font-size: 0.82rem;
   color: #2e7d32;
   font-weight: 500;
-  margin-top: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
 }
 
 /* Layout */
@@ -65,29 +73,36 @@
   grid-template-columns: 1fr 420px;
   gap: 36px;
   align-items: start;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Left Column: Form & Steps */
 .leftColumn {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .stepCard {
   background: var(--bg-white, #ffffff);
   border: 1px solid var(--border-color, #e5e0d8);
-  border-radius: var(--radius-md, 8px);
+  border-radius: var(--radius-md, 12px);
   padding: 28px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stepHeader {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 22px;
-  padding-bottom: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #f0eee8;
 }
 
@@ -117,6 +132,8 @@
   display: flex;
   gap: 16px;
   margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formRow3 {
@@ -124,16 +141,19 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
   margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formGroup {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .formGroup label {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
   color: var(--text-dark, #1a1a1a);
   margin-bottom: 6px;
@@ -146,15 +166,16 @@
 
 .inputField {
   width: 100%;
-  padding: 13px 14px;
-  font-size: 0.95rem;
+  padding: 12px 14px;
+  font-size: 1rem; /* 16px prevents iOS Safari auto-zoom */
   border: 1px solid var(--border-color, #e5e0d8);
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-sm, 6px);
   background-color: #faf9f6;
   color: var(--text-dark, #1a1a1a);
   font-family: inherit;
   box-sizing: border-box;
   transition: all 0.2s ease;
+  -webkit-appearance: none;
 }
 
 .inputField:focus {
@@ -179,20 +200,23 @@
 .paymentCards {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+  width: 100%;
 }
 
 .paymentOption {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 18px 20px;
+  gap: 12px;
+  padding: 16px 18px;
   border: 1.5px solid var(--border-color, #e5e0d8);
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-sm, 8px);
   background-color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .paymentOptionActive {
@@ -202,7 +226,7 @@
 }
 
 .paymentOptionDisabled {
-  opacity: 0.55;
+  opacity: 0.6;
   cursor: not-allowed;
   background-color: #f8f8f8;
   border-color: #e5e0d8;
@@ -212,8 +236,9 @@
   margin-top: 3px;
   accent-color: var(--primary-color, #b38b4d);
   cursor: pointer;
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .paymentOptionDisabled .paymentRadio {
@@ -222,45 +247,49 @@
 
 .paymentContent {
   flex: 1;
+  min-width: 0;
 }
 
 .paymentHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 4px;
+  flex-wrap: wrap;
 }
 
 .paymentName {
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-dark, #1a1a1a);
 }
 
 .codBadge {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #8c5b1b;
   background-color: #fef4e2;
   border: 1px solid #f1ddba;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 20px;
+  white-space: nowrap;
 }
 
 .comingSoonBadge {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: #666666;
   background-color: #ebebeb;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .paymentDescription {
-  font-size: 0.83rem;
+  font-size: 0.82rem;
   color: var(--text-light, #666666);
   margin: 0;
   line-height: 1.4;
@@ -270,38 +299,42 @@
 .rightColumn {
   position: sticky;
   top: 100px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .summaryCard {
   background: var(--bg-white, #ffffff);
   border: 1px solid var(--border-color, #e5e0d8);
-  border-radius: var(--radius-md, 8px);
+  border-radius: var(--radius-md, 12px);
   padding: 24px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .summaryHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #f0eee8;
 }
 
 .summaryTitle {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-dark, #1a1a1a);
   margin: 0;
 }
 
 .itemCountBadge {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--primary-color, #b38b4d);
   background-color: #faf5ec;
   font-weight: 600;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 20px;
 }
 
@@ -309,11 +342,11 @@
 .itemsList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   max-height: 300px;
   overflow-y: auto;
   padding-right: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .itemsList::-webkit-scrollbar {
@@ -328,9 +361,11 @@
 .itemRow {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding-bottom: 12px;
+  gap: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #f6f4ee;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .itemRow:last-child {
@@ -339,9 +374,9 @@
 }
 
 .itemImageWrapper {
-  width: 58px;
-  height: 58px;
-  border-radius: var(--radius-sm, 4px);
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-sm, 6px);
   background-color: #f7f6f2;
   overflow: hidden;
   border: 1px solid #ece8de;
@@ -361,7 +396,7 @@
   right: -4px;
   background-color: #333333;
   color: #ffffff;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   width: 18px;
   height: 18px;
@@ -377,56 +412,62 @@
 }
 
 .itemName {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-dark, #1a1a1a);
-  margin: 0 0 3px 0;
+  margin: 0 0 2px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .itemVariant {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--primary-color, #b38b4d);
-  margin: 0 0 3px 0;
+  margin: 0 0 2px 0;
   font-weight: 500;
+  word-break: break-word;
 }
 
 .itemQtyPrice {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-light, #666666);
   margin: 0;
 }
 
 .itemTotal {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-dark, #1a1a1a);
   text-align: right;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Coupon Code Strip */
 .couponBox {
   display: flex;
   gap: 8px;
-  margin: 18px 0;
-  padding: 12px;
+  margin: 14px 0;
+  padding: 10px;
   background-color: #faf9f6;
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-sm, 6px);
   border: 1px dashed #d8d2c4;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .couponInput {
   flex: 1;
+  min-width: 0;
   background: #ffffff;
   border: 1px solid var(--border-color, #e5e0d8);
   border-radius: var(--radius-sm, 4px);
-  padding: 10px 12px;
-  font-size: 0.85rem;
+  padding: 8px 10px;
+  font-size: 0.88rem;
   color: var(--text-dark, #1a1a1a);
   text-transform: uppercase;
+  box-sizing: border-box;
 }
 
 .couponInput:focus {
@@ -437,17 +478,20 @@
 .couponBtn {
   background-color: #2a2a2a;
   color: #ffffff;
-  padding: 0 16px;
+  padding: 0 14px;
   border-radius: var(--radius-sm, 4px);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   cursor: pointer;
   transition: background 0.2s ease;
+  border: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.couponBtn:hover {
+.couponBtn:hover:not(:disabled) {
   background-color: #000000;
 }
 
@@ -463,27 +507,31 @@
   width: 100%;
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm, 4px);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm, 6px);
   margin-bottom: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
 }
 
 .couponAppliedInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .couponAppliedCode {
   font-family: monospace;
   font-weight: 700;
   color: #166534;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   letter-spacing: 0.5px;
 }
 
 .couponAppliedDiscount {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #15803d;
   font-weight: 500;
 }
@@ -492,10 +540,10 @@
   background: transparent;
   border: none;
   color: #dc2626;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 2px 6px;
   border-radius: 4px;
   transition: all 0.2s ease;
 }
@@ -506,9 +554,9 @@
 }
 
 .couponError {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #dc2626;
-  margin: -4px 0 10px;
+  margin: -2px 0 8px;
   font-weight: 500;
 }
 
@@ -516,18 +564,18 @@
 .costBreakdown {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px 0;
+  gap: 8px;
+  padding: 14px 0;
   border-top: 1px solid #f0eee8;
   border-bottom: 1px solid #f0eee8;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .costRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--text-main, #333333);
 }
 
@@ -549,17 +597,17 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .grandTotalLabel {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-dark, #1a1a1a);
 }
 
 .grandTotalAmount {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--primary-color, #b38b4d);
   letter-spacing: -0.01em;
@@ -570,40 +618,40 @@
   background-color: #fff1f0;
   border: 1px solid #ffccc7;
   color: #cf1322;
-  padding: 12px 14px;
-  border-radius: var(--radius-sm, 4px);
-  font-size: 0.86rem;
-  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.84rem;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 /* Submit Place Order Button */
-/* Matches the dark maroon / brand button style */
 .placeOrderBtn {
   width: 100%;
-  padding: 16px 20px;
-  font-size: 1.05rem;
+  padding: 15px 18px;
+  font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
   background: linear-gradient(135deg, #5c181f 0%, #450f15 100%);
   border: 1px solid #3d0d12;
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-sm, 6px);
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 8px 20px rgba(92, 24, 31, 0.25);
+  box-shadow: 0 6px 16px rgba(92, 24, 31, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  letter-spacing: 0.5px;
+  gap: 8px;
+  letter-spacing: 0.4px;
+  box-sizing: border-box;
 }
 
 .placeOrderBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #6e1e26 0%, #52131a 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(92, 24, 31, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(92, 24, 31, 0.32);
 }
 
 .placeOrderBtn:active:not(:disabled) {
@@ -617,12 +665,13 @@
 }
 
 .spinner {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -633,11 +682,11 @@
 
 /* Trust Strips */
 .trustStrip {
-  margin-top: 18px;
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid #f0eee8;
 }
 
@@ -645,8 +694,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-light, #666666);
+  line-height: 1.35;
 }
 
 .trustIcon {
@@ -663,13 +713,27 @@
   justify-content: center;
   gap: 16px;
   color: var(--text-light, #666666);
+  padding: 20px;
+  text-align: center;
 }
 
-/* Responsive */
-@media (max-width: 960px) {
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS (Tablet & Mobile)
+   ========================================================================== */
+
+/* Tablet (<= 992px) */
+@media (max-width: 992px) {
+  .checkoutMain {
+    padding: 28px 0 60px;
+  }
+
+  .checkoutContainer {
+    padding: 0 18px;
+  }
+
   .checkoutGrid {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 24px;
   }
 
   .rightColumn {
@@ -682,34 +746,202 @@
   }
 }
 
-@media (max-width: 600px) {
+/* Mobile Screens (<= 768px) */
+@media (max-width: 768px) {
   .checkoutMain {
-    padding: 24px 0 60px;
+    padding: 20px 0 48px;
   }
 
   .checkoutContainer {
-    padding: 0 16px;
+    padding: 0 14px;
+  }
+
+  .checkoutHeader {
+    margin-bottom: 20px;
+  }
+
+  .pageTitle {
+    font-size: 1.65rem;
+  }
+
+  .secureBadgeTop {
+    font-size: 0.78rem;
   }
 
   .stepCard {
     padding: 20px 16px;
+    border-radius: 10px;
   }
 
-  .formRow3 {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .stepHeader {
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+  }
+
+  .stepTitle {
+    font-size: 1.15rem;
   }
 
   .formRow {
     flex-direction: column;
     gap: 12px;
+    margin-bottom: 12px;
   }
 
-  .pageTitle {
-    font-size: 1.8rem;
+  .formRow3 {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .formRow3 .formGroup:last-child {
+    grid-column: span 2;
+  }
+
+  .summaryCard {
+    padding: 20px 16px;
+    border-radius: 10px;
   }
 
   .grandTotalAmount {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
+  }
+}
+
+/* Small Mobile Screens like iPhone SE (<= 480px) */
+@media (max-width: 480px) {
+  .checkoutContainer {
+    padding: 0 10px;
+  }
+
+  .pageTitle {
+    font-size: 1.45rem;
+  }
+
+  .stepCard {
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  .stepNumber {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+  }
+
+  .stepTitle {
+    font-size: 1.05rem;
+  }
+
+  .formRow3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .formRow3 .formGroup:last-child {
+    grid-column: auto;
+  }
+
+  .formRow {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .inputField {
+    padding: 11px 12px;
+    font-size: 16px;
+  }
+
+  .paymentOption {
+    padding: 12px 12px;
+    gap: 10px;
+  }
+
+  .paymentName {
+    font-size: 0.88rem;
+  }
+
+  .codBadge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+
+  .paymentDescription {
+    font-size: 0.78rem;
+  }
+
+  .summaryCard {
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  .summaryTitle {
+    font-size: 1.1rem;
+  }
+
+  .itemImageWrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .itemName {
+    font-size: 0.84rem;
+  }
+
+  .itemVariant {
+    font-size: 0.74rem;
+  }
+
+  .itemTotal {
+    font-size: 0.86rem;
+  }
+
+  .couponBox {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .couponInput {
+    padding: 8px 8px;
+    font-size: 0.82rem;
+  }
+
+  .couponBtn {
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+
+  .placeOrderBtn {
+    padding: 14px 12px;
+    font-size: 0.94rem;
+  }
+
+  .trustItem {
+    font-size: 0.72rem;
+  }
+}
+
+/* Extra Small Screens (<= 360px) */
+@media (max-width: 360px) {
+  .checkoutContainer {
+    padding: 0 8px;
+  }
+
+  .pageTitle {
+    font-size: 1.3rem;
+  }
+
+  .stepCard {
+    padding: 14px 10px;
+  }
+
+  .summaryCard {
+    padding: 14px 10px;
+  }
+
+  .placeOrderBtn {
+    font-size: 0.88rem;
+    padding: 12px 10px;
   }
 }

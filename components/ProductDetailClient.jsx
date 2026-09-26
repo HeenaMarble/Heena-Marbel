@@ -869,6 +869,10 @@ export default function ProductDetailClient({ product, relatedProducts = [], ini
                                   </div>
                                 </div>
 
+                                {dimSummary && (
+                                  <div className={styles.sizeDimensions}>{dimSummary}</div>
+                                )}
+
                                 <div className={styles.sizeCardPriceRow}>
                                   <span className={styles.sizeCardPrice}>
                                     ₹{Number(cardPrice).toLocaleString('en-IN')}
