@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import DimensionsInput from "@/components/admin/DimensionsInput";
 import SpecificationsInput from "@/components/admin/SpecificationsInput";
 import VariantTable from "@/components/admin/VariantTable";
-import ColorManager from "@/components/admin/ColorManager";
+import ColorManager, { DEFAULT_HEX_MAP } from "@/components/admin/ColorManager";
 import TabbedImageUploader from "@/components/admin/TabbedImageUploader";
 import VideoUploader from "@/components/admin/VideoUploader";
 import { AlertCircle, X } from "lucide-react";
@@ -99,14 +99,16 @@ export default function ProductForm({ action, categories = [], initialData = {} 
     if (Array.isArray(initialData.variants)) {
       initialData.variants.forEach((v) => {
         if (v.color_name && !colorMap[v.color_name]) {
-          colorMap[v.color_name] = v.color_hex || "#FFFFFF";
+          const fallbackHex = DEFAULT_HEX_MAP[v.color_name.toLowerCase()] || "#FFFFFF";
+          colorMap[v.color_name] = v.color_hex || fallbackHex;
         }
       });
     }
     if (Array.isArray(initialData.images)) {
       initialData.images.forEach((img) => {
         if (img?.color_name && !colorMap[img.color_name]) {
-          colorMap[img.color_name] = "#FFFFFF";
+          const fallbackHex = DEFAULT_HEX_MAP[img.color_name.toLowerCase()] || "#FFFFFF";
+          colorMap[img.color_name] = fallbackHex;
         }
       });
     }
@@ -353,7 +355,18 @@ export default function ProductForm({ action, categories = [], initialData = {} 
           <input
             type="hidden"
             name="variants_json"
-            value={JSON.stringify(variants)}
+            value={JSON.stringify(
+              variants.map((v) => {
+                if (!v.color_name) return v;
+                const matched = colors.find(
+                  (c) => c.name.toLowerCase() === v.color_name.toLowerCase()
+                );
+                return {
+                  ...v,
+                  color_hex: matched ? matched.hex : v.color_hex,
+                };
+              })
+            )}
           />
 
           <VariantTable

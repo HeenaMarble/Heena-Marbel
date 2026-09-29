@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Palette, X } from "lucide-react";
 
 // Quick default color map for common names
-const DEFAULT_HEX_MAP = {
+export const DEFAULT_HEX_MAP = {
   white: "#FFFFFF",
   black: "#000000",
   grey: "#808080",
