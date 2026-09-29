@@ -38,6 +38,18 @@ export default function Navbar() {
     return () => { active = false; };
   }, [pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -56,127 +68,129 @@ export default function Navbar() {
   ];
 
   return (
-    <header className={styles.header}>
-      <div className={`container ${styles.navContainer}`}>
-        
-        {/* Left Section: Brand Logo */}
-        <div className={styles.logoGroup}>
-          {/* Mobile Hamburger Button */}
-          <button 
-            className={styles.hamburgerBtn}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle Mobile Menu"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
+    <>
+      <header className={styles.header}>
+        <div className={`container ${styles.navContainer}`}>
           
-          <Link href="/" className={styles.logoImageLink}>
-            <img src="/logo.png" alt="Heena Marble Logo" className={styles.logoImage} />
-          </Link>
-        </div>
-
-        {/* Center Section: Mathematical Space-Evenly Navigation Links */}
-        <nav className={styles.navLinks}>
-          {navItems.map((item) => {
-            const isActive = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
-            return (
-              <Link key={item.name} href={item.path} className={isActive ? styles.active : ''}>
-                {item.name}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Right Section: Search Bar + User + Cart + Enquire CTA */}
-        <div className={styles.navRightGroup}>
-          {/* Integrated Search Bar */}
-          <form onSubmit={handleSearchSubmit} className={styles.searchBar}>
+          {/* Left Section: Brand Logo */}
+          <div className={styles.logoGroup}>
+            {/* Mobile Hamburger Button */}
             <button 
-              type="submit"
-              className={styles.searchButton} 
-              aria-label="Search"
+              className={styles.hamburgerBtn}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle Mobile Menu"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
-            <input 
-              type="text" 
-              placeholder="Search marble, mandirs, inlay..." 
-              className={styles.searchInput}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </form>
-          
-          {/* User Profile Menu */}
-          <div className={styles.userMenuContainer} ref={profileRef}>
-            <button 
-              className={styles.userButton} 
-              aria-label="User Profile"
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
               </svg>
             </button>
             
-            {isProfileOpen && (
-              <div className={styles.profileDropdown}>
-                <div className={styles.profileIconWrapper}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"></path>
-                  </svg>
-                </div>
-                {customer ? (
-                  <>
-                    <h3>{customer.name}</h3>
-                    <p>{customer.email}</p>
-                    <Link
-                      href="/account/orders"
-                      className={styles.signInBtn}
-                      onClick={() => setIsProfileOpen(false)}
-                      style={{ textAlign: 'center', marginBottom: '12px' }}
-                    >
-                      My Orders
-                    </Link>
-                    <form
-                      action={logoutCustomer}
-                      onSubmit={() => { setCustomer(null); setIsProfileOpen(false); }}
-                      style={{ width: '100%' }}
-                    >
-                      <button type="submit" className={styles.createAccBtn}>Sign Out</button>
-                    </form>
-                  </>
-                ) : (
-                  <>
-                    <h3>Sacred Sanctuary</h3>
-                <p>Sign in to track orders, save favorites & consultations</p>
-                <Link href="/signin" className={styles.signInBtn} onClick={() => setIsProfileOpen(false)}>Sign In</Link>
-                <Link href="/register" className={styles.createAccBtn} onClick={() => setIsProfileOpen(false)}>Create Account</Link>
-                  </>
-                )}
-              </div>
-            )}
+            <Link href="/" className={styles.logoImageLink}>
+              <img src="/logo.png" alt="Heena Marble Logo" className={styles.logoImage} />
+            </Link>
           </div>
 
-          {/* Shopping Cart */}
-          <CartIcon />
+          {/* Center Section: Mathematical Space-Evenly Navigation Links */}
+          <nav className={styles.navLinks}>
+            {navItems.map((item) => {
+              const isActive = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
+              return (
+                <Link key={item.name} href={item.path} className={isActive ? styles.active : ''}>
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
 
-          {/* Enquire CTA Button */}
-          <Link href="/contact" className={styles.quoteBtn}>
-            Enquire
-          </Link>
+          {/* Right Section: Search Bar + User + Cart + Enquire CTA */}
+          <div className={styles.navRightGroup}>
+            {/* Integrated Search Bar */}
+            <form onSubmit={handleSearchSubmit} className={styles.searchBar}>
+              <button 
+                type="submit"
+                className={styles.searchButton} 
+                aria-label="Search"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+              <input 
+                type="text" 
+                placeholder="Search marble, mandirs, inlay..." 
+                className={styles.searchInput}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
+            
+            {/* User Profile Menu */}
+            <div className={styles.userMenuContainer} ref={profileRef}>
+              <button 
+                className={styles.userButton} 
+                aria-label="User Profile"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </button>
+              
+              {isProfileOpen && (
+                <div className={styles.profileDropdown}>
+                  <div className={styles.profileIconWrapper}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"></path>
+                    </svg>
+                  </div>
+                  {customer ? (
+                    <>
+                      <h3>{customer.name}</h3>
+                      <p>{customer.email}</p>
+                      <Link
+                        href="/account/orders"
+                        className={styles.signInBtn}
+                        onClick={() => setIsProfileOpen(false)}
+                        style={{ textAlign: 'center', marginBottom: '12px' }}
+                      >
+                        My Orders
+                      </Link>
+                      <form
+                        action={logoutCustomer}
+                        onSubmit={() => { setCustomer(null); setIsProfileOpen(false); }}
+                        style={{ width: '100%' }}
+                      >
+                        <button type="submit" className={styles.createAccBtn}>Sign Out</button>
+                      </form>
+                    </>
+                  ) : (
+                    <>
+                      <h3>Sacred Sanctuary</h3>
+                  <p>Sign in to track orders, save favorites & consultations</p>
+                  <Link href="/signin" className={styles.signInBtn} onClick={() => setIsProfileOpen(false)}>Sign In</Link>
+                  <Link href="/register" className={styles.createAccBtn} onClick={() => setIsProfileOpen(false)}>Create Account</Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Shopping Cart */}
+            <CartIcon />
+
+            {/* Enquire CTA Button */}
+            <Link href="/contact" className={styles.quoteBtn}>
+              Enquire
+            </Link>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay (Outside header to avoid iOS backdrop-filter clipping) */}
       {isMobileMenuOpen && (
         <div className={styles.mobileMenuOverlay}>
           <div className={styles.mobileMenuHeader}>
@@ -186,6 +200,7 @@ export default function Navbar() {
             <button 
               className={styles.closeMenuBtn}
               onClick={() => setIsMobileMenuOpen(false)}
+              aria-label="Close mobile menu"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -258,6 +273,6 @@ export default function Navbar() {
           </nav>
         </div>
       )}
-    </header>
+    </>
   );
 }

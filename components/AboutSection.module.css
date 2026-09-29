@@ -189,6 +189,16 @@
     height: 380px;
     max-width: 100%;
   }
+  .actionRow {
+    gap: 16px;
+    flex-wrap: nowrap;
+  }
+  .actionRow a {
+    padding: 11px 18px;
+    font-size: 0.88rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
 }
 
 @media (max-width: 576px) {
@@ -228,12 +238,14 @@
     text-align: center;
   }
   .actionRow {
+    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     gap: 12px;
     width: 100%;
     margin-top: var(--spacing-md);
+    flex-wrap: nowrap;
   }
   .actionRow a {
     padding: 10px 14px;
@@ -256,11 +268,33 @@
   }
   .counterNumber {
     font-size: 1.65rem;
+    line-height: 1;
   }
   .counterLabel {
     font-size: 0.72rem;
+    white-space: nowrap;
   }
   .counterSub {
     font-size: 0.62rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .actionRow {
+    gap: 8px;
+  }
+  .actionRow a {
+    padding: 9px 10px;
+    font-size: 0.72rem;
+  }
+  .counterNumber {
+    font-size: 1.4rem;
+  }
+  .counterLabel {
+    font-size: 0.66rem;
+  }
+  .counterSub {
+    font-size: 0.56rem;
   }
 }
