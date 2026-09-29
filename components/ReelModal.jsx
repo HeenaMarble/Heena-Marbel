@@ -48,24 +48,47 @@ export default function ReelModal({
 
   // Reel Player State
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default muted to ensure 100% mobile autoplay compliance
   const [progress, setProgress] = useState(0);
-  const [showPlayStateIcon, setShowPlayStateIcon] = useState(false);
+  const [flashIcon, setFlashIcon] = useState(null); // 'play' | 'pause' | null
+  const flashTimerRef = useRef(null);
 
-  // Reset video state on reel change
+  const triggerFlash = (type) => {
+    if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+    setFlashIcon(type);
+    flashTimerRef.current = setTimeout(() => {
+      setFlashIcon(null);
+    }, 700);
+  };
+
+  // Autoplay & reset video state on reel change or modal open
   useEffect(() => {
-    setIsPlaying(true);
+    if (!isOpen || !videoRef.current) return;
+    const video = videoRef.current;
+
     setProgress(0);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {
-        // Autoplay policy with audio might require muted first
-        if (videoRef.current) {
-          videoRef.current.muted = true;
+    video.currentTime = 0;
+    video.muted = isMuted;
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          // Autoplay policy fallback: if unmuted autoplay is blocked on mobile, mute and retry
+          video.muted = true;
           setIsMuted(true);
-          videoRef.current.play().catch(() => {});
-        }
-      });
+          video
+            .play()
+            .then(() => {
+              setIsPlaying(true);
+            })
+            .catch(() => {
+              setIsPlaying(false);
+            });
+        });
     }
   }, [currentIndex, isOpen]);
 
@@ -80,37 +103,41 @@ export default function ReelModal({
 
   // Tap to Play / Pause Toggle
   const togglePlayPause = (e) => {
-    if (e) {
-      e.preventDefault();
+    if (e && e.stopPropagation) {
       e.stopPropagation();
     }
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch((err) => {
-          console.log("Play failed:", err);
-        });
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            triggerFlash("play");
+          })
+          .catch((err) => {
+            console.warn("Play blocked or interrupted:", err);
+          });
+      }
     } else {
-      videoRef.current.pause();
+      video.pause();
       setIsPlaying(false);
+      triggerFlash("pause");
     }
-    setShowPlayStateIcon(true);
-    setTimeout(() => setShowPlayStateIcon(false), 800);
   };
 
-  // Mute / Unmute Toggle (Completely isolated from play/pause)
+  // Mute / Unmute Toggle (Two-way synchronized with video DOM)
   const toggleMute = (e) => {
-    if (e) {
-      e.preventDefault();
+    if (e && e.stopPropagation) {
       e.stopPropagation();
     }
-    if (!videoRef.current) return;
-    const nextMuted = !videoRef.current.muted;
-    videoRef.current.muted = nextMuted;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
     setIsMuted(nextMuted);
   };
 
@@ -150,12 +177,12 @@ export default function ReelModal({
       }
       if (e.key === " " || e.key === "k") {
         e.preventDefault();
-        togglePlayPause();
+        togglePlayPause(e);
         return;
       }
       if (e.key === "m") {
         e.preventDefault();
-        toggleMute();
+        toggleMute(e);
         return;
       }
     };
@@ -163,12 +190,13 @@ export default function ReelModal({
     window.addEventListener("keydown", handleKeyCapture, true);
     return () => {
       clearTimeout(timer);
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyCapture, true);
     };
   }, [isOpen, currentIndex, reels.length, isMuted, onClose, onNavigate]);
 
-  // Touch gesture handlers (Swipe Up/Down for Reels & Swipe Left/Right)
+  // Touch gesture handlers (Fast Tap detection + Swipe Up/Down / Left/Right)
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
     touchStartRef.current = {
@@ -182,14 +210,23 @@ export default function ReelModal({
     const touch = e.changedTouches[0];
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
+    const deltaTime = Date.now() - touchStartRef.current.time;
     const minDistance = 45;
 
-    // If it's just a tap (not a swipe), DO NOT trigger swipe logic; let onClick handle it!
-    if (Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15) {
+    // Instant Mobile Tap: If finger movement is minimal and short duration, handle play/pause immediately
+    if (Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15 && deltaTime < 350) {
+      const target = e.target;
+      const isTopBar = target && target.closest(`.${styles.modalTopBar}`);
+      const isBottomBar = target && target.closest(`.${styles.bottomBar}`);
+      const isNavBtn = target && target.closest(`.${styles.navBtn}`);
+
+      if (!isTopBar && !isBottomBar && !isNavBtn && isDirect) {
+        togglePlayPause(e);
+      }
       return;
     }
 
-    // Determine vertical vs horizontal swipe
+    // Vertical swipe
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
       if (deltaY < -minDistance) {
         // Swiped UP -> Next Reel
@@ -205,6 +242,7 @@ export default function ReelModal({
         }
       }
     } else {
+      // Horizontal swipe
       if (deltaX < -minDistance) {
         // Swiped LEFT -> Next Reel
         if (currentIndex < reels.length - 1) {
@@ -332,23 +370,31 @@ export default function ReelModal({
                 loop
                 muted={isMuted}
                 playsInline
+                webkit-playsinline="true"
+                x5-playsinline="true"
+                preload="auto"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
+                onVolumeChange={() => {
+                  if (videoRef.current) {
+                    setIsMuted(videoRef.current.muted);
+                  }
+                }}
                 onTimeUpdate={handleTimeUpdate}
                 className={styles.nativeVideo}
               />
 
               {/* Persistent Center Play Button when Paused */}
-              {!isPlaying && !showPlayStateIcon && (
-                <div className={styles.pausedCenterBtn}>
+              {!isPlaying && !flashIcon && (
+                <div className={styles.pausedCenterBtn} aria-hidden="true">
                   <Play size={40} className="text-white fill-white translate-x-0.5" />
                 </div>
               )}
 
               {/* Animated Center Play/Pause Flash Indicator on Tap */}
-              {showPlayStateIcon && (
-                <div className={styles.playStateOverlay}>
-                  {isPlaying ? (
+              {flashIcon && (
+                <div className={styles.playStateOverlay} aria-hidden="true">
+                  {flashIcon === "play" ? (
                     <Play size={44} className="text-white fill-white drop-shadow-lg" />
                   ) : (
                     <Pause size={44} className="text-white fill-white drop-shadow-lg" />
