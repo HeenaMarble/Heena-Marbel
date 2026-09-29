@@ -1,0 +1,313 @@
+.reelsSection {
+  background-color: var(--bg-main, #fcfbf9);
+  padding-top: 20px !important;
+  padding-bottom: var(--spacing-lg, 60px);
+}
+
+.headerWithBg {
+  background: linear-gradient(rgba(252, 251, 249, 0.90), rgba(252, 251, 249, 0.90)), url('/shop-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 36px 36px;
+  border-radius: var(--radius-md, 14px);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-subtle, 0 4px 20px rgba(0, 0, 0, 0.03));
+  border: 1px solid var(--border-color, #e8e2d8);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.subheading {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #b38b4d;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.heading {
+  font-family: var(--font-sans) !important;
+  font-size: 2.85rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-dark, #1a1a1a);
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid #b38b4d;
+  background: #ffffff;
+  color: #967440;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.navBtn:hover:not(:disabled) {
+  background: #967440;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(150, 116, 64, 0.25);
+}
+
+.navBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: #d1c8ba;
+  color: #a89f91;
+}
+
+.viewAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border: 1px solid #b38b4d;
+  color: #967440;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+
+.viewAllBtn:hover {
+  background: #967440;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(150, 116, 64, 0.25);
+}
+
+.viewAllBtn svg {
+  transition: transform 0.3s ease;
+}
+
+.viewAllBtn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Slider Track */
+.sliderWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.sliderTrack {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 6px 2px 20px 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 139, 77, 0.4) transparent;
+}
+
+.sliderTrack::-webkit-scrollbar {
+  height: 6px;
+}
+
+.sliderTrack::-webkit-scrollbar-thumb {
+  background-color: rgba(179, 139, 77, 0.4);
+  border-radius: 9999px;
+}
+
+/* Reel Card */
+.reelCard {
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(179, 139, 77, 0.22);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+  min-height: 480px;
+  max-height: 540px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.reelCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(150, 116, 64, 0.18);
+  border-color: rgba(179, 139, 77, 0.6);
+}
+
+/* Skeleton Loading Layer */
+.skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #f7f4ef 0%, #ebe3d5 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  z-index: 1;
+}
+
+.skeletonIconWrapper {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(179, 139, 77, 0.15);
+  color: #967440;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  animation: pulseIcon 2s infinite ease-in-out;
+}
+
+@keyframes pulseIcon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+.skeletonTag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #967440;
+  background: rgba(179, 139, 77, 0.12);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.skeletonText {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  max-width: 200px;
+}
+
+/* Embed Container */
+.embedContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  z-index: 2;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.embedContainer iframe {
+  border-radius: 18px !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+/* Card Header Banner */
+.cardTopBar {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(179, 139, 77, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 3;
+}
+
+.cardTopLabel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #967440;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  truncate: true;
+}
+
+.cardInstaLink {
+  color: #967440;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cardInstaLink:hover {
+  color: #b38b4d;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .heading {
+    font-size: 2.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .heading {
+    font-size: 2rem;
+  }
+
+  .headerWithBg {
+    padding: 28px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .reelCard {
+    flex: 0 0 270px;
+    min-height: 440px;
+  }
+}
+
+@media (max-width: 576px) {
+  .heading {
+    font-size: 1.7rem;
+  }
+
+  .reelCard {
+    flex: 0 0 85vw;
+    max-width: 320px;
+    min-height: 460px;
+  }
+}

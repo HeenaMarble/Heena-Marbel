@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { CreditCard, Truck, ChevronDown, Check, Loader2 } from "lucide-react";
+import { CreditCard, ChevronDown, Check, Loader2 } from "lucide-react";
 import { updateOrderStatus, updatePaymentStatus } from "@/actions/orders";
 import styles from "./ManageStatusCard.module.css";
 
@@ -28,7 +28,6 @@ export default function ManageStatusCard({ orderId, orderNumber, currentStatus, 
   // Derive default payment status only if DB has no value yet
   const isCod = (paymentMethod || "").toLowerCase() === "cod";
   const [paymentStatus, setPaymentStatus] = useState(currentPaymentStatus || (isCod ? "Pending" : "Paid"));
-  const [shippingModalOpen, setShippingModalOpen] = useState(false);
 
   const paymentMethodLabel = isCod ? "Cash on Delivery" : "Online Payment";
 
@@ -58,10 +57,6 @@ export default function ManageStatusCard({ orderId, orderNumber, currentStatus, 
         console.error("Failed to update payment status:", err);
       }
     });
-  };
-
-  const handleShiprocketClick = () => {
-    setShippingModalOpen(true);
   };
 
   return (
@@ -132,85 +127,8 @@ export default function ManageStatusCard({ orderId, orderNumber, currentStatus, 
           <span>Payment method: </span>
           <strong>{paymentMethodLabel}</strong>
         </div>
-
-        {/* SHIPMENT */}
-        <div className={styles.shipmentSection}>
-          <div className={styles.shipmentLabelRow}>
-            <Truck size={14} className={styles.truckIcon} />
-            <span className={styles.fieldLabel}>SHIPMENT</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleShiprocketClick}
-            className={styles.shiprocketBtn}
-          >
-            SHIP VIA SHIPROCKET
-          </button>
-        </div>
       </div>
-
-      {/* Shiprocket Modal Dialog */}
-      {shippingModalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setShippingModalOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <div className={styles.modalTitleWrap}>
-                <Truck size={20} color="#b38b4d" />
-                <h3 className={styles.modalTitle}>Ship via Shiprocket</h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShippingModalOpen(false)}
-                className={styles.modalCloseBtn}
-              >
-                ✕
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <p className={styles.modalText}>
-                Order <strong>{orderNumber}</strong> is ready for courier assignment.
-              </p>
-              <div className={styles.modalDetailsBox}>
-                <div className={styles.modalDetailRow}>
-                  <span>Current Status:</span>
-                  <strong className="capitalize">{status}</strong>
-                </div>
-                <div className={styles.modalDetailRow}>
-                  <span>Payment Method:</span>
-                  <strong>{paymentMethodLabel}</strong>
-                </div>
-                <div className={styles.modalDetailRow}>
-                  <span>Shipment Partner:</span>
-                  <span className={styles.badgePartner}>Shiprocket Standard / Surface</span>
-                </div>
-              </div>
-              <p className={styles.modalSubtext}>
-                Shiprocket API sync creates airway bill (AWB) and schedules studio pickup from Makrana workshop.
-              </p>
-            </div>
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                onClick={() => {
-                  alert(`Shipment manifest queued for order ${orderNumber}!`);
-                  setShippingModalOpen(false);
-                }}
-                className={styles.modalPrimaryBtn}
-              >
-                Confirm & Generate AWB
-              </button>
-              <button
-                type="button"
-                onClick={() => setShippingModalOpen(false)}
-                className={styles.modalSecondaryBtn}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+

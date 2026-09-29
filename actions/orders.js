@@ -24,7 +24,7 @@ export async function getOrder(id) {
 
   const { data: items } = await supabase
     .from("order_items")
-    .select("*, products(name, image_url)")
+    .select("*, products(*), product_variants(*)")
     .eq("order_id", id);
 
   return { ...order, items: items || [] };

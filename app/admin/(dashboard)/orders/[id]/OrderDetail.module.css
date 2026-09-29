@@ -105,35 +105,39 @@
 .itemsList {
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 .itemRow {
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #f0eae0;
+  border-radius: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.itemRow:hover {
+  border-color: rgba(179, 139, 77, 0.35);
+}
+
+.itemMain {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.itemHeader {
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0;
-  border-bottom: 1px solid #f2ede5;
-}
-
-.itemRow:first-child {
-  padding-top: 0;
-}
-
-.itemRow:last-child {
-  border-bottom: none;
-}
-
-.itemLeft {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
+  width: 100%;
 }
 
 .itemThumb {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 12px;
   overflow: hidden;
   background-color: #f7f5f0;
@@ -155,10 +159,19 @@
   color: #999999;
 }
 
-.itemInfo {
+.itemBasicInfo {
   display: flex;
   flex-direction: column;
+  gap: 6px;
   min-width: 0;
+  flex: 1;
+}
+
+.itemTitleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .itemName {
@@ -166,22 +179,183 @@
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
-.itemMeta {
+.variantBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  background: rgba(179, 139, 77, 0.12);
+  color: #845d24;
+  border: 1px solid rgba(179, 139, 77, 0.25);
+}
+
+.soloBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  background: #f4f0ea;
+  color: #6e675d;
+  border: 1px solid #e4ddd2;
+}
+
+.itemMetaRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   font-size: 13px;
-  color: #777777;
-  margin: 3px 0 0 0;
+  color: #666666;
 }
 
-.itemPrice {
-  font-size: 15px;
+.itemQtyBadge {
   font-weight: 700;
   color: #1a1a1a;
+  background: #f0ece3;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.itemUnitPrice {
+  color: #777777;
+  font-size: 13px;
+}
+
+.productLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #967440;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.productLink:hover {
+  color: #6a4f25;
+  background: rgba(179, 139, 77, 0.1);
+}
+
+.itemPriceBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.itemTotalPrice {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a1a1a;
   white-space: nowrap;
+}
+
+/* Specifications & Variant Box */
+.specificationsBox {
+  background: #faf8f5;
+  border: 1px solid rgba(179, 139, 77, 0.18);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.specSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.specSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #967440;
+}
+
+.specSectionIcon {
+  color: #967440;
+  flex-shrink: 0;
+}
+
+.specSectionTitle {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #845d24;
+  margin: 0;
+}
+
+.specTagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.specTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid rgba(179, 139, 77, 0.25);
+  border-radius: 6px;
+  padding: 3.5px 9px;
+  font-size: 12.5px;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.tagIcon {
+  color: #967440;
+  flex-shrink: 0;
+}
+
+.specTagLabel {
+  font-weight: 600;
+  color: #736148;
+}
+
+.specTagValue {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.colorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.emptySpecRow {
+  padding: 2px 0;
+}
+
+.emptySpecNote {
+  font-size: 12px;
+  color: #888888;
+  font-style: italic;
 }
 
 /* Totals Breakdown */
@@ -228,11 +402,23 @@
   color: #1a1a1a;
 }
 
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 /* Customer & Shipping Section */
 .customerShippingGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.customerShippingDivider {
+  height: 1px;
+  background: rgba(179, 139, 77, 0.15);
+  margin: 2px 0;
 }
 
 .columnGroup {
@@ -247,11 +433,11 @@
   text-transform: uppercase;
   letter-spacing: 1.2px;
   color: #967440;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .boldContact {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 4px 0;
