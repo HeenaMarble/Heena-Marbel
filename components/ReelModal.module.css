@@ -168,6 +168,38 @@
   z-index: 25;
 }
 
+/* Persistent Center Play Button when Paused */
+.pausedCenterBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(179, 139, 77, 0.6);
+  box-shadow: 0 0 25px rgba(179, 139, 77, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 24;
+  animation: fadeInPlay 0.2s ease-out;
+}
+
+@keyframes fadeInPlay {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 @keyframes pulseScale {
   0% {
     transform: translate(-50%, -50%) scale(0.7);

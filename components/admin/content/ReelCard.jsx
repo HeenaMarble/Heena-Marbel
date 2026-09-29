@@ -132,43 +132,16 @@ export default function ReelCard({
       >
         <div className="flex items-center justify-between border-b border-[#b38b4d]/15 pb-3">
           <span className="text-xs font-semibold text-[#b38b4d] uppercase tracking-wider flex items-center gap-2">
-            Editing Reel (Display Rank #{reel.display_order ?? index + 1})
+            Editing Reel #{reel.display_order ?? index + 1}
           </span>
 
-          <div className="flex items-center gap-2">
-            <div className="inline-flex rounded-lg bg-stone-100 p-0.5 border border-stone-200 text-xs">
-              <button
-                type="button"
-                onClick={() => setEditMode("link")}
-                className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                  editMode === "link"
-                    ? "bg-white text-[#b38b4d] shadow-sm"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
-              >
-                Link
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditMode("upload")}
-                className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                  editMode === "upload"
-                    ? "bg-white text-[#b38b4d] shadow-sm"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
-              >
-                Upload File
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="text-stone-400 hover:text-stone-600 p-1 rounded-lg hover:bg-stone-100"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="text-stone-400 hover:text-stone-600 p-1 rounded-lg hover:bg-stone-100"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         {error && (
@@ -177,35 +150,21 @@ export default function ReelCard({
           </div>
         )}
 
-        {editMode === "upload" && (
-          <div className="space-y-2">
-            <VideoUploader
-              folder="/heena-marble/reels"
-              onUploadComplete={handleVideoUploaded}
-              disabled={pending}
-            />
-          </div>
-        )}
+        <div className="space-y-3">
+          <label className="block text-xs font-semibold text-[#1a1a1a]">
+            Upload Replacement Video (Optional)
+          </label>
+          <VideoUploader
+            folder="/heena-marble/reels"
+            onUploadComplete={handleVideoUploaded}
+            disabled={pending}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5">
-              Video / Instagram URL <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.url}
-              onChange={(e) =>
-                setFormData({ ...formData, url: e.target.value })
-              }
-              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
-            />
-          </div>
-
           <div>
             <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5">
-              Label (e.g. Makrana Slab Laying)
+              Reel Title / Label
             </label>
             <input
               type="text"
@@ -306,28 +265,9 @@ export default function ReelCard({
               {reel.label || `Reel ${reel.display_order ?? index + 1}`}
             </p>
 
-            {/* Video Type Badge (Direct MP4 vs Instagram) */}
-            <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
-                isDirectVideo
-                  ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                  : "bg-purple-50 text-purple-800 border-purple-200"
-              }`}
-            >
-              {isDirectVideo ? (
-                <>
-                  <Video className="h-3 w-3 text-emerald-600" /> Clean MP4 Video
-                </>
-              ) : (
-                <>
-                  <svg className="h-3 w-3 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                  </svg>
-                  Instagram Link
-                </>
-              )}
+            {/* Video Badge */}
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-emerald-50 text-emerald-800 border-emerald-200">
+              <Video className="h-3 w-3 text-emerald-600" /> MP4 Video
             </span>
 
             {/* Featured Badge / Quick Toggle */}

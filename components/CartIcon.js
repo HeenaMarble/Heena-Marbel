@@ -1,11 +1,17 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import styles from './CartIcon.module.css';
 
 export default function CartIcon() {
   const { cartCount } = useCart();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Link href="/cart" className={styles.cartBtn} aria-label="Go to Shopping Cart">
@@ -14,7 +20,7 @@ export default function CartIcon() {
         <circle cx="20" cy="21" r="1"></circle>
         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
       </svg>
-      {cartCount > 0 && (
+      {mounted && cartCount > 0 && (
         <span className={styles.badge}>{cartCount}</span>
       )}
     </Link>

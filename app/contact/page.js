@@ -28,6 +28,24 @@ function renderMultiline(text) {
     ));
 }
 
+function getPhoneList(settings) {
+  const rawList = [
+    settings?.phone ?? DEFAULTS.phone,
+    settings?.phone_2 ?? DEFAULTS.phone_2,
+    settings?.phone_3 ?? DEFAULTS.phone_3,
+  ].filter(Boolean);
+
+  const result = [];
+  rawList.forEach((item) => {
+    String(item)
+      .split('\n')
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .forEach((p) => result.push(p));
+  });
+  return result.length > 0 ? result : [DEFAULTS.phone, DEFAULTS.phone_2, DEFAULTS.phone_3];
+}
+
 export default function ContactPage() {
   const [settings, setSettings] = useState(null);
 
@@ -96,7 +114,19 @@ export default function ContactPage() {
                   </div>
                   <div className={styles.infoText}>
                     <h4>Phone</h4>
-                    <p>{renderMultiline([s('phone'), s('phone_2'), s('phone_3')].filter(Boolean).join('\n'))}</p>
+                    <p>
+                      {getPhoneList(settings).map((phoneNum, idx, arr) => (
+                        <span key={idx}>
+                          <a
+                            href={`tel:${phoneNum.replace(/[^\d+]/g, '')}`}
+                            style={{ color: 'inherit', textDecoration: 'none' }}
+                          >
+                            {phoneNum}
+                          </a>
+                          {idx < arr.length - 1 && <br />}
+                        </span>
+                      ))}
+                    </p>
                   </div>
                 </div>
 

@@ -80,11 +80,20 @@ export default function ReelModal({
 
   // Tap to Play / Pause Toggle
   const togglePlayPause = (e) => {
-    e?.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
+      videoRef.current
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.log("Play failed:", err);
+        });
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
@@ -93,11 +102,14 @@ export default function ReelModal({
     setTimeout(() => setShowPlayStateIcon(false), 800);
   };
 
-  // Mute / Unmute Toggle
+  // Mute / Unmute Toggle (Completely isolated from play/pause)
   const toggleMute = (e) => {
-    e?.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!videoRef.current) return;
-    const nextMuted = !isMuted;
+    const nextMuted = !videoRef.current.muted;
     videoRef.current.muted = nextMuted;
     setIsMuted(nextMuted);
   };
@@ -172,10 +184,8 @@ export default function ReelModal({
     const deltaY = touch.clientY - touchStartRef.current.y;
     const minDistance = 45;
 
-    // Detect tap vs swipe
-    if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
-      // Just a tap -> Toggle Play/Pause
-      togglePlayPause();
+    // If it's just a tap (not a swipe), DO NOT trigger swipe logic; let onClick handle it!
+    if (Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15) {
       return;
     }
 
@@ -272,12 +282,18 @@ export default function ReelModal({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 pointer-events-auto">
+          <div
+            className="flex items-center gap-2 pointer-events-auto"
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => e.stopPropagation()}
+          >
             {/* Audio Mute / Unmute Button */}
             {isDirect && (
               <button
                 type="button"
                 onClick={toggleMute}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => e.stopPropagation()}
                 className={styles.iconBtn}
                 title={isMuted ? "Unmute Audio (M)" : "Mute Audio (M)"}
                 aria-label="Toggle Sound"
@@ -290,6 +306,8 @@ export default function ReelModal({
             <button
               type="button"
               onClick={onClose}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
               className={styles.closeBtn}
               aria-label="Close modal (Esc)"
               title="Close (Esc)"
@@ -314,11 +332,20 @@ export default function ReelModal({
                 loop
                 muted={isMuted}
                 playsInline
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
                 onTimeUpdate={handleTimeUpdate}
                 className={styles.nativeVideo}
               />
 
-              {/* Animated Center Play/Pause Indicator on Tap */}
+              {/* Persistent Center Play Button when Paused */}
+              {!isPlaying && !showPlayStateIcon && (
+                <div className={styles.pausedCenterBtn}>
+                  <Play size={40} className="text-white fill-white translate-x-0.5" />
+                </div>
+              )}
+
+              {/* Animated Center Play/Pause Flash Indicator on Tap */}
               {showPlayStateIcon && (
                 <div className={styles.playStateOverlay}>
                   {isPlaying ? (
@@ -347,7 +374,11 @@ export default function ReelModal({
         </div>
 
         {/* Bottom Floating Action Strip */}
-        <div className={styles.bottomBar}>
+        <div
+          className={styles.bottomBar}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+        >
           <div className="min-w-0 pr-2">
             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#b38b4d] mb-0.5">
               <Sparkles size={11} />

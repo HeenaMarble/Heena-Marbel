@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import {
   Phone,
+  Plus,
+  Trash2,
   MessageCircle,
   Mail,
   MapPin,
@@ -51,15 +53,29 @@ function FacebookIcon({ className = "h-3.5 w-3.5" }) {
   );
 }
 
+function parseInitialPhones(data) {
+  if (!data) return ["+91 87693 86438", "+91 98295 06544", "+91 77377 86059"];
+  const list = [];
+  [data.phone, data.phone_2, data.phone_3].forEach((item) => {
+    if (item) {
+      String(item)
+        .split("\n")
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .forEach((p) => list.push(p));
+    }
+  });
+  return list.length > 0 ? list : [""];
+}
+
 export default function SiteSettingsForm({ initialData = null }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  const [phones, setPhones] = useState(() => parseInitialPhones(initialData));
+
   const [formData, setFormData] = useState({
-    phone: initialData?.phone || "",
-    phone_2: initialData?.phone_2 || "",
-    phone_3: initialData?.phone_3 || "",
     whatsapp_number: initialData?.whatsapp_number || "",
     email: initialData?.email || "",
     website_url: initialData?.website_url || "",
@@ -77,6 +93,25 @@ export default function SiteSettingsForm({ initialData = null }) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handlePhoneChange = (index, value) => {
+    setPhones((prev) => {
+      const copy = [...prev];
+      copy[index] = value;
+      return copy;
+    });
+  };
+
+  const handleAddPhone = () => {
+    setPhones((prev) => [...prev, ""]);
+  };
+
+  const handleRemovePhone = (index) => {
+    setPhones((prev) => {
+      if (prev.length <= 1) return [""];
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
@@ -84,10 +119,12 @@ export default function SiteSettingsForm({ initialData = null }) {
 
     startTransition(async () => {
       try {
+        const validPhones = phones.map((p) => p.trim()).filter(Boolean);
+
         const payload = {
-          phone: formData.phone.trim() || null,
-          phone_2: formData.phone_2.trim() || null,
-          phone_3: formData.phone_3.trim() || null,
+          phone: validPhones[0] || null,
+          phone_2: validPhones[1] || null,
+          phone_3: validPhones.slice(2).join("\n") || null,
           whatsapp_number: formData.whatsapp_number.trim() || null,
           email: formData.email.trim() || null,
           website_url: formData.website_url.trim() || null,
@@ -144,49 +181,87 @@ export default function SiteSettingsForm({ initialData = null }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {/* Phone */}
-          <div>
-            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5 text-[#b38b4d]" /> Primary Phone Number
-            </label>
-            <input
-              type="text"
-              placeholder="+91 98765 43210"
-              value={formData.phone}
-              onChange={(e) => handleChange("phone", e.target.value)}
-              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
-            />
+        {/* Dynamic Phone Numbers Sub-Section */}
+        <div className="space-y-3 bg-[#fbf9f6] border border-[#b38b4d]/15 p-4 sm:p-5 rounded-xl">
+          <div className="flex items-center justify-between pb-2 border-b border-[#b38b4d]/10">
+            <div>
+              <span className="text-xs font-bold text-[#1a1a1a] uppercase tracking-wider flex items-center gap-1.5">
+                <Phone className="h-3.5 w-3.5 text-[#b38b4d]" /> Contact Phone Numbers
+              </span>
+              <p className="text-[11px] text-[#1a1a1a]/55 mt-0.5">
+                Add unlimited phone numbers. They will be displayed in the website footer and contact section.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleAddPhone}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#b38b4d] hover:bg-[#967440] text-white text-xs font-medium transition-colors shadow-sm cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Add Phone Number</span>
+            </button>
           </div>
 
-          {/* Phone 2 */}
-          <div>
-            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5 text-[#b38b4d]" /> Secondary Phone Number
-            </label>
-            <input
-              type="text"
-              placeholder="+91 98765 43210"
-              value={formData.phone_2}
-              onChange={(e) => handleChange("phone_2", e.target.value)}
-              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+            {phones.map((phoneVal, index) => {
+              const label =
+                index === 0
+                  ? "Primary Phone Number"
+                  : index === 1
+                  ? "Secondary Phone Number"
+                  : `Phone Number ${index + 1}`;
+
+              return (
+                <div
+                  key={index}
+                  className="bg-white border border-[#e5e0d8] focus-within:border-[#b38b4d] rounded-xl p-3 shadow-xs transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-[#1a1a1a] flex items-center gap-1">
+                      <Phone className="h-3 w-3 text-[#b38b4d]" />
+                      <span>{label}</span>
+                      {index === 0 && (
+                        <span className="ml-1 text-[10px] uppercase font-bold text-[#b38b4d] bg-[#b38b4d]/10 px-1.5 py-0.5 rounded">
+                          Main
+                        </span>
+                      )}
+                    </label>
+                    {phones.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhone(index)}
+                        title="Remove this number"
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="+91 98765 43210"
+                    value={phoneVal}
+                    onChange={(e) => handlePhoneChange(index, e.target.value)}
+                    className="w-full rounded-lg border border-[#e5e0d8] bg-[#fcfbfa] px-3 py-2 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:bg-white focus:ring-1 focus:ring-[#b38b4d]"
+                  />
+                </div>
+              );
+            })}
           </div>
 
-          {/* Phone 3 */}
-          <div>
-            <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5 text-[#b38b4d]" /> Third Phone Number
-            </label>
-            <input
-              type="text"
-              placeholder="+91 98765 43210"
-              value={formData.phone_3}
-              onChange={(e) => handleChange("phone_3", e.target.value)}
-              className="w-full rounded-xl border border-[#e5e0d8] bg-white px-3.5 py-2.5 text-sm text-[#1a1a1a] outline-none transition-colors focus:border-[#b38b4d] focus:ring-1 focus:ring-[#b38b4d]"
-            />
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={handleAddPhone}
+              className="w-full py-2.5 px-4 rounded-xl border border-dashed border-[#b38b4d]/40 bg-white hover:bg-[#b38b4d]/5 text-xs font-semibold text-[#8c6b32] hover:text-[#1a1a1a] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Plus className="h-4 w-4" />
+              <span>+ Add Another Phone Number Box</span>
+            </button>
           </div>
+        </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
           {/* WhatsApp */}
           <div>
             <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5 flex items-center gap-1.5">
