@@ -11,6 +11,8 @@ import {
   ChevronDown,
   Star,
   ExternalLink,
+  Video,
+  UploadCloud,
 } from "lucide-react";
 import {
   updateReel,
@@ -18,6 +20,7 @@ import {
   moveReelOrder,
   toggleFeaturedReel,
 } from "@/lib/actions/content-actions";
+import VideoUploader from "@/components/admin/VideoUploader";
 
 export default function ReelCard({
   reel,
@@ -27,6 +30,7 @@ export default function ReelCard({
   isLast = false,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [editMode, setEditMode] = useState("link"); // 'link' | 'upload'
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -38,13 +42,25 @@ export default function ReelCard({
     is_featured: !!reel.is_featured,
   });
 
+  const isDirectVideo =
+    typeof reel.url === "string" &&
+    (/\.(mp4|webm|mov)(\?.*)?$/i.test(reel.url) ||
+      reel.url.includes("ik.imagekit.io") ||
+      !reel.url.includes("instagram.com"));
+
+  function handleVideoUploaded(videoUrl) {
+    setFormData((prev) => ({ ...prev, url: videoUrl }));
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 3000);
+  }
+
   function handleSave(e) {
     e.preventDefault();
     setError("");
     setSuccess(false);
 
     if (!formData.url.trim()) {
-      setError("Please provide an Instagram reel link.");
+      setError("Please provide a video URL or upload a video file.");
       return;
     }
 
@@ -118,13 +134,41 @@ export default function ReelCard({
           <span className="text-xs font-semibold text-[#b38b4d] uppercase tracking-wider flex items-center gap-2">
             Editing Reel (Display Rank #{reel.display_order ?? index + 1})
           </span>
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="text-stone-400 hover:text-stone-600 p-1 rounded-lg hover:bg-stone-100"
-          >
-            <X className="h-4 w-4" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            <div className="inline-flex rounded-lg bg-stone-100 p-0.5 border border-stone-200 text-xs">
+              <button
+                type="button"
+                onClick={() => setEditMode("link")}
+                className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+                  editMode === "link"
+                    ? "bg-white text-[#b38b4d] shadow-sm"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                Link
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditMode("upload")}
+                className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+                  editMode === "upload"
+                    ? "bg-white text-[#b38b4d] shadow-sm"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                Upload File
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="text-stone-400 hover:text-stone-600 p-1 rounded-lg hover:bg-stone-100"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -133,10 +177,20 @@ export default function ReelCard({
           </div>
         )}
 
+        {editMode === "upload" && (
+          <div className="space-y-2">
+            <VideoUploader
+              folder="/heena-marble/reels"
+              onUploadComplete={handleVideoUploaded}
+              disabled={pending}
+            />
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-[#1a1a1a] mb-1.5">
-              Instagram Reel Link <span className="text-red-500">*</span>
+              Video / Instagram URL <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -199,14 +253,14 @@ export default function ReelCard({
               type="button"
               onClick={handleCancel}
               disabled={pending}
-              className="rounded-full border border-stone-300 px-4 py-1.5 text-xs font-semibold text-stone-600 hover:bg-stone-50 transition-colors"
+              className="rounded-full border border-stone-300 px-4 py-1.5 text-xs font-semibold text-stone-600 hover:bg-stone-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={pending}
-              className="rounded-full bg-[#b38b4d] hover:bg-[#967440] text-white font-semibold px-5 py-1.5 text-xs transition-colors disabled:opacity-60 shadow-sm"
+              className="rounded-full bg-[#b38b4d] hover:bg-[#967440] text-white font-semibold px-5 py-1.5 text-xs transition-colors disabled:opacity-60 shadow-sm cursor-pointer"
             >
               {pending ? "Saving..." : "Save Changes"}
             </button>
@@ -227,7 +281,7 @@ export default function ReelCard({
             onClick={() => handleMove("up")}
             disabled={isFirst || pending}
             title="Move Up"
-            className="p-1 text-stone-500 hover:text-[#b38b4d] hover:bg-white rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="p-1 text-stone-500 hover:text-[#b38b4d] hover:bg-white rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
           >
             <ChevronUp className="h-3.5 w-3.5" />
           </button>
@@ -239,7 +293,7 @@ export default function ReelCard({
             onClick={() => handleMove("down")}
             disabled={isLast || pending}
             title="Move Down"
-            className="p-1 text-stone-500 hover:text-[#b38b4d] hover:bg-white rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="p-1 text-stone-500 hover:text-[#b38b4d] hover:bg-white rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
           >
             <ChevronDown className="h-3.5 w-3.5" />
           </button>
@@ -252,6 +306,30 @@ export default function ReelCard({
               {reel.label || `Reel ${reel.display_order ?? index + 1}`}
             </p>
 
+            {/* Video Type Badge (Direct MP4 vs Instagram) */}
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                isDirectVideo
+                  ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                  : "bg-purple-50 text-purple-800 border-purple-200"
+              }`}
+            >
+              {isDirectVideo ? (
+                <>
+                  <Video className="h-3 w-3 text-emerald-600" /> Clean MP4 Video
+                </>
+              ) : (
+                <>
+                  <svg className="h-3 w-3 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                  </svg>
+                  Instagram Link
+                </>
+              )}
+            </span>
+
             {/* Featured Badge / Quick Toggle */}
             <button
               type="button"
@@ -262,7 +340,7 @@ export default function ReelCard({
                   ? "Click to remove from homepage"
                   : "Click to feature on homepage"
               }
-              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition-all border ${
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition-all border cursor-pointer ${
                 reel.is_featured
                   ? "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
                   : "bg-stone-50 text-stone-500 border-stone-200 hover:bg-stone-100 hover:text-stone-700"
@@ -302,7 +380,7 @@ export default function ReelCard({
         <button
           type="button"
           onClick={() => setIsEditing(true)}
-          className="flex items-center gap-1.5 text-xs font-semibold text-[#967440] border border-[#b38b4d]/30 rounded-full px-3 py-1.5 hover:bg-[#b38b4d]/10 transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-[#967440] border border-[#b38b4d]/30 rounded-full px-3 py-1.5 hover:bg-[#b38b4d]/10 transition-colors cursor-pointer"
         >
           <Pencil className="h-3.5 w-3.5" /> Edit / Replace
         </button>
@@ -311,7 +389,7 @@ export default function ReelCard({
           onClick={handleDelete}
           disabled={pending}
           title="Remove reel"
-          className="flex items-center gap-1.5 text-xs font-semibold text-red-600 border border-red-300 rounded-full px-3 py-1.5 hover:bg-red-50 transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 text-xs font-semibold text-red-600 border border-red-300 rounded-full px-3 py-1.5 hover:bg-red-50 transition-colors disabled:opacity-50 cursor-pointer"
         >
           <Trash2 className="h-3.5 w-3.5" /> {pending ? "..." : "Remove"}
         </button>

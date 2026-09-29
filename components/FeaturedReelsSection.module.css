@@ -10,7 +10,7 @@
   background-position: center;
   padding: 36px 36px;
   border-radius: var(--radius-md, 14px);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   box-shadow: var(--shadow-subtle, 0 4px 20px rgba(0, 0, 0, 0.03));
   border: 1px solid var(--border-color, #e8e2d8);
   display: flex;
@@ -114,11 +114,11 @@
 
 .sliderTrack {
   display: flex;
-  gap: 20px;
+  gap: 22px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  padding: 6px 2px 20px 2px;
+  padding: 8px 4px 24px 4px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(179, 139, 77, 0.4) transparent;
@@ -133,141 +133,153 @@
   border-radius: 9999px;
 }
 
-/* Reel Card */
-.reelCard {
-  flex: 0 0 300px;
+/* ============================================================
+   Poster Video Card (Pure Luxury & Zero Instagram Clutter)
+   ============================================================ */
+.reelPosterCard {
+  flex: 0 0 280px;
   scroll-snap-align: start;
-  border-radius: 18px;
-  background: #ffffff;
-  border: 1px solid rgba(179, 139, 77, 0.22);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+  border-radius: 20px;
+  background: #121212;
+  border: 1.5px solid rgba(179, 139, 77, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   position: relative;
-  min-height: 480px;
-  max-height: 540px;
+  height: 480px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
-.reelCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(150, 116, 64, 0.18);
-  border-color: rgba(179, 139, 77, 0.6);
+.reelPosterCard:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 45px rgba(150, 116, 64, 0.28);
+  border-color: rgba(179, 139, 77, 0.85);
 }
 
-/* Skeleton Loading Layer */
-.skeleton {
+/* Thumbnail Image Cover */
+.posterImgWrapper {
   position: absolute;
   inset: 0;
-  background: linear-gradient(145deg, #f7f4ef 0%, #ebe3d5 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  text-align: center;
-  z-index: 1;
-}
-
-.skeletonIconWrapper {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: rgba(179, 139, 77, 0.15);
-  color: #967440;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  animation: pulseIcon 2s infinite ease-in-out;
-}
-
-@keyframes pulseIcon {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.08);
-    opacity: 1;
-  }
-}
-
-.skeletonTag {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #967440;
-  background: rgba(179, 139, 77, 0.12);
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 8px;
-}
-
-.skeletonText {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  max-width: 200px;
-}
-
-/* Embed Container */
-.embedContainer {
-  position: relative;
   width: 100%;
   height: 100%;
-  min-height: 480px;
-  z-index: 2;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #181818;
   overflow: hidden;
 }
 
-.embedContainer iframe {
-  border-radius: 18px !important;
-  max-width: 100% !important;
-  width: 100% !important;
-  min-width: 100% !important;
+.posterImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Card Header Banner */
-.cardTopBar {
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(179, 139, 77, 0.15);
+.reelPosterCard:hover .posterImg {
+  transform: scale(1.08);
+}
+
+/* Luxury Dark Gradient Vignette */
+.posterGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.reelPosterCard:hover .posterGradient {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 40%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+/* Glowing Play Button */
+.playButtonWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(179, 139, 77, 0.85);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(179, 139, 77, 0.5);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  z-index: 3;
+  justify-content: center;
+  color: #ffffff;
+  z-index: 4;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.cardTopLabel {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #967440;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  truncate: true;
+.playIcon {
+  margin-left: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-.cardInstaLink {
-  color: #967440;
+.reelPosterCard:hover .playButtonWrapper {
+  transform: translate(-50%, -50%) scale(1.15);
+  background: #b38b4d;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(179, 139, 77, 0.8);
+}
+
+/* Card Bottom Info */
+.posterBottomInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 18px;
+  z-index: 5;
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.posterTag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.posterTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.watchBadge {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 0.75rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.cardInstaLink:hover {
-  color: #b38b4d;
-  text-decoration: underline;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2px;
 }
 
 /* Responsive */
@@ -294,9 +306,9 @@
     justify-content: space-between;
   }
 
-  .reelCard {
-    flex: 0 0 270px;
-    min-height: 440px;
+  .reelPosterCard {
+    flex: 0 0 250px;
+    height: 430px;
   }
 }
 
@@ -305,9 +317,9 @@
     font-size: 1.7rem;
   }
 
-  .reelCard {
-    flex: 0 0 85vw;
-    max-width: 320px;
-    min-height: 460px;
+  .reelPosterCard {
+    flex: 0 0 78vw;
+    max-width: 290px;
+    height: 450px;
   }
 }
