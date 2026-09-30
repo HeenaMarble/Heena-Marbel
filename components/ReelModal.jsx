@@ -52,6 +52,7 @@ export default function ReelModal({
   const [progress, setProgress] = useState(0);
   const [flashIcon, setFlashIcon] = useState(null); // 'play' | 'pause' | null
   const flashTimerRef = useRef(null);
+  const lastToggleTimeRef = useRef(0);
 
   const triggerFlash = (type) => {
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
@@ -101,11 +102,19 @@ export default function ReelModal({
     }
   };
 
-  // Tap to Play / Pause Toggle
+  // Tap to Play / Pause Toggle (Debounced to prevent touch/click bounce on mobile)
   const togglePlayPause = (e) => {
-    if (e && e.stopPropagation) {
-      e.stopPropagation();
+    if (e) {
+      if (e.stopPropagation) e.stopPropagation();
+      if (e.preventDefault && e.type === "touchend") e.preventDefault();
     }
+
+    const now = Date.now();
+    if (now - lastToggleTimeRef.current < 300) {
+      return; // Ignore duplicate bounce events
+    }
+    lastToggleTimeRef.current = now;
+
     const video = videoRef.current;
     if (!video) return;
 
@@ -325,6 +334,28 @@ export default function ReelModal({
             onTouchStart={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
           >
+            {/* Dedicated Play / Pause Button */}
+            {isDirect && (
+              <button
+                type="button"
+                onClick={togglePlayPause}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  togglePlayPause(e);
+                }}
+                className={styles.iconBtn}
+                title={isPlaying ? "Pause Video (Space)" : "Play Video (Space)"}
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? (
+                  <Pause size={18} />
+                ) : (
+                  <Play size={18} className="translate-x-0.5 fill-current" />
+                )}
+              </button>
+            )}
+
             {/* Audio Mute / Unmute Button */}
             {isDirect && (
               <button
@@ -386,9 +417,15 @@ export default function ReelModal({
 
               {/* Persistent Center Play Button when Paused */}
               {!isPlaying && !flashIcon && (
-                <div className={styles.pausedCenterBtn} aria-hidden="true">
-                  <Play size={40} className="text-white fill-white translate-x-0.5" />
-                </div>
+                <button
+                  type="button"
+                  onClick={togglePlayPause}
+                  className={styles.pausedCenterBtn}
+                  aria-label="Play video"
+                  title="Play"
+                >
+                  <Play size={38} className="text-white fill-white translate-x-0.5" />
+                </button>
               )}
 
               {/* Animated Center Play/Pause Flash Indicator on Tap */}
