@@ -1,5 +1,7 @@
 .dashboardWrapper {
   max-width: 1400px;
+  width: 100%;
+  min-width: 0;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -14,8 +16,10 @@
    ======================================================== */
 .kpiGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
+  width: 100%;
+  min-width: 0;
 }
 
 .kpiCard {
@@ -26,6 +30,7 @@
   box-shadow: 0 4px 20px rgba(179, 139, 77, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .kpiCard:hover {
@@ -159,8 +164,10 @@
 
 .operationsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+  width: 100%;
+  min-width: 0;
 }
 
 .actionBtnPrimary {
@@ -177,6 +184,7 @@
   box-shadow: 0 6px 16px rgba(179, 139, 77, 0.25);
   transition: all 0.2s ease;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .actionBtnPrimary:hover {
@@ -199,6 +207,7 @@
   text-decoration: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .actionBtnSecondary:hover {
@@ -220,21 +229,27 @@
    ======================================================== */
 .twoColumnGrid {
   display: grid;
-  grid-template-columns: 1.45fr 1fr;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
   gap: 28px;
   align-items: start;
+  width: 100%;
+  min-width: 0;
 }
 
 .leftColumn {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  min-width: 0;
+  width: 100%;
 }
 
 .rightColumn {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  min-width: 0;
+  width: 100%;
 }
 
 .sectionCard {
@@ -244,6 +259,9 @@
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .cardHeaderFlex {
@@ -553,6 +571,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  min-width: 0;
 }
 
 .inquiryItem {
@@ -564,6 +584,10 @@
   text-decoration: none;
   transition: all 0.2s ease;
   margin-bottom: 0;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .inquiryItem:hover {
@@ -577,6 +601,9 @@
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .inquiryMessage {
@@ -586,6 +613,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
 }
 
 .mobileGreetingBanner {
@@ -595,13 +624,13 @@
 /* Responsive Media Queries */
 @media (max-width: 1200px) {
   .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .operationsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .twoColumnGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

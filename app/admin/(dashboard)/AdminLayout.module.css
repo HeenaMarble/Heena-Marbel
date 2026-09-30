@@ -1,8 +1,11 @@
 .adminContainer {
   display: flex;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   background-color: #fcfbf9;
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 .mainContentArea {
@@ -10,13 +13,37 @@
   flex: 1;
   flex-direction: column;
   min-width: 0;
+  max-width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .mainBody {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 28px 40px 60px 40px;
   box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+.mainBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mainBody::-webkit-scrollbar-track {
+  background: #fcfbf9;
+}
+
+.mainBody::-webkit-scrollbar-thumb {
+  background: rgba(179, 139, 77, 0.35);
+  border-radius: 4px;
+}
+
+.mainBody::-webkit-scrollbar-thumb:hover {
+  background: #967440;
 }
 
 @media (max-width: 1024px) {
