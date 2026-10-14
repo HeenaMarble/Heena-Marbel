@@ -8,6 +8,7 @@ export default function VideoUploader({
   onUploadComplete,
   folder = "/heena-marble/hero",
   disabled = false,
+  maxSizeMb = 50,
 }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -28,13 +29,11 @@ export default function VideoUploader({
       return;
     }
 
-    // Limit size to 50MB for sane upload & web performance
-    const MAX_SIZE_MB = 50;
-    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+    if (file.size > maxSizeMb * 1024 * 1024) {
       setError(
         `Video file is too large (${(file.size / (1024 * 1024)).toFixed(
           1
-        )} MB). Please choose a video under ${MAX_SIZE_MB} MB.`
+        )} MB). Please choose a video under ${maxSizeMb} MB.`
       );
       return;
     }
@@ -180,7 +179,7 @@ export default function VideoUploader({
                 Click or drag & drop video to upload
               </p>
               <p className="text-xs text-[#1a1a1a]/50 mt-1">
-                MP4, WebM, MOV supported (up to 50MB)
+                MP4, WebM, MOV supported (up to {maxSizeMb}MB)
               </p>
             </div>
           </>

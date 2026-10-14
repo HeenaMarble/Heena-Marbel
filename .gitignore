@@ -20,6 +20,9 @@
 # production
 /build
 
+# Homepage journey videos are hosted on ImageKit; keep local source MP4s out of Git.
+/public/Steps_involved/*.mp4
+
 # misc
 .DS_Store
 *.pem

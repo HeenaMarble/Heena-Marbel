@@ -57,6 +57,7 @@ const NAV_GROUPS = [
         children: [
           { label: "Hero Content", href: "/admin/content/hero-video", icon: Video },
           { label: "Announcements", href: "/admin/content/announcements", icon: Megaphone },
+          { label: "Journey Videos", href: "/admin/content/craftsmanship-videos", icon: Film },
           { label: "Services", href: "/admin/content/services", icon: Layers },
           { label: "Our Applications", href: "/admin/content/applications", icon: LayoutGrid },
           { label: "Stats & Numbers", href: "/admin/content/stats", icon: BarChart3 },
